@@ -3,7 +3,7 @@ import { Buttons } from '../UseButtons.jsx/Buttons'
 import Header from "../../assets/Header.jpg"
 import { Content } from './Content'
 import { RiBox2Line } from "react-icons/ri";
-
+import { IoIosArrowForward } from "react-icons/io";
 export const Heading = () => {
     const content=[
         {   
@@ -167,10 +167,64 @@ export const Heading = () => {
             </div>
             </div>
         ))}
-</div>
+        
+        </div>
 
         
-
+        <div className=' flex items-center justify-center m-10 gap-10'>
+        <button className=' h-10 border-2 border-black p-2 m-2 flex justify-center items-center'>
+                        Learn more
+                      </button>
+                      <button className='flex gap-2  justify-center items-center'>
+                        Sign{<IoIosArrowForward />}
+        </button>
+        </div>
+        <div className='bg-black w-full text-white h-64 flex justify-center items-center'>
+            <div>
+            <h1 className='text-center font-bold text-4xl p-2 m-3'>Discover Local Services Today!</h1>
+            <p className='text-center text-xl'>Explore a variety of local services tailored to your needs,all in one place</p>
+            <div className='flex gap-10 ml-36 p-4'>
+            <div className={`button w-24  h-10 border flex items-center justify-center bg-white text-black `}>
+            <button>Explore</button>
+            </div>
+            <div className="button w-24 h-10 border-2  flex items-center justify-center hover:bg-black hover:text-white ">
+            <button>Get Started</button>
+            </div>
+            </div>
+            </div>
+        </div>
+        <div className="m-8 p-2 flex items-center justify-center">
+        <div className="text-center w-[700px]">
+            <h1 className="text-5xl font-bold mb-4">
+            Empowering communities by connecting you to essential local services effortlessly
+            </h1>
+            <p className="mt-4 text-lg text-gray-600">
+            Our platform is dedicated to simplifying your search for local services, from health to dining. 
+            With a user-friendly interface and comprehensive information, we ensure you find exactly what you need, 
+            when you need it.
+            </p>
+            <div className="flex items-center justify-center m-10 gap-10">
+            <button className="h-10 border-2 border-black px-4 py-2 flex justify-center items-center">
+                Learn More
+            </button>
+            <button className="flex gap-2 justify-center items-center px-4 py-2 text-blue-500 hover:underline">
+                Sign Up
+                {<IoIosArrowForward />}
+            </button>
+            </div>
+        </div>
+        </div>
+        <div className='m-16 p-2 bg-black text-white flex justify-center items-center'>
+            <div className='p-10 m-6'>
+                <h1 className='text-3xl font-bold text-white text-center p-2'>Stay Update with Our Newsletter</h1>
+                <p className='text-xl font-medium text-center p-2'>Subscribe new for the  latest updates and exclusive oftters from our platform</p>
+                <div className='flex gap-10 justify-center p-2'>
+                    <input type="email" name="email" id="email" placeholder='Your Email here' className='outline-none border-2 border-white bg-transparent w-96 p-2'/>
+                    <button className='w-24 h-10 bg-white text-black'> Join us</button>
+                </div>
+                <p className='text-xs text-100 ml-24'>By clicking join us,you agree to our Terms and Conditions </p>
+            </div>
+        </div>
     </div>
   )
 }

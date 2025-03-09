@@ -27,7 +27,7 @@ export const Navbar = () => {
         </div>
         <Buttons label1={"Join"} label2={"Explore"} revers={false}/>
         </div>
-        <Heading/>
+        
     </div>
   )
 }
