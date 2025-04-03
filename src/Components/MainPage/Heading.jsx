@@ -116,22 +116,22 @@ export const Heading = () => {
   return (
     <div>
         <div className="content">
-            <div className=' flex gap-10 p-3 m-2'>
-                <div className="div w-1/2 p-2 ">
-                    <h1 className='text-5xl font-bold'>Discover Local Services at Your Fingertips</h1>
+            <div className=' md:flex md:gap-10 md:p-3 m-4'>
+                <div className="div md:w-1/2 p-2 w-full">
+                    <h1 className='md:text-5xl text-4xl font-bold'>Discover Local Services at Your Fingertips</h1>
                 </div>
-                <div className="div w-1/2 p-2 ">
+                <div className="div md:w-1/2 p-2 w-full ">
                     <div className="text">
                         <p>Explore a wide range of local services tailored to your needs.From schools to restaurants,find everything you need in one place</p>
                     </div>
-                    <div className='mt-10'>
+                    <div className='md:mt-10'>
                     <Buttons label1={"Explore"} label2={"Learn More"} reverse={true}/>
                     </div>
                     
                 </div>
             </div>
         </div>
-        <div className="div m-[20px] p-8">
+        <div className="div md:m-[20px] md:p-8 m-auto">
             <img src={Header} alt="" className="w-full h-auto" />
         </div>
         {
@@ -139,17 +139,17 @@ export const Heading = () => {
                 <Content key={index} item={item} reverse={false}/>
             ))
         }
-        <div className="flex items-center justify-center ">
-            <div className="text-center w-[700px]">
+        <div className="md:flex md:items-center md:justify-center w-full">
+            <div className="text-center md:w-[700px] w-full">
                 <h4 className="text-xl font-semibold">Explore</h4>
-                <h1 className="text-5xl font-bold mb-4">Discover Local Services at Your Fingertips</h1>
+                <h1 className="md:text-5xl text-3xl font-bold mb-4">Discover Local Services at Your Fingertips</h1>
                 <p className="text-lg">
                     Our platform offers seamless navigation to connect you with essential local
                     services. From hospitals to restaurants, find everything you need in one place.
                 </p>
             </div>
         </div>
-        <div className="p-4 rounded-md flex  gap-4 ">
+        <div className="p-4 rounded-md md:flex  gap-4 ">
         {divBox.map((box, index) => (
             <div
             key={index}
@@ -171,60 +171,80 @@ export const Heading = () => {
         </div>
 
         
-        <div className=' flex items-center justify-center m-10 gap-10'>
-        <button className=' h-10 border-2 border-black p-2 m-2 flex justify-center items-center'>
-                        Learn more
-                      </button>
-                      <button className='flex gap-2  justify-center items-center'>
-                        Sign{<IoIosArrowForward />}
+        <div className="flex flex-col md:flex-row items-center justify-center m-10 gap-6">
+        <button className="h-10 border-2 border-black px-4 py-2 flex justify-center items-center">
+          Learn More
         </button>
+        <button className="flex gap-2 justify-center items-center text-blue-500 hover:underline">
+          Sign Up <IoIosArrowForward />
+        </button>
+      </div>
+
+      {/* Dark Section */}
+      <div className="bg-black text-white h-auto py-12 px-6 md:flex md:justify-center md:items-center">
+        <div className="text-center md:w-2/3">
+          <h1 className="font-bold text-3xl md:text-4xl p-2 m-3">
+            Discover Local Services Today!
+          </h1>
+          <p className="text-lg md:text-xl">
+            Explore a variety of local services tailored to your needs, all in one place.
+          </p>
+          <div className="flex  sm:flex-row gap-6 justify-center mt-6">
+            <button className="w-32 h-10 border bg-white text-black flex items-center justify-center">
+              Explore
+            </button>
+            <button className="w-32 h-10 border-2 flex items-center justify-center hover:bg-white hover:text-black transition">
+              Get Started
+            </button>
+          </div>
         </div>
-        <div className='bg-black w-full text-white h-64 flex justify-center items-center'>
-            <div>
-            <h1 className='text-center font-bold text-4xl p-2 m-3'>Discover Local Services Today!</h1>
-            <p className='text-center text-xl'>Explore a variety of local services tailored to your needs,all in one place</p>
-            <div className='flex gap-10 ml-36 p-4'>
-            <div className={`button w-24  h-10 border flex items-center justify-center bg-white text-black `}>
-            <button>Explore</button>
-            </div>
-            <div className="button w-24 h-10 border-2  flex items-center justify-center hover:bg-black hover:text-white ">
-            <button>Get Started</button>
-            </div>
-            </div>
-            </div>
-        </div>
-        <div className="m-8 p-2 flex items-center justify-center">
-        <div className="text-center w-[700px]">
-            <h1 className="text-5xl font-bold mb-4">
+      </div>
+
+      {/* Empowering Communities Section */}
+      <div className="md:m-8 m-4 md:p-4 flex items-center justify-center">
+        <div className="text-center w-full max-w-3xl">
+          <h1 className="text-3xl md:text-5xl font-bold mb-4">
             Empowering communities by connecting you to essential local services effortlessly
-            </h1>
-            <p className="mt-4 text-lg text-gray-600">
-            Our platform is dedicated to simplifying your search for local services, from health to dining. 
-            With a user-friendly interface and comprehensive information, we ensure you find exactly what you need, 
-            when you need it.
-            </p>
-            <div className="flex items-center justify-center m-10 gap-10">
-            <button className="h-10 border-2 border-black px-4 py-2 flex justify-center items-center">
-                Learn More
+          </h1>
+          <p className="mt-4 text-lg text-gray-600">
+            Our platform simplifies your search for local services, from health to dining.
+            With a user-friendly interface and comprehensive information, we ensure you find
+            exactly what you need, when you need it.
+          </p>
+          <div className="flex flex-col sm:flex-row items-center justify-center mt-8 gap-6">
+            <button className="h-10 border-2 border-black px-6 py-2 flex justify-center items-center">
+              Learn More
             </button>
-            <button className="flex gap-2 justify-center items-center px-4 py-2 text-blue-500 hover:underline">
-                Sign Up
-                {<IoIosArrowForward />}
+            <button className="flex gap-2 justify-center items-center px-6 py-2 text-blue-500 hover:underline">
+              Sign Up <IoIosArrowForward />
             </button>
-            </div>
+          </div>
         </div>
+      </div>
+
+      {/* Newsletter Section */}
+      <div className="m-2 md:m-16 p-4 bg-black text-white flex justify-center items-center">
+        <div className="p-2 text-center w-full ">
+          <h1 className="text-xl md:text-3xl font-bold ">
+            Stay Updated with Our Newsletter
+          </h1>
+          <p className="text-lg md:text-xl p-2">
+            Subscribe now for the latest updates and exclusive offers from our platform.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center p-2">
+            <input
+              type="email"
+              name="email"
+              placeholder="Your Email here"
+              className="outline-none border-2 border-white bg-transparent w-full sm:w-96 p-2 text-white placeholder-gray-400"
+            />
+            <button className="w-24 h-10 bg-white text-black">Join Us</button>
+          </div>
+          <p className="text-xs text-gray-400 mt-2">
+            By clicking Join Us, you agree to our Terms and Conditions.
+          </p>
         </div>
-        <div className='m-16 p-2 bg-black text-white flex justify-center items-center'>
-            <div className='p-10 m-6'>
-                <h1 className='text-3xl font-bold text-white text-center p-2'>Stay Update with Our Newsletter</h1>
-                <p className='text-xl font-medium text-center p-2'>Subscribe new for the  latest updates and exclusive oftters from our platform</p>
-                <div className='flex gap-10 justify-center p-2'>
-                    <input type="email" name="email" id="email" placeholder='Your Email here' className='outline-none border-2 border-white bg-transparent w-96 p-2'/>
-                    <button className='w-24 h-10 bg-white text-black'> Join us</button>
-                </div>
-                <p className='text-xs text-100 ml-24'>By clicking join us,you agree to our Terms and Conditions </p>
-            </div>
-        </div>
+      </div>
     </div>
   )
 }

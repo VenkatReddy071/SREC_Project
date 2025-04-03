@@ -52,13 +52,13 @@ export const Fotter = () => {
           <p className="text-sm mb-4">
             Join our newsletter to stay informed on updates and promotions.
           </p>
-          <div className="flex gap-2 items-center border border-gray-400 rounded">
+          <div className="flex md:gap-1 gap-8 items-center border border-gray-400 rounded">
             <input
               type="email"
               placeholder="Enter your email"
-              className="w-44 p-2 text-sm focus:outline-none"
+              className="md:w-36 p-2 text-sm focus:outline-none"
             />
-            <button className="bg-black text-white px-4 py-2">Subscribe</button>
+            <button className="bg-black text-white px-2 py-2">Subscribe</button>
           </div>
         </div>
       </div>
