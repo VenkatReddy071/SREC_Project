@@ -2,10 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Dashboard from "./Components/Dashboard/Dashboard";
 import Login from "./Components/Login";
 import DashboardPage from "./Components/Dashboard/DashboardPage";
-
-function MenuPage() {
-  return <h1>Menu Page</h1>;
-}
+import { Menu } from './Components/Dashboard/Menu/Menu';
 
 function OffersPage() {
   return <h1>Offers Page</h1>;
@@ -29,7 +26,7 @@ function App() {
       <Dashboard>
         <Routes>
           <Route path="/dashboard" element={<DashboardPage />} />
-          <Route path="/menu" element={<MenuPage />} />
+          <Route path="/menu" element={<Menu/>} />
           <Route path="/offers" element={<OffersPage />} />
           <Route path="/upload" element={<UploadPage />} />
           <Route path="/orders" element={<OrdersPage />} />
@@ -37,6 +34,7 @@ function App() {
           <Route path="/" element={<Login />} />
         </Routes>
       </Dashboard>
+    
     </Router>
   );
 }

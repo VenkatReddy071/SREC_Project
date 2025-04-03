@@ -5,6 +5,7 @@ import OrdersSummary from "./Summary"
 import Orders from "./Orders"
 import ShowData from "./ShowData"
 import Review from "./Review"
+import Users from "./Users"
 function ChartsInfo(){
     const monthly=()=>[
         { name: "Jan", income: 20000, expenses: 15000 },
@@ -52,6 +53,7 @@ function ChartsInfo(){
                     <Orders/>
                     <ShowData/>
                     <Review/>
+                    <Users/>
                 </div>
             </div>
         </>
