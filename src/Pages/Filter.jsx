@@ -29,7 +29,7 @@ const PopupFilter = ({ onApply }) => {
         Open Filters
       </button>
       {isOpen && (
-        <div className="fixed inset-0 right-0  bg-white p-4 shadow-lg rounded-lg w-64 h-full ">
+        <div className="fixed inset-0 right-0  bg-white p-4 shadow-lg rounded-lg md:w-64 h-full ">
           <h3 className="text-lg font-semibold mb-2">Filter Options</h3>
           <div className="flex flex-col gap-2">
             <label className="flex items-center">

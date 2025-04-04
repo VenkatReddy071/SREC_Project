@@ -4,9 +4,9 @@ import { HiArrowNarrowRight } from "react-icons/hi";
 
 const HealthcareSection = () => {
   return (
-    <div className="grid gap-6 p-6 max-w-7xl mx-auto">
+    <div className="md:grid md:gap-6 md:p-6 p-4 max-w-7xl mx-auto">
       {/* Top Section */}
-      <div className="grid grid-cols-2 gap-6">
+      <div className="grid md:grid-cols-2 gird-rows-2 gap-6">
         <div className="border border-gray-300 p-6 flex flex-col justify-between">
           <p className="text-xs uppercase font-semibold text-gray-500">Tagline</p>
           <h2 className="text-2xl font-bold my-3">
@@ -20,7 +20,7 @@ const HealthcareSection = () => {
             <button className="px-4 py-2 font-semibold rounded">Sign Up</button>
           </div>
         </div>
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid md:grid-cols-2  grid-rows-2 gap-3">
         <img src={HeaderImg} alt="Emergency Room" className="w-full h-full object-cover rounded-lg" />
         <div className="border border-gray-300 p-6">
           <p className="text-xs uppercase font-semibold text-gray-500">Tagline</p>
@@ -32,7 +32,7 @@ const HealthcareSection = () => {
       </div>
 
       {/* Middle Section */}
-      <div className="grid grid-cols-2 gap-6">
+      <div className="grid md:grid-cols-2 gird-rows-2 gap-6 mt-4">
         <div className="">
           <img src={HeaderImg} alt="Medical Technology" className="w-full h-full object-cover rounded-lg" />
         </div>
@@ -50,8 +50,8 @@ const HealthcareSection = () => {
       </div>
 
       {/* Bottom Section */}
-      <div className="grid grid-cols-2 gap-6">
-        <div className="grid grid-cols-2">
+      <div className="grid md:grid-cols-2 grid-rows-2 gap-6">
+        <div className="grid md:grid-cols-2 grid-rows-2">
         <div className="border border-gray-300 p-6 flex flex-col justify-between shadow-sm">
           <h2 className="text-xl font-bold mt-3">Specialized Departments for Every Health Concern</h2>
           <p className="text-gray-600 text-sm mt-2">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
@@ -68,7 +68,7 @@ const HealthcareSection = () => {
         </div>
         </div>
 
-        <img src={HeaderImg} alt="Emergency Room" className="w-full h-full object-cover rounded-lg" />
+        <img src={HeaderImg} alt="Emergency Room" className="w-full md:h-full h-72 object-cover rounded-lg" />
         
       </div>
 

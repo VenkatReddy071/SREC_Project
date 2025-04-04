@@ -42,11 +42,11 @@ export const Navbar = () => {
       </div>
 
       {/* Mobile Sidebar Menu */}
-      <div className={`fixed top-0 right-0 h-full bg-white shadow-lg p-4 transition-transform duration-300 ease-in-out ${isMenuOpen ? "translate-x-0" : "translate-x-full"} md:hidden`}>
+      <div className={`fixed top-0 right-0 h-full bg-white shadow-lg p-4 transition-transform duration-300 ease-in-out ${isMenuOpen ? "translate-x-0" : "translate-x-full"} md:hidden z-20`}>
         <button onClick={() => setIsMenuOpen(false)} className="absolute top-4 right-4 rounded-full  bg-black m-2">
           <IoClose size={28} className='text-white '/>
         </button>
-        <ul className="flex flex-col gap-4 mt-8">
+        <ul className="flex flex-col gap-4 mt-8 bg-white">
           <Link to={"/"} onClick={() => setIsMenuOpen(false)}><li className="hover:text-blue-600 border-b-2 borer-black  text-lg font-semibold">Local Services</li></Link>
           <Link to={"/Hospitals"} onClick={() => setIsMenuOpen(false)}><li className="hover:text-blue-600 border-b-2 borer-black  text-lg font-semibold">Health Care</li></Link>
           <Link to={"/malls"} onClick={() => setIsMenuOpen(false)}><li className="hover:text-blue-600 border-b-2 borer-black  text-lg font-semibold">Fashion</li></Link>

@@ -143,7 +143,10 @@ export const MailHome = () => {
       
       <div className="sticky top-0 bg-white z-10 shadow-md b-2 w-full flex flex-col items-center p-4 max-w-7rem">
         <SearchBar />
-        <div className="flex gap-2 mt-2 justify-center w-full -ml-24">
+        <div className='md:hidden'>
+        <PopupFilter onApply={(filters) => console.log("Filters applied:", filters)} className="md:hidden relative right-0"/>
+        </div>
+        <div className="hidden md:flex gap-2 mt-2 justify-center w-full -ml-24">
           <PopupFilter onApply={(filters) => console.log("Filters applied:", filters)} />
           <button className="border-2 border-black  px-4  rounded-lg">Popular Malls</button>
           <button className="border-2 border-black  px-4 py-2 rounded-lg">Shopping Shops</button>

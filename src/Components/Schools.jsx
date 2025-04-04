@@ -25,17 +25,17 @@ export const HomeScl = () => {
   return (
     <div>
       {/* Header Image */}
-      <div className="relative">
+      <div className="relative  m-2">
         <img src={HeaderImg} alt="Header" className="w-full h-60 object-cover" />
         <div className="absolute top-0 left-0 w-full h-full flex justify-center items-center bg-black bg-opacity-50">
-          <h1 className="text-white text-3xl font-bold">Find Your Perfect Institution</h1>
+          <h1 className="text-white text-3xl font-bold text-center">Find Your Perfect Institution</h1>
         </div>
       </div>
-      <div className="flex p-6 items-center gap-6">
-        <div className="w-1/2 bg-gray-200 h-60 flex justify-center items-center">
+      <div className="md:flex p-6 md:items-center md:gap-6 w-full">
+        <div className="md:w-1/2 w-full bg-gray-200 h-60 flex justify-center items-center">
           <img src="https://via.placeholder.com/300" alt="Placeholder" className="h-40 w-40" />
         </div>
-        <div className="w-1/2 p-8 m-4">
+        <div className="md:w-1/2 w-full md:p-8 md:m-4 m-2">
           <h2 className="text-2xl font-bold">Explore Our Comprehensive Schools & Colleges Section for Informed Decisions</h2>
           <p className="text-gray-600 mt-2">
 
@@ -59,7 +59,7 @@ export const HomeScl = () => {
 
       {/* What We Offer Section */}
       \<div className="sticky top-0 bg-white shadow-md p-4 z-10">
-        <div className="flex justify-center gap-4">
+        <div className="md:flex justify-center md:gap-4 m-2">
           <div className="flex items-center border border-gray-300 rounded-lg px-3">
             <FiSearch className="text-gray-500" />
             <input 
@@ -70,9 +70,12 @@ export const HomeScl = () => {
               className="p-2 focus:outline-none"
             />
           </div>
+          <div className='mx-6 my-2 flex gap-4'>
           <button onClick={() => setCategory("All")} className="bg-blue-500 text-white px-4 py-2 rounded-lg">All</button>
           <button onClick={() => setCategory("School")} className="bg-blue-500 text-white px-4 py-2 rounded-lg">Schools</button>
           <button onClick={() => setCategory("College")} className="bg-blue-500 text-white px-4 py-2 rounded-lg">Colleges</button>
+          </div>
+        
         </div>
       </div>
 

@@ -12,16 +12,16 @@ export const Home = () => {
       <Header />
 
       {/* Content Section */}
-      <div className="flex items-center gap-10 px-8 py-6">
+      <div className="md:flex md:items-center md:gap-10 md:px-8 md:py-6 p-6">
         {/* Left Section */}
-        <div className="w-1/2 p-4">
-          <h1 className="text-3xl font-bold">
+        <div className="md:w-1/2 p-2 w-full">
+          <h1 className="md:text-3xl text-2xl font-bold">
             Discover Top Hospitals and Expert Doctors Right At Your Fingertips
           </h1>
         </div>
 
         {/* Right Section */}
-        <div className="w-1/2 p-4">
+        <div className="md:w-1/2 w-full md:p-4 p-2" >
           <p className="text-lg leading-relaxed">
             Our Hospitals section connects you with qualified medical
             professionals tailored to your needs. Easily search for doctors by
@@ -32,7 +32,7 @@ export const Home = () => {
         </div>
         
       </div>
-      <div className="w-full h-96 p-4 relative">
+      <div className="md:w-full md:h-96 h-80 p-4  m-4 relative">
             <img
                 src="/path-to-your-image.jpg"
                 alt="Background"
@@ -42,8 +42,8 @@ export const Home = () => {
       </div>
         <HealthcareSection/>
     {/*Join Community*/}
-        <div className="flex gap-10 p-4 ">
-        <div className="w-1/2 p-10 m-6 ">
+        <div className="md:flex  md:gap-10 p-4 -mt-8">
+        <div className="md:w-1/2  w-full md:p-10 md:m-6 ">
             <h1 className="p-2 font-bold text-3xl">Join our Healthcare Community Today</h1>
             <p className="p-2 text-sm">Discover a top doctors and book appointments easily for all your healthcare needs</p>
             <div className="flex gap-1 items-center border border-gray-400 rounded">
@@ -56,7 +56,7 @@ export const Home = () => {
           </div>
           <p className="p-2 text-sm">By clicking Get started,you agree to our Terms and Conditions</p>
         </div>
-        <div className="w-1/2 p-2 m-1">
+        <div className="md:w-1/2 w-full md:p-2 m-1">
             <img src={HeaderImg} alt=""  className="w-full h-80"/>
         </div>
         <div>

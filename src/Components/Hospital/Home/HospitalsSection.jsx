@@ -155,29 +155,29 @@ export const HospitalsSection = () => {
 
     return (
         <div className='px-4 m-2'>
-            <h2 className='p-2 font-semibold text-xl text-center'>View list of Hospitals</h2>
-            <h1 className='p-2 font-bold text-6xl text-center'>Explore Our Hospitals Services</h1>
+            <h2 className='p-2 font-semibold text-base text-center'>View list of Hospitals</h2>
+            <h1 className=' font-bold md:text-6xl text-4xl text-center'>Explore Our Hospitals Services</h1>
             <h2 className='p-2 text-lg text-center'>Stay updated with our expert health articles</h2>
 
             {/* Sticky Navigation */}
             <div className='sticky top-0 bg-white z-10'>
-                <div className='flex justify-center gap-4 mt-4'>
+                <div className='flex justify-center md:gap-4 gap-2 mt-4 w-full'>
                     {list.map((item, index) => (
                         <div 
                             key={index} 
-                            className={`p-4  text-center cursor-pointer ${
-                                activeIndex === index ? "border-b-4 border-black" : ""
+                            className={`md:p-4 p-2  text-center cursor-pointer ${
+                                activeIndex === index ? "border-b-2 border-black" : ""
                             }`}
                             onClick={() => setActiveIndex(index)}
                         >
-                            <p className='font-semibold text-lg'>{item}</p>
+                            <p className='font-semibold md:text-lg text-xs'>{item}</p>
                         </div>
                     ))}
                 </div>
             </div>
 
             {/* Content Below */}
-            <div className="mt-6 max-h-[500px] overflow-y-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-4">
+            <div className="mt-6  overflow-y-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-4">
                 {hospitals.map((item, index) => (
                     <div
                         className="p-4 bg-white shadow-md hover:scale-105 transition-transform duration-200 rounded-lg"
