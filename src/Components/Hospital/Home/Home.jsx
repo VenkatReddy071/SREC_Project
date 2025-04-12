@@ -1,7 +1,9 @@
 import React from "react";
 import { Header } from "./Header";
 import { Button } from "./Button";
-import HeaderImg from "../../../assets/Header.jpg"
+
+import HeaderImg1 from "../../../assets/hospitalheader2.jpg"
+import Family from "../../../assets/Family.jpg"
 import HealthcareSection from "./HealthCareSection";
 import { HospitalsSection } from "./HospitalsSection";
 import { Appointments } from "./Appointments";
@@ -32,17 +34,17 @@ export const Home = () => {
         </div>
         
       </div>
-      <div className="md:w-full md:h-96 h-80 p-4  m-4 relative">
+      <div className="md:w-full md:h-96  w-full p-4   ">
             <img
-                src="/path-to-your-image.jpg"
+                src={HeaderImg1}
                 alt="Background"
                 className="w-full h-full object-cover"
             />
-        <div className="absolute inset-0 bg-black bg-opacity-50"></div>
+      
       </div>
         <HealthcareSection/>
     {/*Join Community*/}
-        <div className="md:flex  md:gap-10 p-4 -mt-8">
+        <div className="md:flex  md:gap-10 p-4 md:m-0 -mt-8">
         <div className="md:w-1/2  w-full md:p-10 md:m-6 ">
             <h1 className="p-2 font-bold text-3xl">Join our Healthcare Community Today</h1>
             <p className="p-2 text-sm">Discover a top doctors and book appointments easily for all your healthcare needs</p>
@@ -57,7 +59,7 @@ export const Home = () => {
           <p className="p-2 text-sm">By clicking Get started,you agree to our Terms and Conditions</p>
         </div>
         <div className="md:w-1/2 w-full md:p-2 m-1">
-            <img src={HeaderImg} alt=""  className="w-full h-80"/>
+            <img src={Family} alt=""  className="w-full h-80"/>
         </div>
         <div>
             

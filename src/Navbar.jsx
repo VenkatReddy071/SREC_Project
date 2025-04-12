@@ -3,7 +3,7 @@ import { IoMdArrowDropdown } from "react-icons/io";
 import { IoMenu, IoClose } from "react-icons/io5"; // Mobile menu icons
 import { Buttons } from './Components/UseButtons.jsx/Buttons';
 import { Link } from 'react-router-dom';
-import Logo from "./assets/images.jpeg";
+import Logo from "./assets/images.png";
 
 export const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -17,7 +17,7 @@ export const Navbar = () => {
           <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="md:hidden absolute right-4 rounded-full bg-black p-1">
             {<IoMenu size={40} className='text-white'/>}
           </button>
-          <div className="w-18 h-14 rounded">
+          <div className="w-32 h-auto rounded">
             <img src={Logo} alt="Logo" className="w-full h-full object-contain" />
           </div>
         </div>
@@ -58,7 +58,7 @@ export const Navbar = () => {
 
         {/* Mobile Buttons */}
         <div className="flex p-2 flex-wrap">
-          <Buttons label1={"Join"} label2={"Explore"} revers={false} />
+          <Buttons label1={"Join"} label2={"Explore"} revers={false} setIsMenuOpen={setIsMenuOpen}/>
         </div>
       </div>
     </div>

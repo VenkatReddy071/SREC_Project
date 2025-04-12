@@ -16,7 +16,7 @@ export const Content = ({ item }) => {
         {divBox?.length > 0 && (
           <div className="flex  gap-4 justify-center md:justify-start mt-6">
             {divBox.map((box, index) => (
-              <div key={index} className="p-4 shadow-md rounded-md w-full sm:w-1/2 md:w-auto text-center md:text-left">
+              <div key={index}  className="p-4 shadow-md rounded-md w-full sm:w-1/2 md:w-auto text-center md:text-left cursor-pointer hover:scale-90 transition-transform duration-300">
                 {box.Icon}
                 <h3 className="text-lg font-semibold mt-2">{box.Heading}</h3>
                 <p className="text-gray-500">{box.Info}</p>

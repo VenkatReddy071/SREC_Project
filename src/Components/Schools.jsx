@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import HeaderImg from "../assets/header.jpg"; // Replace with actual image
+import HeaderImg from "../assets/header.jpg";
 import { FiSearch } from 'react-icons/fi';
 import { RiBox2Line } from "react-icons/ri";
+import School from "../assets/SchoolHeader.jpg"
 // Sample Data
 const institutions = [
   { id: 1, name: "ABC High School", category: "School", location: "Nandyal", rating: 4.5 },
@@ -26,7 +27,7 @@ export const HomeScl = () => {
     <div>
       {/* Header Image */}
       <div className="relative  m-2">
-        <img src={HeaderImg} alt="Header" className="w-full h-60 object-cover" />
+        <img src={School} alt="Header" className="w-full h-60 object-cover" />
         <div className="absolute top-0 left-0 w-full h-full flex justify-center items-center bg-black bg-opacity-50">
           <h1 className="text-white text-3xl font-bold text-center">Find Your Perfect Institution</h1>
         </div>
