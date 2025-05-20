@@ -1,0 +1,906 @@
+[
+  {
+    "_id": "67f10516ce557cd590c3b6b8",
+    "name": "Apollo Hospital",
+    "image": "https://example.com/hospital1.jpg",
+    "gallery": [
+      "https://example.com/gallery1.jpg",
+      "https://example.com/gallery2.jpg"
+    ],
+    "location": "Chennai, India",
+    "rating": 4.5,
+    "info": "Multi-specialty hospital with advanced facilities.",
+    "specialization": [
+      "Cardiology",
+      "Orthopedics"
+    ],
+    "foundation": "1983-01-01T00:00:00Z",
+    "nearByLocation": "Nungambakkam",
+    "mobilenumber": "9876543210"
+  },
+  {
+    "_id": "67f10516ce557cd590c3b6b9",
+    "name": "Fortis Healthcare",
+    "image": "https://example.com/hospital2.jpg",
+    "gallery": [
+      "https://example.com/gallery3.jpg",
+      "https://example.com/gallery4.jpg"
+    ],
+    "location": "Delhi, India",
+    "rating": 4.2,
+    "info": "Top-tier healthcare provider.",
+    "specialization": [
+      "Neurology",
+      "Oncology"
+    ],
+    "foundation": "1996-04-20T00:00:00Z",
+    "nearByLocation": "Saket",
+    "mobilenumber": "9876501234"
+  },
+  {
+    "_id": "67f10516ce557cd590c3b6ba",
+    "name": "AIIMS",
+    "image": "https://example.com/hospital3.jpg",
+    "gallery": [
+      "https://example.com/gallery5.jpg"
+    ],
+    "location": "Delhi, India",
+    "rating": 5,
+    "info": "Premier public hospital in India.",
+    "specialization": [
+      "General Medicine",
+      "Pediatrics"
+    ],
+    "foundation": "1956-09-25T00:00:00Z",
+    "nearByLocation": "Ansari Nagar",
+    "mobilenumber": "9000012345"
+  },
+  {
+    "_id": "67f10516ce557cd590c3b6bb",
+    "name": "Max Super Specialty Hospital",
+    "image": "https://example.com/hospital4.jpg",
+    "gallery": [
+      "https://example.com/gallery6.jpg"
+    ],
+    "location": "Mumbai, India",
+    "rating": 4.3,
+    "info": "High-end hospital chain.",
+    "specialization": [
+      "Nephrology",
+      "Dermatology"
+    ],
+    "foundation": "2001-03-11T00:00:00Z",
+    "nearByLocation": "Andheri East",
+    "mobilenumber": "9087654321"
+  },
+  {
+    "_id": "67f10516ce557cd590c3b6bc",
+    "name": "Care Hospitals",
+    "image": "https://example.com/hospital5.jpg",
+    "gallery": [
+      "https://example.com/gallery7.jpg"
+    ],
+    "location": "Hyderabad, India",
+    "rating": 3.9,
+    "info": "Trusted hospital with quality care.",
+    "specialization": [
+      "ENT",
+      "Endocrinology"
+    ],
+    "foundation": "1997-07-09T00:00:00Z",
+    "nearByLocation": "Banjara Hills",
+    "mobilenumber": "9456123789"
+  },
+  {
+    "_id": "67f10516ce557cd590c3b6bd",
+    "name": "Global Hospital",
+    "image": "https://example.com/hospital6.jpg",
+    "gallery": [
+      "https://example.com/gallery8.jpg"
+    ],
+    "location": "Bengaluru, India",
+    "rating": 4.7,
+    "info": "Global expertise and local care.",
+    "specialization": [
+      "Transplant",
+      "Urology"
+    ],
+    "foundation": "2005-12-01T00:00:00Z",
+    "nearByLocation": "Richmond Town",
+    "mobilenumber": "9123456780"
+  },
+  {
+    "_id": "67f10516ce557cd590c3b6be",
+    "name": "Yashoda Hospital",
+    "image": "https://example.com/hospital7.jpg",
+    "gallery": [
+      "https://example.com/gallery9.jpg"
+    ],
+    "location": "Hyderabad, India",
+    "rating": 4,
+    "info": "Affordable yet specialized healthcare.",
+    "specialization": [
+      "Pulmonology",
+      "Gastroenterology"
+    ],
+    "foundation": "1990-06-15T00:00:00Z",
+    "nearByLocation": "Secunderabad",
+    "mobilenumber": "9345678123"
+  },
+  {
+    "_id": "67f10516ce557cd590c3b6bf",
+    "name": "KIMS Hospital",
+    "image": "https://example.com/hospital8.jpg",
+    "gallery": [
+      "https://example.com/gallery10.jpg"
+    ],
+    "location": "Trivandrum, India",
+    "rating": 4.4,
+    "info": "Leading healthcare provider in Kerala.",
+    "specialization": [
+      "Neurosurgery",
+      "Plastic Surgery"
+    ],
+    "foundation": "2002-10-30T00:00:00Z",
+    "nearByLocation": "Anayara",
+    "mobilenumber": "9012345678"
+  },
+  {
+    "_id": "67f10516ce557cd590c3b6c0",
+    "name": "Manipal Hospital",
+    "image": "https://example.com/hospital9.jpg",
+    "gallery": [
+      "https://example.com/gallery11.jpg"
+    ],
+    "location": "Bengaluru, India",
+    "rating": 4.8,
+    "info": "Comprehensive care and advanced tech.",
+    "specialization": [
+      "Fertility",
+      "Ophthalmology"
+    ],
+    "foundation": "1991-02-14T00:00:00Z",
+    "nearByLocation": "Old Airport Road",
+    "mobilenumber": "9765432100"
+  },
+  {
+    "_id": "67f10516ce557cd590c3b6c1",
+    "name": "Rainbow Children's Hospital",
+    "image": "https://example.com/hospital10.jpg",
+    "gallery": [
+      "https://example.com/gallery12.jpg"
+    ],
+    "location": "Hyderabad, India",
+    "rating": 4.6,
+    "info": "Best care for children and mothers.",
+    "specialization": [
+      "Pediatrics",
+      "Gynecology"
+    ],
+    "foundation": "1999-03-21T00:00:00Z",
+    "nearByLocation": "Banjara Hills",
+    "mobilenumber": "9321456789"
+  },
+  {
+    "_id": "67f10516ce557cd590c3b6c2",
+    "name": "Sunshine Hospital",
+    "image": "https://example.com/hospital11.jpg",
+    "gallery": [
+      "https://example.com/gallery13.jpg"
+    ],
+    "location": "Hyderabad, India",
+    "rating": 4.1,
+    "info": "Known for trauma and emergency care.",
+    "specialization": [
+      "Orthopedics",
+      "Emergency"
+    ],
+    "foundation": "2009-06-10T00:00:00Z",
+    "nearByLocation": "Paradise Circle",
+    "mobilenumber": "9876123450"
+  },
+  {
+    "_id": "67f10516ce557cd590c3b6c3",
+    "name": "Narayana Health",
+    "image": "https://example.com/hospital12.jpg",
+    "gallery": [
+      "https://example.com/gallery14.jpg"
+    ],
+    "location": "Bengaluru, India",
+    "rating": 4.3,
+    "info": "Affordable cardiac surgeries.",
+    "specialization": [
+      "Cardiology",
+      "Cardiac Surgery"
+    ],
+    "foundation": "2000-08-17T00:00:00Z",
+    "nearByLocation": "Bommasandra",
+    "mobilenumber": "9000987621"
+  },
+  {
+    "_id": "67f10516ce557cd590c3b6c4",
+    "name": "Aster CMI Hospital",
+    "image": "https://example.com/hospital13.jpg",
+    "gallery": [
+      "https://example.com/gallery15.jpg"
+    ],
+    "location": "Bengaluru, India",
+    "rating": 4.4,
+    "info": "Modern facilities with international standards.",
+    "specialization": [
+      "Internal Medicine",
+      "Radiology"
+    ],
+    "foundation": "2014-01-23T00:00:00Z",
+    "nearByLocation": "Hebbal",
+    "mobilenumber": "9234567890"
+  },
+  {
+    "_id": "67f10516ce557cd590c3b6c5",
+    "name": "Columbia Asia Hospital",
+    "image": "https://example.com/hospital14.jpg",
+    "gallery": [
+      "https://example.com/gallery16.jpg"
+    ],
+    "location": "Pune, India",
+    "rating": 4,
+    "info": "Renowned for fast diagnostics and surgeries.",
+    "specialization": [
+      "Surgery",
+      "Gastroenterology"
+    ],
+    "foundation": "2008-09-14T00:00:00Z",
+    "nearByLocation": "Kharadi",
+    "mobilenumber": "9765001234"
+  },
+  {
+    "_id": "67f10516ce557cd590c3b6c6",
+    "name": "Wockhardt Hospital",
+    "image": "https://example.com/hospital15.jpg",
+    "gallery": [
+      "https://example.com/gallery17.jpg"
+    ],
+    "location": "Mumbai, India",
+    "rating": 4.2,
+    "info": "Multi-specialty hospital with global reach.",
+    "specialization": [
+      "Urology",
+      "ENT"
+    ],
+    "foundation": "2001-05-03T00:00:00Z",
+    "nearByLocation": "Mumbai Central",
+    "mobilenumber": "9123012345"
+  },
+  {
+    "_id": "67f10516ce557cd590c3b6c7",
+    "name": "BLK Super Specialty Hospital",
+    "image": "https://example.com/hospital16.jpg",
+    "gallery": [
+      "https://example.com/gallery18.jpg"
+    ],
+    "location": "Delhi, India",
+    "rating": 4.6,
+    "info": "Renowned for oncology and liver transplants.",
+    "specialization": [
+      "Oncology",
+      "Liver Transplant"
+    ],
+    "foundation": "1959-04-14T00:00:00Z",
+    "nearByLocation": "Pusa Road",
+    "mobilenumber": "9345612987"
+  },
+  {
+    "_id": "67f10516ce557cd590c3b6c8",
+    "name": "Amrita Hospital",
+    "image": "https://example.com/hospital17.jpg",
+    "gallery": [
+      "https://example.com/gallery19.jpg"
+    ],
+    "location": "Kochi, India",
+    "rating": 4.7,
+    "info": "Massive hospital with cutting-edge technology.",
+    "specialization": [
+      "Neurosciences",
+      "Critical Care"
+    ],
+    "foundation": "1998-05-17T00:00:00Z",
+    "nearByLocation": "Edappally",
+    "mobilenumber": "9801234567"
+  },
+  {
+    "_id": "67f10516ce557cd590c3b6c9",
+    "name": "Ruby Hall Clinic",
+    "image": "https://example.com/hospital18.jpg",
+    "gallery": [
+      "https://example.com/gallery20.jpg"
+    ],
+    "location": "Pune, India",
+    "rating": 4.3,
+    "info": "One of the oldest and most trusted hospitals in Pune.",
+    "specialization": [
+      "Cardiology",
+      "Pulmonology"
+    ],
+    "foundation": "1959-11-21T00:00:00Z",
+    "nearByLocation": "Sassoon Road",
+    "mobilenumber": "9932104567"
+  },
+  {
+    "_id": "67f10516ce557cd590c3b6ca",
+    "name": "Sri Ramachandra Hospital",
+    "image": "https://example.com/hospital19.jpg",
+    "gallery": [
+      "https://example.com/gallery21.jpg"
+    ],
+    "location": "Chennai, India",
+    "rating": 4.1,
+    "info": "Attached to a medical college with excellent care.",
+    "specialization": [
+      "Orthopedics",
+      "Gynecology"
+    ],
+    "foundation": "1985-10-01T00:00:00Z",
+    "nearByLocation": "Porur",
+    "mobilenumber": "9823405678"
+  },
+  {
+    "_id": "67f10516ce557cd590c3b6cb",
+    "name": "Hinduja Hospital",
+    "image": "https://example.com/hospital20.jpg",
+    "gallery": [
+      "https://example.com/gallery22.jpg"
+    ],
+    "location": "Mumbai, India",
+    "rating": 4.9,
+    "info": "Top private hospital with premium facilities.",
+    "specialization": [
+      "Cardiology",
+      "Neurology"
+    ],
+    "foundation": "1951-03-01T00:00:00Z",
+    "nearByLocation": "Mahim",
+    "mobilenumber": "9345098765"
+  },
+  {
+    "_id": "67f10516ce557cd590c3b6cc",
+    "name": "Rainbow Children's Hospital",
+    "image": "https://example.com/hospital21.jpg",
+    "gallery": [
+      "https://example.com/gallery23.jpg"
+    ],
+    "location": "Hyderabad, India",
+    "rating": 4.4,
+    "info": "Specialized pediatric and maternity care.",
+    "specialization": [
+      "Pediatrics",
+      "Maternity"
+    ],
+    "foundation": "1999-02-15T00:00:00Z",
+    "nearByLocation": "Banjara Hills",
+    "mobilenumber": "9876543101"
+  },
+  {
+    "_id": "67f10516ce557cd590c3b6cd",
+    "name": "Lilavati Hospital",
+    "image": "https://example.com/hospital22.jpg",
+    "gallery": [
+      "https://example.com/gallery24.jpg"
+    ],
+    "location": "Mumbai, India",
+    "rating": 4.5,
+    "info": "Famous for celebrity treatments and diagnostics.",
+    "specialization": [
+      "General Medicine",
+      "Surgery"
+    ],
+    "foundation": "1978-06-23T00:00:00Z",
+    "nearByLocation": "Bandra",
+    "mobilenumber": "9845123410"
+  },
+  {
+    "_id": "67f10516ce557cd590c3b6ce",
+    "name": "KIMS Hospital",
+    "image": "https://example.com/hospital23.jpg",
+    "gallery": [
+      "https://example.com/gallery25.jpg"
+    ],
+    "location": "Secunderabad, India",
+    "rating": 4.2,
+    "info": "Comprehensive care with advanced diagnostics.",
+    "specialization": [
+      "Cardiology",
+      "Nephrology"
+    ],
+    "foundation": "2002-11-05T00:00:00Z",
+    "nearByLocation": "Begumpet",
+    "mobilenumber": "9012345678"
+  },
+  {
+    "_id": "67f10516ce557cd590c3b6cf",
+    "name": "Global Hospital",
+    "image": "https://example.com/hospital24.jpg",
+    "gallery": [
+      "https://example.com/gallery26.jpg"
+    ],
+    "location": "Chennai, India",
+    "rating": 4.3,
+    "info": "Known for liver transplants and organ donation.",
+    "specialization": [
+      "Gastroenterology",
+      "Transplants"
+    ],
+    "foundation": "1999-07-14T00:00:00Z",
+    "nearByLocation": "Perumbakkam",
+    "mobilenumber": "9988776655"
+  },
+  {
+    "_id": "67f10516ce557cd590c3b6d0",
+    "name": "SevenHills Hospital",
+    "image": "https://example.com/hospital25.jpg",
+    "gallery": [
+      "https://example.com/gallery27.jpg"
+    ],
+    "location": "Visakhapatnam, India",
+    "rating": 4.1,
+    "info": "Multispecialty hospital with emergency services.",
+    "specialization": [
+      "General Surgery",
+      "ENT"
+    ],
+    "foundation": "2005-10-30T00:00:00Z",
+    "nearByLocation": "Rockdale",
+    "mobilenumber": "9601234567"
+  },
+  {
+    "_id": "67f10516ce557cd590c3b6d1",
+    "name": "Manipal Hospital",
+    "image": "https://example.com/hospital26.jpg",
+    "gallery": [
+      "https://example.com/gallery28.jpg"
+    ],
+    "location": "Delhi, India",
+    "rating": 4.4,
+    "info": "Trusted for orthopedic and neurological care.",
+    "specialization": [
+      "Orthopedics",
+      "Neurology"
+    ],
+    "foundation": "2003-04-19T00:00:00Z",
+    "nearByLocation": "Dwarka",
+    "mobilenumber": "9543216780"
+  },
+  {
+    "_id": "67f10516ce557cd590c3b6d2",
+    "name": "MIOT International",
+    "image": "https://example.com/hospital27.jpg",
+    "gallery": [
+      "https://example.com/gallery29.jpg"
+    ],
+    "location": "Chennai, India",
+    "rating": 4.5,
+    "info": "Renowned for international orthopedic surgeries.",
+    "specialization": [
+      "Orthopedics",
+      "Joint Replacement"
+    ],
+    "foundation": "1999-01-12T00:00:00Z",
+    "nearByLocation": "Manapakkam",
+    "mobilenumber": "9078563412"
+  },
+  {
+    "_id": "67f10516ce557cd590c3b6d3",
+    "name": "Fortis Escorts Heart Institute",
+    "image": "https://example.com/hospital28.jpg",
+    "gallery": [
+      "https://example.com/gallery30.jpg"
+    ],
+    "location": "Delhi, India",
+    "rating": 4.6,
+    "info": "Top heart care hospital in India.",
+    "specialization": [
+      "Cardiology",
+      "Heart Surgery"
+    ],
+    "foundation": "1988-12-10T00:00:00Z",
+    "nearByLocation": "Okhla",
+    "mobilenumber": "9856234789"
+  },
+  {
+    "_id": "67f10516ce557cd590c3b6d4",
+    "name": "Sankara Eye Hospital",
+    "image": "https://example.com/hospital29.jpg",
+    "gallery": [
+      "https://example.com/gallery31.jpg"
+    ],
+    "location": "Coimbatore, India",
+    "rating": 4.3,
+    "info": "India's leading chain for eye surgeries.",
+    "specialization": [
+      "Ophthalmology"
+    ],
+    "foundation": "1977-06-15T00:00:00Z",
+    "nearByLocation": "Sitra",
+    "mobilenumber": "9123456789"
+  },
+  {
+    "_id": "67f10516ce557cd590c3b6d5",
+    "name": "Care Hospitals",
+    "image": "https://example.com/hospital30.jpg",
+    "gallery": [
+      "https://example.com/gallery32.jpg"
+    ],
+    "location": "Nagpur, India",
+    "rating": 4,
+    "info": "Known for affordable general and specialized care.",
+    "specialization": [
+      "Pulmonology",
+      "Diabetology"
+    ],
+    "foundation": "1997-03-29T00:00:00Z",
+    "nearByLocation": "Ramdas Peth",
+    "mobilenumber": "9823012345"
+  },
+  {
+    "_id": "67f10516ce557cd590c3b6d6",
+    "name": "Shree Krishna Hospital",
+    "image": "https://example.com/hospital31.jpg",
+    "gallery": [
+      "https://example.com/gallery33.jpg"
+    ],
+    "location": "Anand, India",
+    "rating": 4.2,
+    "info": "Rural-focused tertiary healthcare center.",
+    "specialization": [
+      "General Medicine",
+      "Community Health"
+    ],
+    "foundation": "1985-09-01T00:00:00Z",
+    "nearByLocation": "Karamsad",
+    "mobilenumber": "9876501234"
+  },
+  {
+    "_id": "67f10516ce557cd590c3b6d7",
+    "name": "Jehangir Hospital",
+    "image": "https://example.com/hospital32.jpg",
+    "gallery": [
+      "https://example.com/gallery34.jpg"
+    ],
+    "location": "Pune, India",
+    "rating": 4.3,
+    "info": "One of the oldest hospitals with NABH accreditation.",
+    "specialization": [
+      "Surgery",
+      "Pediatrics"
+    ],
+    "foundation": "1946-01-26T00:00:00Z",
+    "nearByLocation": "Bund Garden",
+    "mobilenumber": "9845032100"
+  },
+  {
+    "_id": "67f10516ce557cd590c3b6d8",
+    "name": "Apollo Spectra",
+    "image": "https://example.com/hospital33.jpg",
+    "gallery": [
+      "https://example.com/gallery35.jpg"
+    ],
+    "location": "Chennai, India",
+    "rating": 4,
+    "info": "Short-stay surgeries and advanced procedures.",
+    "specialization": [
+      "ENT",
+      "Orthopedics"
+    ],
+    "foundation": "2010-06-10T00:00:00Z",
+    "nearByLocation": "Alwarpet",
+    "mobilenumber": "9912345611"
+  },
+  {
+    "_id": "67f10516ce557cd590c3b6d9",
+    "name": "Breach Candy Hospital",
+    "image": "https://example.com/hospital34.jpg",
+    "gallery": [
+      "https://example.com/gallery36.jpg"
+    ],
+    "location": "Mumbai, India",
+    "rating": 4.6,
+    "info": "Premium multispecialty hospital with renowned consultants.",
+    "specialization": [
+      "Dermatology",
+      "Cardiology"
+    ],
+    "foundation": "1950-04-01T00:00:00Z",
+    "nearByLocation": "Cumballa Hill",
+    "mobilenumber": "9765432180"
+  },
+  {
+    "_id": "67f10516ce557cd590c3b6da",
+    "name": "Sunshine Hospitals",
+    "image": "https://example.com/hospital35.jpg",
+    "gallery": [
+      "https://example.com/gallery37.jpg"
+    ],
+    "location": "Hyderabad, India",
+    "rating": 4.2,
+    "info": "Known for orthopedic excellence and trauma care.",
+    "specialization": [
+      "Orthopedics",
+      "Traumatology"
+    ],
+    "foundation": "2009-03-15T00:00:00Z",
+    "nearByLocation": "Paradise Circle",
+    "mobilenumber": "9988771122"
+  },
+  {
+    "_id": "67f10516ce557cd590c3b6db",
+    "name": "Sterling Hospitals",
+    "image": "https://example.com/hospital36.jpg",
+    "gallery": [
+      "https://example.com/gallery38.jpg"
+    ],
+    "location": "Ahmedabad, India",
+    "rating": 4.1,
+    "info": "Chain of multispecialty hospitals in Gujarat.",
+    "specialization": [
+      "Oncology",
+      "Critical Care"
+    ],
+    "foundation": "2001-11-11T00:00:00Z",
+    "nearByLocation": "Memnagar",
+    "mobilenumber": "9876509876"
+  },
+  {
+    "_id": "67f10516ce557cd590c3b6dc",
+    "name": "Kokilaben Dhirubhai Ambani Hospital",
+    "image": "https://example.com/hospital37.jpg",
+    "gallery": [
+      "https://example.com/gallery39.jpg"
+    ],
+    "location": "Mumbai, India",
+    "rating": 4.7,
+    "info": "High-tech hospital with robotic surgeries.",
+    "specialization": [
+      "Robotics",
+      "Neurology",
+      "Cancer Care"
+    ],
+    "foundation": "2009-01-17T00:00:00Z",
+    "nearByLocation": "Andheri West",
+    "mobilenumber": "9823098765"
+  },
+  {
+    "_id": "67f10516ce557cd590c3b6dd",
+    "name": "Columbia Asia Hospital",
+    "image": "https://example.com/hospital38.jpg",
+    "gallery": [
+      "https://example.com/gallery40.jpg"
+    ],
+    "location": "Gurgaon, India",
+    "rating": 4.3,
+    "info": "Global standards with affordable care.",
+    "specialization": [
+      "Nephrology",
+      "Gastroenterology"
+    ],
+    "foundation": "2008-08-08T00:00:00Z",
+    "nearByLocation": "Palam Vihar",
+    "mobilenumber": "9911991122"
+  },
+  {
+    "_id": "67f10516ce557cd590c3b6de",
+    "name": "Ruby Hall Clinic",
+    "image": "https://example.com/hospital39.jpg",
+    "gallery": [
+      "https://example.com/gallery41.jpg"
+    ],
+    "location": "Pune, India",
+    "rating": 4.4,
+    "info": "Trusted for emergency and ICU services.",
+    "specialization": [
+      "Emergency Medicine",
+      "ICU"
+    ],
+    "foundation": "1959-05-01T00:00:00Z",
+    "nearByLocation": "Sasoon Road",
+    "mobilenumber": "9765456789"
+  },
+  {
+    "_id": "67f10516ce557cd590c3b6df",
+    "name": "Cloudnine Hospital",
+    "image": "https://example.com/hospital40.jpg",
+    "gallery": [
+      "https://example.com/gallery42.jpg"
+    ],
+    "location": "Bangalore, India",
+    "rating": 4.6,
+    "info": "Maternity and fertility-focused premium center.",
+    "specialization": [
+      "Maternity",
+      "Fertility",
+      "Neonatology"
+    ],
+    "foundation": "2007-02-05T00:00:00Z",
+    "nearByLocation": "Jayanagar",
+    "mobilenumber": "9944556677"
+  },
+  {
+    "_id": "67f10516ce557cd590c3b6e0",
+    "name": "Fortis La Femme",
+    "image": "https://example.com/hospital41.jpg",
+    "gallery": [
+      "https://example.com/gallery43.jpg"
+    ],
+    "location": "New Delhi, India",
+    "rating": 4.5,
+    "info": "Specialized in women's and child care.",
+    "specialization": [
+      "Gynecology",
+      "Pediatrics",
+      "Neonatology"
+    ],
+    "foundation": "2008-03-08T00:00:00Z",
+    "nearByLocation": "Greater Kailash",
+    "mobilenumber": "9876541110"
+  },
+  {
+    "_id": "67f10516ce557cd590c3b6e1",
+    "name": "Manipal Northside Hospital",
+    "image": "https://example.com/hospital42.jpg",
+    "gallery": [
+      "https://example.com/gallery44.jpg"
+    ],
+    "location": "Bangalore, India",
+    "rating": 4.1,
+    "info": "Community healthcare branch of Manipal.",
+    "specialization": [
+      "General Surgery",
+      "ENT"
+    ],
+    "foundation": "2000-06-12T00:00:00Z",
+    "nearByLocation": "Malleshwaram",
+    "mobilenumber": "9887654321"
+  },
+  {
+    "_id": "67f10516ce557cd590c3b6e2",
+    "name": "Holy Family Hospital",
+    "image": "https://example.com/hospital43.jpg",
+    "gallery": [
+      "https://example.com/gallery45.jpg"
+    ],
+    "location": "Mumbai, India",
+    "rating": 4.2,
+    "info": "Known for quality care in the Bandra region.",
+    "specialization": [
+      "Maternity",
+      "Emergency"
+    ],
+    "foundation": "1942-12-01T00:00:00Z",
+    "nearByLocation": "Bandra West",
+    "mobilenumber": "9876549988"
+  },
+  {
+    "_id": "67f10516ce557cd590c3b6e3",
+    "name": "SevenHills Hospital",
+    "image": "https://example.com/hospital44.jpg",
+    "gallery": [
+      "https://example.com/gallery46.jpg"
+    ],
+    "location": "Mumbai, India",
+    "rating": 4,
+    "info": "Massive infrastructure with international services.",
+    "specialization": [
+      "Critical Care",
+      "Cardiology"
+    ],
+    "foundation": "2010-05-05T00:00:00Z",
+    "nearByLocation": "Marol",
+    "mobilenumber": "9876546677"
+  },
+  {
+    "_id": "67f10516ce557cd590c3b6e4",
+    "name": "Narayana Hrudayalaya",
+    "image": "https://example.com/hospital45.jpg",
+    "gallery": [
+      "https://example.com/gallery47.jpg"
+    ],
+    "location": "Bangalore, India",
+    "rating": 4.8,
+    "info": "World-class cardiac and cancer care center.",
+    "specialization": [
+      "Cardiology",
+      "Oncology"
+    ],
+    "foundation": "2001-01-01T00:00:00Z",
+    "nearByLocation": "Bommasandra",
+    "mobilenumber": "9911223344"
+  },
+  {
+    "_id": "67f10516ce557cd590c3b6e5",
+    "name": "Aster Prime Hospital",
+    "image": "https://example.com/hospital46.jpg",
+    "gallery": [
+      "https://example.com/gallery48.jpg"
+    ],
+    "location": "Hyderabad, India",
+    "rating": 4.3,
+    "info": "Advanced diagnostics and day-care procedures.",
+    "specialization": [
+      "General Medicine",
+      "Gastroenterology"
+    ],
+    "foundation": "2007-07-07T00:00:00Z",
+    "nearByLocation": "Ameerpet",
+    "mobilenumber": "9845211789"
+  },
+  {
+    "_id": "67f10516ce557cd590c3b6e6",
+    "name": "BLK Super Speciality Hospital",
+    "image": "https://example.com/hospital47.jpg",
+    "gallery": [
+      "https://example.com/gallery49.jpg"
+    ],
+    "location": "New Delhi, India",
+    "rating": 4.5,
+    "info": "Advanced cancer treatment and robotic surgery.",
+    "specialization": [
+      "Oncology",
+      "Bone Marrow Transplant"
+    ],
+    "foundation": "1959-10-02T00:00:00Z",
+    "nearByLocation": "Pusa Road",
+    "mobilenumber": "9877894561"
+  },
+  {
+    "_id": "67f10516ce557cd590c3b6e7",
+    "name": "Moolchand Hospital",
+    "image": "https://example.com/hospital48.jpg",
+    "gallery": [
+      "https://example.com/gallery50.jpg"
+    ],
+    "location": "New Delhi, India",
+    "rating": 4,
+    "info": "One of the oldest private hospitals in India.",
+    "specialization": [
+      "Urology",
+      "Internal Medicine"
+    ],
+    "foundation": "1950-01-26T00:00:00Z",
+    "nearByLocation": "Lajpat Nagar",
+    "mobilenumber": "9811223344"
+  },
+  {
+    "_id": "67f10516ce557cd590c3b6e8",
+    "name": "Hiranandani Hospital",
+    "image": "https://example.com/hospital49.jpg",
+    "gallery": [
+      "https://example.com/gallery51.jpg"
+    ],
+    "location": "Mumbai, India",
+    "rating": 4.4,
+    "info": "Premium hospital offering personalized care.",
+    "specialization": [
+      "Nephrology",
+      "Pulmonology"
+    ],
+    "foundation": "2004-09-09T00:00:00Z",
+    "nearByLocation": "Powai",
+    "mobilenumber": "9876545678"
+  },
+  {
+    "_id": "67f10516ce557cd590c3b6e9",
+    "name": "Gleneagles Global Hospital",
+    "image": "https://example.com/hospital50.jpg",
+    "gallery": [
+      "https://example.com/gallery52.jpg"
+    ],
+    "location": "Chennai, India",
+    "rating": 4.6,
+    "info": "International hospital chain for transplants and critical care.",
+    "specialization": [
+      "Liver Transplant",
+      "Critical Care"
+    ],
+    "foundation": "2009-11-11T00:00:00Z",
+    "nearByLocation": "Perumbakkam",
+    "mobilenumber": "9988776655"
+  }
+]

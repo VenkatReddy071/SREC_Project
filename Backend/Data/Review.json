@@ -1,0 +1,563 @@
+[
+    {
+      "username": "66101abc1234567890abcdef1",
+      "hospital": "67f10516ce557cd590c3b6b8",
+      "rating": "5",
+      "review": "Outstanding service and caring staff.",
+      "comments": ["Truly helpful", "Clean environment"],
+      "like": 12
+    },
+    {
+      "username": "66101abc1234567890abcdef2",
+      "hospital": "67f10516ce557cd590c3b6b8",
+      "rating": "4",
+      "review": "Doctors were professional and quick.",
+      "comments": ["Minimal wait time"],
+      "like": 7
+    },
+    {
+      "username": "66101abc1234567890abcdef3",
+      "hospital": "67f10516ce557cd590c3b6b8",
+      "rating": "3",
+      "review": "Average experience, long wait at reception.",
+      "comments": [],
+      "like": 3
+    },
+    {
+      "username": "66101abc1234567890abcdef4",
+      "hospital": "67f10516ce557cd590c3b6b8",
+      "rating": "5",
+      "review": "Emergency staff saved my life. Forever grateful!",
+      "comments": ["Life-saving!"],
+      "like": 20
+    },
+    {
+      "username": "66101abc1234567890abcdef5",
+      "hospital": "67f10516ce557cd590c3b6b9",
+      "rating": "1",
+      "review": "Unprofessional behavior from front desk.",
+      "comments": ["Bad experience"],
+      "like": 1
+    },
+    {
+      "username": "66101abc1234567890abcdef6",
+      "hospital": "67f10516ce557cd590c3b6b9",
+      "rating": "4",
+      "review": "Clean rooms and polite nurses.",
+      "comments": ["Cleanliness is top-notch"],
+      "like": 9
+    },
+    {
+      "username": "66101abc1234567890abcdef7",
+      "hospital": "67f10516ce557cd590c3b6b9",
+      "rating": "2",
+      "review": "Too much paperwork before treatment.",
+      "comments": ["Could be streamlined"],
+      "like": 2
+    },
+    {
+      "username": "66101abc1234567890abcdef8",
+      "hospital": "66101def1234567890abcdef3",
+      "rating": "5",
+      "review": "Best pediatric care we've had in years.",
+      "comments": ["Great for kids"],
+      "like": 14
+    },
+    {
+      "username": "66101abc1234567890abcdef9",
+      "hospital": "66101def1234567890abcdef1",
+      "rating": "3",
+      "review": "Billing was confusing but treatment was good.",
+      "comments": ["Needs better finance handling"],
+      "like": 5
+    },
+    {
+      "username": "66101abc1234567890abcdea",
+      "hospital": "66101def1234567890abcdef2",
+      "rating": "4",
+      "review": "Doctors answered all our questions patiently.",
+      "comments": [],
+      "like": 8
+    },
+    {
+        "username": "66101abc1234567890abcedb",
+        "hospital": "66101def1234567890abcdef3",
+        "rating": "5",
+        "review": "Quick diagnosis and effective medication.",
+        "comments": ["Doctors were sharp", "Timely care"],
+        "like": 13
+      },
+      {
+        "username": "66101abc1234567890abcedc",
+        "hospital": "66101def1234567890abcdef1",
+        "rating": "3",
+        "review": "Parking was a mess but staff was helpful.",
+        "comments": ["More parking space needed"],
+        "like": 4
+      },
+      {
+        "username": "66101abc1234567890abcedd",
+        "hospital": "66101def1234567890abcdef2",
+        "rating": "4",
+        "review": "Clean wards and supportive nurses.",
+        "comments": ["Hygiene maintained", "Staff was kind"],
+        "like": 9
+      },
+      {
+        "username": "66101abc1234567890abcede",
+        "hospital": "66101def1234567890abcdef3",
+        "rating": "2",
+        "review": "Got the wrong prescription initially.",
+        "comments": ["Resolved after complaint"],
+        "like": 2
+      },
+      {
+        "username": "66101abc1234567890abcedf",
+        "hospital": "66101def1234567890abcdef1",
+        "rating": "5",
+        "review": "Best maternity care and postnatal support.",
+        "comments": ["Amazing experience"],
+        "like": 15
+      },
+      {
+        "username": "66101abc1234567890abcee0",
+        "hospital": "66101def1234567890abcdef2",
+        "rating": "3",
+        "review": "Some delays but proper treatment overall.",
+        "comments": [],
+        "like": 6
+      },
+      {
+        "username": "66101abc1234567890abcee1",
+        "hospital": "66101def1234567890abcdef3",
+        "rating": "4",
+        "review": "State-of-the-art equipment and labs.",
+        "comments": ["Modern tech", "Efficient process"],
+        "like": 10
+      },
+      {
+        "username": "66101abc1234567890abcee2",
+        "hospital": "66101def1234567890abcdef1",
+        "rating": "1",
+        "review": "Waited 4 hours, no doctor available.",
+        "comments": ["Very poor management"],
+        "like": 1
+      },
+      {
+        "username": "66101abc1234567890abcee3",
+        "hospital": "66101def1234567890abcdef2",
+        "rating": "5",
+        "review": "Very friendly and comforting environment.",
+        "comments": ["Felt like home"],
+        "like": 11
+      },
+      {
+        "username": "66101abc1234567890abcee4",
+        "hospital": "66101def1234567890abcdef3",
+        "rating": "2",
+        "review": "Mixed experience, nursing was good but doctor late.",
+        "comments": [],
+        "like": 3
+      },
+      {
+        "username": "66101abc1234567890abcee5",
+        "hospital": "66101def1234567890abcdef1",
+        "rating": "5",
+        "review": "Staff was attentive and treatment was quick.",
+        "comments": ["Appreciated the support", "Very clean ward"],
+        "like": 16
+      },
+      {
+        "username": "66101abc1234567890abcee6",
+        "hospital": "66101def1234567890abcdef2",
+        "rating": "3",
+        "review": "Average facilities but helpful staff.",
+        "comments": ["Staff made up for lack of equipment"],
+        "like": 6
+      },
+      {
+        "username": "66101abc1234567890abcee7",
+        "hospital": "66101def1234567890abcdef3",
+        "rating": "4",
+        "review": "Specialized care and expert doctors.",
+        "comments": ["Specialists were on time"],
+        "like": 11
+      },
+      {
+        "username": "66101abc1234567890abcee8",
+        "hospital": "66101def1234567890abcdef1",
+        "rating": "2",
+        "review": "Had to wait a long time for reports.",
+        "comments": ["Could improve diagnostics process"],
+        "like": 2
+      },
+      {
+        "username": "66101abc1234567890abcee9",
+        "hospital": "66101def1234567890abcdef2",
+        "rating": "5",
+        "review": "Highly recommended for surgeries.",
+        "comments": ["Very clean operation theater"],
+        "like": 18
+      },
+      {
+        "username": "66101abc1234567890abceea",
+        "hospital": "66101def1234567890abcdef3",
+        "rating": "4",
+        "review": "Orthopedic department is well-equipped.",
+        "comments": ["Physio team is great"],
+        "like": 9
+      },
+      {
+        "username": "66101abc1234567890abceeb",
+        "hospital": "66101def1234567890abcdef1",
+        "rating": "3",
+        "review": "Improved compared to my last visit.",
+        "comments": ["Better staff now"],
+        "like": 7
+      },
+      {
+        "username": "66101abc1234567890abceec",
+        "hospital": "66101def1234567890abcdef2",
+        "rating": "5",
+        "review": "Excellent pediatricians. My kid loved them.",
+        "comments": ["They make kids comfortable"],
+        "like": 14
+      },
+      {
+        "username": "66101abc1234567890abceed",
+        "hospital": "66101def1234567890abcdef3",
+        "rating": "2",
+        "review": "Ambulance service was late.",
+        "comments": ["Need to improve response time"],
+        "like": 3
+      },
+      {
+        "username": "66101abc1234567890abceee",
+        "hospital": "66101def1234567890abcdef1",
+        "rating": "4",
+        "review": "Supportive and caring environment for elderly.",
+        "comments": ["Nursing staff was really sweet"],
+        "like": 10
+      },
+      {
+        "username": "66101abc1234567890abceef",
+        "hospital": "66101def1234567890abcdef2",
+        "rating": "5",
+        "review": "Neat and well-maintained ICU facilities.",
+        "comments": ["Best ICU team", "Equipment was modern"],
+        "like": 17
+      },
+      {
+        "username": "66101abc1234567890abcef0",
+        "hospital": "66101def1234567890abcdef3",
+        "rating": "4",
+        "review": "Quick registration process and helpful front desk.",
+        "comments": ["No long queues", "Good management"],
+        "like": 12
+      },
+      {
+        "username": "66101abc1234567890abcef1",
+        "hospital": "66101def1234567890abcdef1",
+        "rating": "2",
+        "review": "Delayed test results and unresponsive helpline.",
+        "comments": ["Improve lab coordination"],
+        "like": 2
+      },
+      {
+        "username": "66101abc1234567890abcef2",
+        "hospital": "66101def1234567890abcdef2",
+        "rating": "5",
+        "review": "Smooth experience during emergency visit.",
+        "comments": ["Doctors responded fast"],
+        "like": 15
+      },
+      {
+        "username": "66101abc1234567890abcef3",
+        "hospital": "66101def1234567890abcdef3",
+        "rating": "3",
+        "review": "Facilities are okay but need better hygiene.",
+        "comments": ["Restrooms need cleaning"],
+        "like": 5
+      },
+      {
+        "username": "66101abc1234567890abcef4",
+        "hospital": "66101def1234567890abcdef1",
+        "rating": "4",
+        "review": "Nutritionist helped me post surgery.",
+        "comments": ["Helpful diet plans"],
+        "like": 9
+      },
+      {
+        "username": "66101abc1234567890abcef5",
+        "hospital": "66101def1234567890abcdef2",
+        "rating": "5",
+        "review": "Great neurologist. Diagnosed my migraine issue quickly.",
+        "comments": ["Thankful for the clarity"],
+        "like": 19
+      },
+      {
+        "username": "66101abc1234567890abcef6",
+        "hospital": "66101def1234567890abcdef3",
+        "rating": "2",
+        "review": "Billing was confusing and lacked transparency.",
+        "comments": ["Too many hidden charges"],
+        "like": 3
+      },
+      {
+        "username": "66101abc1234567890abcef7",
+        "hospital": "66101def1234567890abcdef1",
+        "rating": "5",
+        "review": "Excellent service for elderly patients.",
+        "comments": ["Polite staff", "Wheelchair support"],
+        "like": 14
+      },
+      {
+        "username": "66101abc1234567890abcef8",
+        "hospital": "66101def1234567890abcdef2",
+        "rating": "3",
+        "review": "Had a decent experience overall.",
+        "comments": ["Can improve in coordination"],
+        "like": 6
+      },
+      {
+        "username": "66101abc1234567890abcef9",
+        "hospital": "66101def1234567890abcdef3",
+        "rating": "4",
+        "review": "Well-organized departments with clear signage.",
+        "comments": ["Didn't have to ask for directions"],
+        "like": 10
+      },
+      {
+        "username": "66101abc1234567890abcefa",
+        "hospital": "66101def1234567890abcdef1",
+        "rating": "5",
+        "review": "Doctors were knowledgeable and patient.",
+        "comments": ["Explained everything clearly"],
+        "like": 18
+      },
+      {
+        "username": "66101abc1234567890abcefb",
+        "hospital": "66101def1234567890abcdef2",
+        "rating": "3",
+        "review": "Average experience, could be faster.",
+        "comments": ["Wait time too long"],
+        "like": 4
+      },
+      {
+        "username": "66101abc1234567890abcefc",
+        "hospital": "66101def1234567890abcdef3",
+        "rating": "5",
+        "review": "Smooth discharge process and post-care advice.",
+        "comments": ["Follow-up reminders were helpful"],
+        "like": 13
+      },
+      {
+        "username": "66101abc1234567890abcefd",
+        "hospital": "66101def1234567890abcdef1",
+        "rating": "2",
+        "review": "Nurses were rude and inattentive.",
+        "comments": ["Unprofessional behavior"],
+        "like": 1
+      },
+      {
+        "username": "66101abc1234567890abcefe",
+        "hospital": "66101def1234567890abcdef2",
+        "rating": "4",
+        "review": "Modern infrastructure with spacious waiting areas.",
+        "comments": ["Liked the clean surroundings"],
+        "like": 11
+      },
+      {
+        "username": "66101abc1234567890abceff",
+        "hospital": "66101def1234567890abcdef3",
+        "rating": "5",
+        "review": "Very compassionate maternity care unit.",
+        "comments": ["Felt supported throughout"],
+        "like": 20
+      },
+      {
+        "username": "66101abc1234567890abcf00",
+        "hospital": "66101def1234567890abcdef1",
+        "rating": "3",
+        "review": "Food services need serious improvement.",
+        "comments": ["Meals were always cold"],
+        "like": 3
+      },
+      {
+        "username": "66101abc1234567890abcf01",
+        "hospital": "66101def1234567890abcdef2",
+        "rating": "4",
+        "review": "App-based appointment system is very handy.",
+        "comments": ["Saved a lot of time"],
+        "like": 9
+      },
+      {
+        "username": "66101abc1234567890abcf02",
+        "hospital": "66101def1234567890abcdef3",
+        "rating": "5",
+        "review": "Overall a great experience with fantastic support.",
+        "comments": ["Would visit again"],
+        "like": 16
+      },
+      {
+        "username": "66101abc1234567890abcf03",
+        "hospital": "66101def1234567890abcdef1",
+        "rating": "5",
+        "review": "Staff was empathetic and attentive throughout my stay.",
+        "comments": ["Felt truly cared for"],
+        "like": 21
+      },
+      {
+        "username": "66101abc1234567890abcf04",
+        "hospital": "66101def1234567890abcdef2",
+        "rating": "4",
+        "review": "Easy parking and quick check-in process.",
+        "comments": ["Appreciated the valet support"],
+        "like": 11
+      },
+      {
+        "username": "66101abc1234567890abcf05",
+        "hospital": "66101def1234567890abcdef3",
+        "rating": "3",
+        "review": "Consultation charges are high for the service offered.",
+        "comments": ["Could be more transparent"],
+        "like": 4
+      },
+      {
+        "username": "66101abc1234567890abcf06",
+        "hospital": "66101def1234567890abcdef1",
+        "rating": "2",
+        "review": "Rooms were not cleaned daily.",
+        "comments": ["Disappointed with hygiene"],
+        "like": 2
+      },
+      {
+        "username": "66101abc1234567890abcf07",
+        "hospital": "66101def1234567890abcdef2",
+        "rating": "5",
+        "review": "Impressive cardiology unit with top equipment.",
+        "comments": ["Saved my father’s life"],
+        "like": 19
+      },
+      {
+        "username": "66101abc1234567890abcf08",
+        "hospital": "66101def1234567890abcdef3",
+        "rating": "3",
+        "review": "Doctors were excellent, but lab delays were frustrating.",
+        "comments": ["Improve reporting times"],
+        "like": 6
+      },
+      {
+        "username": "66101abc1234567890abcf09",
+        "hospital": "66101def1234567890abcdef1",
+        "rating": "4",
+        "review": "The online portal made things easier.",
+        "comments": ["Good UI", "Easy to download reports"],
+        "like": 8
+      },
+      {
+        "username": "66101abc1234567890abcf0a",
+        "hospital": "66101def1234567890abcdef2",
+        "rating": "1",
+        "review": "Had to wait 3 hours for a 10-minute checkup.",
+        "comments": ["Mismanaged queue system"],
+        "like": 1
+      },
+      {
+        "username": "66101abc1234567890abcf0b",
+        "hospital": "66101def1234567890abcdef3",
+        "rating": "5",
+        "review": "Special thanks to the ortho department for a smooth surgery.",
+        "comments": ["Pain-free recovery"],
+        "like": 14
+      },
+      {
+        "username": "66101abc1234567890abcf0c",
+        "hospital": "66101def1234567890abcdef1",
+        "rating": "4",
+        "review": "Receptionist was friendly and helpful with billing queries.",
+        "comments": ["Good first impression"],
+        "like": 7
+      },
+      {
+        "username": "66101abc1234567890abcf0d",
+        "hospital": "66101def1234567890abcdef2",
+        "rating": "5",
+        "review": "Pediatric wing is clean, colorful, and kid-friendly.",
+        "comments": ["My child felt comfortable"],
+        "like": 15
+      },
+      {
+        "username": "66101abc1234567890abcf0e",
+        "hospital": "66101def1234567890abcdef3",
+        "rating": "3",
+        "review": "Had to constantly remind staff for updates.",
+        "comments": ["Lack of communication"],
+        "like": 3
+      },
+      {
+        "username": "66101abc1234567890abcf0f",
+        "hospital": "66101def1234567890abcdef1",
+        "rating": "4",
+        "review": "Well-trained emergency response team.",
+        "comments": ["Quick and efficient"],
+        "like": 10
+      },
+      {
+        "username": "66101abc1234567890abcf10",
+        "hospital": "66101def1234567890abcdef2",
+        "rating": "2",
+        "review": "Hospital food needs major improvements.",
+        "comments": ["Very oily and bland"],
+        "like": 1
+      },
+      {
+        "username": "66101abc1234567890abcf11",
+        "hospital": "66101def1234567890abcdef3",
+        "rating": "5",
+        "review": "Neurology department handled everything professionally.",
+        "comments": ["Highly experienced doctors"],
+        "like": 17
+      },
+      {
+        "username": "66101abc1234567890abcf12",
+        "hospital": "66101def1234567890abcdef1",
+        "rating": "3",
+        "review": "Billing process is confusing and slow.",
+        "comments": ["Could use more staff at counters"],
+        "like": 2
+      },
+      {
+        "username": "66101abc1234567890abcf13",
+        "hospital": "66101def1234567890abcdef2",
+        "rating": "4",
+        "review": "Easy to get appointments online.",
+        "comments": ["SMS confirmation is helpful"],
+        "like": 8
+      },
+      {
+        "username": "66101abc1234567890abcf14",
+        "hospital": "66101def1234567890abcdef3",
+        "rating": "5",
+        "review": "My surgery went smoothly, and recovery was fast.",
+        "comments": ["Nurses checked in frequently"],
+        "like": 13
+      },
+      {
+        "username": "66101abc1234567890abcf15",
+        "hospital": "66101def1234567890abcdef1",
+        "rating": "4",
+        "review": "Loved how organized the reception area was.",
+        "comments": ["Didn’t feel chaotic"],
+        "like": 6
+      },
+      {
+        "username": "66101abc1234567890abcf16",
+        "hospital": "66101def1234567890abcdef2",
+        "rating": "5",
+        "review": "Excellent post-op follow-up and physiotherapy.",
+        "comments": ["They kept checking my progress"],
+        "like": 16
+      }
+  ]
+  
