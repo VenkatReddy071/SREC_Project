@@ -29,6 +29,7 @@ export const Heading = () => {
       ],
       Button: 'Learn More',
       SubButton: 'Visit',
+      link:"/schools",
       Img: Schools,
       Reverse: false,
     },
@@ -51,6 +52,7 @@ export const Heading = () => {
       Button: 'Learn More',
       SubButton: 'Visit',
       Img: Doctor,
+      link:"/Hospitals",
       Reverse: true,
     },
     {

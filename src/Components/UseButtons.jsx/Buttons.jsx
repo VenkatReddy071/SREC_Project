@@ -5,8 +5,9 @@ export const Buttons = ({ label1, label2, reverse, white,setIsMenuOpen}) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const handleOpenLogin = () => {
-7
+  
     setIsOpen(true);
+    
     
   };
 

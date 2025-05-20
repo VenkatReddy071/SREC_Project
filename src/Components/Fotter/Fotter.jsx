@@ -1,6 +1,6 @@
 import React from "react";
 import { FaFacebookF, FaInstagram, FaTwitter, FaLinkedinIn } from "react-icons/fa";
-
+import { Link } from "react-router-dom";
 export const Fotter = () => {
   return (
     <footer className="bg-white border-t border-gray-200 py-10 px-8">
@@ -14,7 +14,7 @@ export const Fotter = () => {
         <div>
           <h2 className="text-lg font-semibold mb-4">Quick Links</h2>
           <ul className="space-y-2">
-            <li>About Us</li>
+          <Link to="/About-us"><li>About Us</li></Link>
             <li>Contact Us</li>
             <li>FAQs</li>
             <li>Support</li>

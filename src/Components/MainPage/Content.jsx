@@ -1,6 +1,6 @@
 import React from 'react';
 import { IoIosArrowForward } from "react-icons/io";
-
+import { Link } from 'react-router-dom';
 export const Content = ({ item }) => {
   const { Sub, Heading, Info, divBox, Reverse, Img, Button, SubButton } = item;
 
@@ -31,9 +31,11 @@ export const Content = ({ item }) => {
             <button className="h-10 border-2 border-black px-4 flex justify-center items-center rounded-md">
               {Button}
             </button>
-            <button className="flex gap-2 items-center">
+            <Link to={item.link}>
+              <button className="flex gap-2 items-center">
               {SubButton} <IoIosArrowForward />
             </button>
+            </Link>
           </div>
         )}
       </div>
