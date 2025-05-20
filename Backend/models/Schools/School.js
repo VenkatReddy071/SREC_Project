@@ -1,0 +1,61 @@
+const mongoose=require("mongoose");
+
+const school=new mongoose({
+    name:{
+        type:String,
+        required:true,
+    },
+    image:{
+        type:String,
+        required:true,
+    },
+    gallery:[
+        {
+            type:String,
+        },
+    ],
+    location:{
+        type:String,
+        required:true,
+    },
+    rating:{
+        type:String,
+        min:0,
+        max:5,
+        default:4,
+    },
+    info:{
+        type:String,
+
+    },
+    foundation:{
+        type:String,
+        required:true,
+    },
+    courseType:{
+        Type:{
+        type:String,
+        enum:["BSEAP","CBSC","ICSE"],
+        default:"BSEAP",
+        },
+        specialTraining:{
+            type:String,
+        },
+        extracurriculam:[
+            {type:String},
+        ],
+        transpotation:{
+            type:String,
+        }
+    },
+    hostel:{
+        type:Boolean,
+        default:false,
+    },
+    mobilenumber:{
+        type:String,
+        required:true,
+    }
+},{timestamps:true})
+
+modules.export=mongoose.model("School",school);

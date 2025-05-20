@@ -13,8 +13,8 @@ function Login(){
     }
     return(
         <>
-            <div className="content">
-                <div className="page-1">
+            <div className="content flex gap-2">
+                <div className="page-1 flex">
                     <img src={LoginImg} alt="" className="login-img" />
                 </div>
                 <div className="page-2">
