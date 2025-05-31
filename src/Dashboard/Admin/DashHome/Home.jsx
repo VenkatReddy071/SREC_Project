@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { NavLink, Outlet } from "react-router-dom";
+import axios from "axios"
 import {
   FaHospitalSymbol,
   FaSchool,
@@ -30,16 +31,28 @@ const menuItems = [
   { name: "FAQs", path: "/admin-dashboard/faqs", icon: <FaQuestionCircle /> },
   { name: "Live Chat", path: "/admin-dashboard/chat", icon: <FaComments /> },
   { name: "Settings", path: "/admin-dashboard/settings", icon: <FaCog /> },
-  { name: "Logout", path: "/logout", icon: <FaSignOutAlt /> },
+  { name: "HistoryLogs", path: "/admin-dashboard/logs", icon: <FaSignOutAlt /> },
 ];
+
 
 export const DashHome = () => {
   const [isOpen, setIsOpen] = useState(true);
   const [pageTitle, setPageTitle] = useState("Dashboard");
   const [profileOpen, setProfileOpen] = useState(false);
-
+  const [isLogin, setIsLogin] = useState(false);
+  const [name, setName] = useState('');
   const toggleSidebar = () => setIsOpen(!isOpen);
-
+  useEffect(() => {
+    const url = `${import.meta.env.VITE_SERVER_URL}/api/check-session`;
+    axios.get(url, { withCredentials: true })
+      .then((response) => {
+        setIsLogin(response.data?.loggedIn);
+        setName(response.data?.user?.username || '');
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, []);
   return (
     <div className="flex h-screen overflow-hidden">
       {/* Sidebar */}
@@ -65,7 +78,7 @@ export const DashHome = () => {
               onClick={() => setPageTitle(item.name)}
               className={({ isActive }) =>
                 `flex items-center gap-4 p-3 text-lg transition-colors duration-200 ${
-                  isActive
+                    isActive
                     ? "bg-black text-white"
                     : "hover:bg-black hover:text-white"
                 }`
@@ -98,18 +111,12 @@ export const DashHome = () => {
             {/* User Profile */}
             <div className="relative">
               <button onClick={() => setProfileOpen(!profileOpen)} className="flex items-center gap-2 cursor-pointer">
-                <FaUserCircle className="w-6 h-6" />
-                <span className="hidden md:inline">Admin</span>
+                  <div className="w-10 h-10 rounded-full bg-black text-white flex items-center justify-center text-lg font-bold">
+                    {name.substring(0, 2).toUpperCase()}
+                  </div>
+                <span className="hidden md:inline">{name}</span>
               </button>
-              {profileOpen && (
-                <div className="absolute right-0 mt-2 bg-white shadow-md rounded w-40 z-10">
-                  <ul>
-                    <li className="p-2 hover:bg-gray-100 cursor-pointer">Profile</li>
-                    <li className="p-2 hover:bg-gray-100 cursor-pointer">Settings</li>
-                    <li className="p-2 hover:bg-gray-100 cursor-pointer">Logout</li>
-                  </ul>
-                </div>
-              )}
+            
             </div>
           </div>
         </div>

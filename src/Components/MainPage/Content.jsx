@@ -27,16 +27,14 @@ export const Content = ({ item }) => {
 
         {/* Buttons Section */}
         {Button && (
+          <Link to={item.link}>
           <div className="mt-8 flex flex-col sm:flex-row gap-4 items-center sm:items-start">
-            <button className="h-10 border-2 border-black px-4 flex justify-center items-center rounded-md">
+            <button className="h-10 border-2 border-black px-4 flex justify-center items-center rounded-md hover:bg-black hover:text-white">
               {Button}
             </button>
-            <Link to={item.link}>
-              <button className="flex gap-2 items-center">
-              {SubButton} <IoIosArrowForward />
-            </button>
-            </Link>
+            
           </div>
+          </Link>
         )}
       </div>
 

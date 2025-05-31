@@ -8,7 +8,7 @@ import Schools from "../../assets/Schools.jpg"
 import { Content } from './Content';
 import { RiBox2Line } from 'react-icons/ri';
 import { IoIosArrowForward } from 'react-icons/io';
-
+import { Link } from 'react-router-dom';
 export const Heading = () => {
   const content = [
     {
@@ -28,7 +28,6 @@ export const Heading = () => {
         },
       ],
       Button: 'Learn More',
-      SubButton: 'Visit',
       link:"/schools",
       Img: Schools,
       Reverse: false,
@@ -50,7 +49,6 @@ export const Heading = () => {
         },
       ],
       Button: 'Learn More',
-      SubButton: 'Visit',
       Img: Doctor,
       link:"/Hospitals",
       Reverse: true,
@@ -110,7 +108,14 @@ export const Heading = () => {
                 Explore a wide range of local services tailored to your needs. From
                 schools to restaurants, find everything you need in one place.
               </p>
-              <Buttons label1="Explore" label2="Learn More" reverse={true} />
+      <Link to="/About-us">
+      <button
+        className='w-1/2 h-10 bg-black text-white border-2 border-black rounded-md hover:bg-white hover:text-black transition-all duration-200'
+      >
+        Explore
+      </button>
+      </Link>
+
             </div>
             <div className="md:w-1/2">
               <img src={Header} alt="Local Services" className="w-full h-auto rounded-lg shadow-lg cursor-pointer" />
@@ -155,7 +160,7 @@ export const Heading = () => {
         </div>
 
         {/* Call to Action Section */}
-        <div className="py-12 md:py-16 text-center">
+        {/* <div className="py-12 md:py-16 text-center">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
             Ready to Explore Local Services?
           </h2>
@@ -167,7 +172,7 @@ export const Heading = () => {
               Sign Up <IoIosArrowForward />
             </button>
           </div>
-        </div>
+        </div> */}
       </div>
 
       {/* Dark Section */}
@@ -181,9 +186,11 @@ export const Heading = () => {
             place.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link to="/About-us">
             <button className="w-full sm:w-auto bg-white text-gray-900 font-semibold py-3 px-6 rounded-full hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-300 focus:ring-opacity-50">
               Explore
             </button>
+            </Link>
             <button className="w-full sm:w-auto border-2 border-white font-semibold py-3 px-6 rounded-full hover:bg-white hover:text-gray-900 transition focus:outline-none focus:ring-2 focus:ring-gray-300 focus:ring-opacity-50">
               Get Started
             </button>

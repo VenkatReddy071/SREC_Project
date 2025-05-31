@@ -11,6 +11,9 @@ import { Heading } from "./Components/MainPage/Heading";
 import { Home } from "./Components/Hospital/Home/Home";
 import { MailHome } from "./Components/Mails/Home";
 import { HomeScl } from "./Components/Schools";
+import  FAQS  from "./Components/Fotter/AboutSection/FAQS";
+import HospitalForm from "./Pages/Register/Hospital";
+import  Support  from "./Components/Fotter/AboutSection/Support";
 
 // Admin Layout with sidebar and footer links
 import { DashHome } from "./Dashboard/Admin/DashHome/Home";
@@ -25,11 +28,13 @@ import { Restaurant } from "./Dashboard/Admin/DashHome/Restaurant";
 import { Schools } from "./Dashboard/Admin/DashHome/Schools";
 import { Settings } from "./Dashboard/Admin/DashHome/Settings";
 import { Users } from "./Dashboard/Admin/DashHome/Users";
-
+import {Logs} from "./Dashboard/Admin/HistoryLogs/Logs"
 
 //about Page
 
 import { About } from "./Components/Fotter/AboutSection/About";
+import DashboardLogin from "./user/DashboardLogin";
+import { Type } from "./Dashboard/DashboardType/Type";
 
 
 function App() {
@@ -55,8 +60,12 @@ function App() {
           <Route path="/hospitals" element={<Home />} />
           <Route path="/malls" element={<MailHome />} />
           <Route path="/schools" element={<HomeScl />} />
+          <Route path="/Support" element={<Support/>}></Route>
+          <Route path="/Faq" element={<FAQS/>}/>
         </Route>
-
+        <Route path="/join/dashboard" element={<DashboardLogin/>}/>
+        <Route path="/Register" element={<HospitalForm/>}/>
+        <Route path="/dashboard/type" element={<Type/>}/>
         {/* Admin Layout -> DashHome acts as layout with footer links */}
         <Route path="/admin-dashboard" element={<DashHome />}>
           <Route index element={<Dashboard />} />
@@ -70,6 +79,7 @@ function App() {
           <Route path="users" element={<Users />} />
           <Route path="faqs" element={<Faq />} />
           <Route path="settings" element={<Settings />} />
+          <Route path="logs" element={<Logs/>}/>
         </Route>
         <Route element={<AboutLayout/>}>
             <Route path="/About-us" element={<About/>}/>

@@ -30,6 +30,7 @@ const HeroSection = ({ title, description, primaryBtnText, secondaryBtnText, ima
               {secondaryBtnText}
             </button>
           )}
+          
         </div>
       </div>
     </div>

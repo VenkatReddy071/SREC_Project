@@ -15,10 +15,10 @@ export const Fotter = () => {
           <h2 className="text-lg font-semibold mb-4">Quick Links</h2>
           <ul className="space-y-2">
           <Link to="/About-us"><li>About Us</li></Link>
-            <li>Contact Us</li>
-            <li>FAQs</li>
-            <li>Support</li>
-            <li>Careers</li>
+          {/* <Link to="/Faq"><li>FAQs</li></Link>
+          <Link to="/Support"><li>Support</li></Link> */}
+          <Link to="/About-us"><li>Services</li></Link>
+            
           </ul>
         </div>
 
@@ -30,7 +30,7 @@ export const Fotter = () => {
             <li>Twitter</li>
             <li>Instagram</li>
             <li>LinkedIn</li>
-            <li>YouTube</li>
+          
           </ul>
         </div>
 
@@ -39,10 +39,9 @@ export const Fotter = () => {
           <h2 className="text-lg font-semibold mb-4">Newsletter</h2>
           <ul className="space-y-2">
             <li>Sign Up</li>
-            <li>Latest News</li>
-            <li>Events</li>
-            <li>Blog</li>
-            <li>Resources</li>
+            {/* <li>Latest News</li>
+            <li>Events</li> */}
+            
           </ul>
         </div>
 
