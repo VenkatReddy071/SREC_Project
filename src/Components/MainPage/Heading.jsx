@@ -1,6 +1,5 @@
 import React from 'react';
 import { Buttons } from '../UseButtons.jsx/Buttons';
-import Header from '../../assets/Header.jpg';
 import Doctor from "../../assets/Doctor.avif"
 import Restaurant from "../../assets/Restaurant.avif"
 import Shopping from "../../assets/Shopping.jpg"
@@ -9,6 +8,7 @@ import { Content } from './Content';
 import { RiBox2Line } from 'react-icons/ri';
 import { IoIosArrowForward } from 'react-icons/io';
 import { Link } from 'react-router-dom';
+import HomePage from "./HomePage"
 export const Heading = () => {
   const content = [
     {
@@ -95,33 +95,10 @@ export const Heading = () => {
   ];
 
   return (
-    <div className="bg-gray-50 py-12 md:py-20">
+    <div className="bg-gray-50 py-4 ">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Hero Section */}
-        <div className="mb-12 md:mb-20">
-          <div className="md:flex md:gap-10 items-center">
-            <div className="md:w-1/2 mb-6 md:mb-0">
-              <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-                Discover Local Services at Your Fingertips
-              </h1>
-              <p className="text-lg text-gray-700 mb-8">
-                Explore a wide range of local services tailored to your needs. From
-                schools to restaurants, find everything you need in one place.
-              </p>
-      <Link to="/About-us">
-      <button
-        className='w-1/2 h-10 bg-black text-white border-2 border-black rounded-md hover:bg-white hover:text-black transition-all duration-200'
-      >
-        Explore
-      </button>
-      </Link>
-
-            </div>
-            <div className="md:w-1/2">
-              <img src={Header} alt="Local Services" className="w-full h-auto rounded-lg shadow-lg cursor-pointer" />
-            </div>
-          </div>
-        </div>
+        <HomePage/>
 
         {/* Content Sections */}
         <div className="mb-12 md:mb-20">

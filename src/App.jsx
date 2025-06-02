@@ -14,7 +14,7 @@ import { HomeScl } from "./Components/Schools";
 import  FAQS  from "./Components/Fotter/AboutSection/FAQS";
 import HospitalForm from "./Pages/Register/Hospital";
 import  Support  from "./Components/Fotter/AboutSection/Support";
-
+import {RestaurantHomePage} from "./Components/Dining/Restaurant"
 // Admin Layout with sidebar and footer links
 import { DashHome } from "./Dashboard/Admin/DashHome/Home";
 
@@ -35,6 +35,8 @@ import {Logs} from "./Dashboard/Admin/HistoryLogs/Logs"
 import { About } from "./Components/Fotter/AboutSection/About";
 import DashboardLogin from "./user/DashboardLogin";
 import { Type } from "./Dashboard/DashboardType/Type";
+import { SectionType } from "./Components/Hospital/HospitalSection/SectionType";
+import Overview from "./Components/Hospital/ShowCaseSection/Overview/Overview";
 
 
 function App() {
@@ -60,7 +62,10 @@ function App() {
           <Route path="/hospitals" element={<Home />} />
           <Route path="/malls" element={<MailHome />} />
           <Route path="/schools" element={<HomeScl />} />
+          <Route path="/restaurants" element={<RestaurantHomePage/>}/>
           <Route path="/Support" element={<Support/>}></Route>
+          <Route path="/showcase/page" element={<SectionType/>}/>
+          <Route path="/showcase/page/overview" element={<Overview/>}/>
           <Route path="/Faq" element={<FAQS/>}/>
         </Route>
         <Route path="/join/dashboard" element={<DashboardLogin/>}/>

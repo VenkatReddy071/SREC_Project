@@ -63,9 +63,11 @@ export const Navbar = () => {
             <Link to={"/Hospitals"}><li className="hover:text-blue-600">Health Care</li></Link>
             <Link to={"/malls"}><li className="hover:text-blue-600">Fashion</li></Link>
             <Link to={"/schools"}><li className="hover:text-blue-600">Education Hub</li></Link>
+            <Link to="/restaurants">
             <li className="flex items-center gap-1 cursor-pointer hover:text-blue-600">
-              Dining Options <IoMdArrowDropdown className="w-5 h-5 transition-transform duration-300 hover:rotate-180" />
+              Dining Options
             </li>
+            </Link>
           </ul>
         </nav>
 
