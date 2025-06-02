@@ -1,11 +1,12 @@
 const express=require("express");
-const {Login,Sign,details}=require("../../Controllers/User/Login")
+const {Login,Sign,details,dashboard}=require("../../Controllers/User/Login")
 const router=express.Router();
 
 router.post("/login",Login);
 router.post("/sign",Sign);
 router.get("/users",details)
 
+router.post("/dashboard",dashboard)
 
 router.get("/check-session", (req, res) => {
   if (req.session.user) {
