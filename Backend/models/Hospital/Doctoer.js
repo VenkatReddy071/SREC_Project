@@ -1,6 +1,6 @@
 const mongoose=require("mongoose");
 
-const doctor=new mongoose({
+const doctor= new mongoose.Schema({
     name:{
         type:String,
         required:true,
@@ -10,12 +10,12 @@ const doctor=new mongoose({
         required:true,
     },
     specialization:{
-        type:String,
+        type:[String],
         required:true,
     },
     Hospital:{
         type:mongoose.Schema.Types.ObjectId,
-        ref:"Hospital",
+        ref:"Hospitals",
         required:true
     },
     image:{
@@ -25,6 +25,14 @@ const doctor=new mongoose({
     operationSuccessRate:{
         type:String,
     },
-
+    isAvaliable:{
+        type:Boolean,
+        required:true
+    },
+    degree:{
+        type:String,
+        required:true
+    }
+    
 },{timestamps: true,})
-modules.export=mongoose.model("Doctor",doctor)
+module.exports=mongoose.model("Doctor",doctor,"Doctors")

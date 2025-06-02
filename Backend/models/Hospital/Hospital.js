@@ -1,45 +1,106 @@
-const mongoose=require("mongoose");
+const mongoose = require("mongoose");
 
-const hospitalSchema=new mongoose.Schema({
-    name:{
-        type:String,
-        required:true,
+const hospitalSchema = new mongoose.Schema({
+    name: {
+        type: String,
+        required: true,
+        trim: true
     },
-    image:{
-        type:String,
-        required:true,
+    image: {
+        type: String,
+        required: true,
+        trim: true
     },
-    gallery:[
+    gallery: [
         {
-            type:String,
+            type: String,
+            trim: true
         },
     ],
-    location:{
-        type:String,
-        required:true,
+    phoneNumber: {
+        type: String,
+        required: true,
+        trim: true
     },
-    rating:{
-        type:String,
-        min:0,
-        max:5,
-        default:4,
+    patientSatisfaction: {
+        type: Number,
+        required: true,
+        min: 0,
+        max: 100
     },
-    info:{
-        type:String,
-
+    successRate: {
+        type: Number,
+        required: true,
+        min: 0,
+        max: 100
     },
-    specialization:[
-        {type:String,}
+    ProceduresAnnually: {
+        type: Number,
+        required: true,
+        min: 0
+    },
+    glimpseInside: {
+        type: [String],
+        required: true,
+    },
+    locationName: {
+        type: String,
+        required: true,
+        trim: true
+    },
+    address: {
+        type: String,
+        required: true,
+        trim: true
+    },
+    rating: {
+        type: Number,
+        min: 0,
+        max: 5,
+        default: 4,
+    },
+    ownerEmail: {
+        type: String,
+        required: true,
+        trim: true,
+        lowercase: true,
+        match: /^\S+@\S+\.\S+$/
+    },
+    services: [
+        {
+            type: String,
+            required: true,
+            trim: true
+        }
     ],
-    foundation:{
-        type:Date()
+    ambulance: {
+        type: Boolean,
+        required: true,
     },
-    nearByLocation:{
-        type:String,
+    info: {
+        type: String,
+        required: true,
+        trim: true
     },
-    mobilenumber:{
-        type:String,
-        required:true,
-    }
-},{timestamps: true,})
-modules.export=mongoose.model("Hospital",hospitalSchema)
+    specialization: [
+        {
+            type: String,
+            trim: true
+        },
+    ],
+    foundation: {
+        type: Date
+    },
+    nearByLocation: { 
+        type: String,
+        required: true,
+        trim: true
+    },
+    status: {
+        type: String,
+        enum: ["pending", "accept"],
+        default: "pending",
+    },
+}, { timestamps: true });
+
+module.exports = mongoose.model("Hospital", hospitalSchema,"Hospitals");

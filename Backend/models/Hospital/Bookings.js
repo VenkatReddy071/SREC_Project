@@ -10,9 +10,17 @@ const Booking=new mongoose({
         type:String,
         required:true,
     },
+    name:{
+        type:String,
+        required:true,
+    },
+    email:{
+        type:String,
+        required:true
+    },
     date:{
         type:Date,
-        default:Date.now(),
+        default:Date,
     },
     Hospital:{
         type:mongoose.Schema.Types.ObjectId,
@@ -32,10 +40,6 @@ const Booking=new mongoose({
         type:String,
         required:true,
     },
-    disease:{
-        type:String,
-        required:true,
-    },
     gender:{
         type:String,
         enum:['male','female','others'],
@@ -48,3 +52,5 @@ const Booking=new mongoose({
 
 
 },{timestamps: true,})
+
+module.exports=mongoose.model("Booking",Booking)
