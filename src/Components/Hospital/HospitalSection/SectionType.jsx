@@ -1,9 +1,10 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
 import { Hospital } from '../ShowCaseSection/Hospital';
+import MailHome from "../../Mails/MallType/MallType"
 const HospitalShowcase = () => <Hospital/>;
 const RestaurantShowcase = () => <div>Restaurant Showcase</div>;
-const MallShowcase = () => <div>Mall Showcase</div>;
+const MallShowcase = () => <MailHome/>;
 const SchoolShowcase = () => <div>School Showcase</div>;
 const CollegeShowcase = () => <div>College Showcase</div>;
 

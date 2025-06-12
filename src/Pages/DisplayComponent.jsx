@@ -12,22 +12,22 @@ export const DisplayComponent = ({ mails }) => {
           className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300"
         >
           <img
-            src={item.image || HeaderImg} // Use item.image if available, fallback to HeaderImg
-            alt={item.name}
+            src={item?.image || HeaderImg} // Use item.image if available, fallback to HeaderImg
+            alt={item?.name}
             className="w-full h-48 object-cover"
           />
           <div className="p-4">
             <h3 className="text-xl font-semibold text-gray-900 mb-2">{item.name}</h3>
             <p className="text-gray-600 text-sm flex items-center mb-1">
               <MapPinIcon className="h-4 w-4 mr-1 text-gray-500" />
-              {item.location}
+              {item?.location}
             </p>
             <p className="text-gray-700 text-sm mb-2">
-              <strong>Category:</strong> {item.category.join(', ')}
+              <strong>Category:</strong> {item?.categories?.join(', ')}
             </p>
             <div className="flex items-center mb-2">
               <FaStar className="text-yellow-500 mr-1" />
-              <span className="text-yellow-500 font-semibold">{item.rating}</span>
+              <span className="text-yellow-500 font-semibold">{item?.rating}</span>
               <span className="text-gray-500 text-sm">/5</span>
             </div>
             <p className="text-gray-600 text-sm flex items-center">

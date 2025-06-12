@@ -48,6 +48,7 @@ export const Login = ({ setIsOpen }) => {
         { withCredentials: true }
       );
       toast.success(response.data.message || "Sign up successful");
+      localStorage.setItem("dasboard",response.data?.token)
       setIsOpen(false);
       setActiveTab("login");
       window.location.reload();

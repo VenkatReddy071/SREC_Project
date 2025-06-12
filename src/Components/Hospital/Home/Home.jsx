@@ -1,13 +1,16 @@
 import React from "react";
 import { Header } from "./Header";
 import { Button } from "./Button";
-
+import {useEffect} from "react"
 import HeaderImg1 from "../../../assets/hospitalheader2.jpg"
 import Family from "../../../assets/Family.jpg"
 import HealthcareSection from "./HealthCareSection";
 import { HospitalsSection } from "./HospitalsSection";
 import { Appointments } from "./Appointments";
 export const Home = () => {
+  useEffect(() => {
+      window.scrollTo(0, 0);
+    }, []);
   return (
     <div>
       {/* Header */}

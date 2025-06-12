@@ -1,9 +1,15 @@
 
 import React, { useState, useEffect } from 'react';
-
+import {Link,useLocation}from "react-router-dom"
 function Overview({ hospital }) {
     const loading = !hospital;
-
+    const location=useLocation();
+    const url=new URLSearchParams(location.search);
+    const type1=url.get('type');
+    const type=type1.split("/");
+    const service1=type[1];
+    const service2=type[2];
+    console.log(service1,service2)
     const formatNumber = (num) => {
         if (typeof num === 'number') {
             return num.toLocaleString('en-IN');
@@ -77,13 +83,9 @@ function Overview({ hospital }) {
     }
     return (
         <div className="container md:mx-10 md:px-4 py-8 md:py-2 w-full md:w-4/5 xl:w-4/5 font-inter">
-            <div className="bg-white rounded-xl p-6 md:p-8 lg:p-10 flex flex-col space-y-10 "> {/* Added shadow-lg for card effect */}
-
-                {/* Header Section: Hospital Identity & Contact */}
+            <div className="bg-white rounded-xl p-6 md:p-8 lg:p-10 flex flex-col space-y-10 ">
                 <div className="flex flex-col md:flex-row items-center justify-between pb-6 border-b border-blue-100 space-y-4 md:space-y-0">
-                    {/* Hospital Logo and Name */}
                     <div className="flex items-center space-x-4">
-                        {/* You might want a specific logo URL from hospital.image or a dedicated logo field */}
                         <img
                             src={hospital.image || "https://placehold.co/70x70/0056b3/ffffff?text=LOGO"} // Use hospital.image or a placeholder
                             alt={`${hospital.name || 'Hospital'} Logo`}
@@ -93,36 +95,28 @@ function Overview({ hospital }) {
                             {hospital.name || "Hospital Name"}
                         </h1>
                     </div>
-
-                    {/* Contact Information */}
-                    <div className="text-right text-sm md:text-base text-gray-600">
+                    <div className="text-right text-sm md:text-base text-gray-600 ml-6">
                         <p className="font-semibold">Email: <a href={`mailto:${hospital.ownerEmail}`} className="text-blue-600 hover:underline">{hospital.ownerEmail || "N/A"}</a></p>
                         <p className="font-semibold">Helpline: <a href={`tel:${hospital.phoneNumber}`} className="text-blue-600 hover:underline">{hospital.phoneNumber || "N/A"}</a></p>
                     </div>
                 </div>
-
-                {/* Welcome / About Us Section */}
                 <div className="text-center space-y-4">
                     <h2 className="text-3xl md:text-4xl font-bold text-blue-700">About {hospital.name || "Our Hospital"}</h2>
                     <p className="text-base md:text-lg text-gray-700 leading-relaxed max-w-3xl mx-auto">
                         {hospital.info || "Discover more about our commitment to patient care and excellence in healthcare."}
                     </p>
-                    {/* You might want a separate "about" field in your hospital data for more detailed paragraphs */}
+                    
                 </div>
-
-                {/* Performance Metrics Section (Operations Rate) */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 py-6 border-y border-blue-100">
-                    {/* Metric Card 1: Patient Satisfaction */}
                     <div className="bg-blue-50 p-6 rounded-lg text-center shadow-md transform hover:scale-105 transition-transform duration-300">
                         <p className="text-5xl font-bold text-blue-700 mb-2">{hospital.patientSatisfaction}%</p>
                         <p className="text-lg font-semibold text-gray-600">Patient Satisfaction</p>
                     </div>
-                    {/* Metric Card 2: Surgical Success Rate */}
+                    
                     <div className="bg-blue-50 p-6 rounded-lg text-center shadow-md transform hover:scale-105 transition-transform duration-300">
                         <p className="text-5xl font-bold text-blue-700 mb-2">{hospital.successRate}%</p>
                         <p className="text-lg font-semibold text-gray-600">Success Rate</p>
                     </div>
-                    {/* Metric Card 3: Annual Procedures */}
                     <div className="bg-blue-50 p-6 rounded-lg text-center shadow-md transform hover:scale-105 transition-transform duration-300">
                         <p className="text-5xl font-bold text-blue-700 mb-2">{formatNumber(hospital.ProceduresAnnually)}+</p>
                         <p className="text-lg font-semibold text-gray-600">Procedures Annually</p>
@@ -159,9 +153,11 @@ function Overview({ hospital }) {
                             <p className="col-span-full text-gray-500">No services listed yet.</p>
                         )}
                     </div>
-                    <a href="/services" className="inline-block mt-6 px-8 py-3 bg-blue-600 text-white font-semibold rounded-full shadow-lg hover:bg-blue-700 transition duration-300 ease-in-out">
+                    <Link to={`?type=hospital/${service1}/${service2}/Services`}>
+                    <p className="inline-block mt-6 px-8 py-3 bg-blue-600 text-white font-semibold rounded-full shadow-lg hover:bg-blue-700 transition duration-300 ease-in-out">
                         View All Services
-                    </a>
+                    </p>
+                    </Link>
                 </div>
 
                 {/* Visual Tour / Glimpse Inside Section */}
@@ -189,9 +185,6 @@ function Overview({ hospital }) {
                             <p className="col-span-full text-gray-500">No gallery images available yet.</p>
                         )}
                     </div>
-                    <a href="/photos" className="inline-block mt-6 px-8 py-3 bg-blue-600 text-white font-semibold rounded-full shadow-lg hover:bg-blue-700 transition duration-300 ease-in-out">
-                        View Full Gallery
-                    </a>
                 </div>
 
                 {/* Ambulance Service Status */}
@@ -203,42 +196,34 @@ function Overview({ hospital }) {
 
                 {/* Call to Action Buttons */}
                 <div className="flex flex-col md:flex-row justify-center items-center space-y-4 md:space-y-0 md:space-x-6 pt-4">
-                    {/* Main Book Appointment Button */}
-                    <a
-                        href="/book-appointment"
+                    <Link to={`?type=hospital/${service1}/${service2}/Book Appointment`}>
+                    <p
                         className="w-full md:w-auto px-8 py-4 bg-blue-600 text-white text-lg font-semibold rounded-full shadow-lg
                                    hover:bg-blue-700 transition duration-300 ease-in-out transform hover:-translate-y-1
                                    focus:outline-none focus:ring-4 focus:ring-blue-300 text-center"
                     >
                         Book an Appointment
-                    </a>
-
-                    {/* Expanded Links Section */}
+                    </p>
+                    </Link>
                     <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4 w-full md:w-auto">
-                        <a
-                            href="/doctors"
+                        <Link to={`?type=hospital/${service1}/${service2}/Doctors`}>
+                        <p
                             className="w-full sm:w-auto px-6 py-3 bg-gray-100 text-blue-700 text-base font-medium rounded-full shadow-md
                                        hover:bg-gray-200 transition duration-300 ease-in-out transform hover:-translate-y-0.5
                                        focus:outline-none focus:ring-2 focus:ring-gray-300 text-center"
                         >
                             Visit Doctors
-                        </a>
-                        <a
-                            href="/location"
-                            className="w-full sm:w-auto px-6 py-3 bg-gray-100 text-blue-700 text-base font-medium rounded-full shadow-md
-                                       hover:bg-gray-200 transition duration-300 ease-in-out transform hover:-translate-y-0.5
-                                       focus:outline-none focus:ring-2 focus:ring-gray-300 text-center"
-                        >
-                            Find Our Location
-                        </a>
-                        <a
-                            href="/services"
+                        </p>
+                        </Link>
+                        <Link to={`?type=hospital/${service1}/${service2}/Services`}>
+                        <p
                             className="w-full sm:w-auto px-6 py-3 bg-gray-100 text-blue-700 text-base font-medium rounded-full shadow-md
                                        hover:bg-gray-200 transition duration-300 ease-in-out transform hover:-translate-y-0.5
                                        focus:outline-none focus:ring-2 focus:ring-gray-300 text-center"
                         >
                             Explore Services
-                        </a>
+                        </p>
+                        </Link>
                     </div>
                 </div>
 

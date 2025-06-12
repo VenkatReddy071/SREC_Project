@@ -1,50 +1,102 @@
 import React, { useState, useEffect } from 'react';
+import axios from "axios"
+import {useLocation,Link} from "react-router-dom"
 
-// DoctorCard component for individual doctor display
-const DoctorCard = ({ doctor, isSelected, onSelect }) => (
-  <div
-    className={`bg-white p-6 rounded-lg shadow-md flex flex-col items-center text-center cursor-pointer
-      transform hover:scale-105 transition-transform duration-300 border-2
-      ${isSelected ? 'border-blue-500 ring-4 ring-blue-200' : 'border-gray-100'}`}
-    onClick={() => onSelect(doctor.id)} // Toggles selection for visual feedback
-  >
-    <img
-      src={doctor.image}
-      alt={doctor.name}
-      className="w-32 h-32 rounded-full object-cover mb-4 border-4 border-blue-100" // No shadow on image
-      loading="lazy" // Lazy loading for doctor images
-    />
-    <h3 className="text-xl font-semibold text-gray-800 mb-1">{doctor.name}</h3>
-    <p className="text-blue-600 font-medium mb-1">{doctor.specialization}</p>
-    {/* Display Qualifications */}
-    {doctor.qualifications && (
-      <p className="text-gray-600 text-sm mb-1">{doctor.qualifications}</p>
-    )}
-    <p className="text-gray-600 text-sm">{doctor.experience} Years Experience</p>
 
-    {/* Availability Status */}
-    <div className={`mt-2 px-3 py-1 rounded-full text-xs font-semibold ${
-      doctor.isAvailable ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
-    }`}>
-      {doctor.isAvailable ? 'Available' : 'Not Available'}
+// const DoctorCard = ({ doctor, isSelected, onSelect }) => (
+//   <div
+//     className={`bg-white p-6 rounded-lg shadow-md flex flex-col items-center text-center cursor-pointer
+//       transform hover:scale-105 transition-transform duration-300 border-2
+//       ${isSelected ? 'border-blue-500 ring-4 ring-blue-200' : 'border-gray-100'}`}
+//     onClick={() => onSelect(doctor.id)}
+//   >
+//     <img
+//       src={doctor.image}
+//       alt={doctor.name}
+//       className="w-32 h-32 rounded-full object-cover mb-4 border-4 border-blue-100"
+//       loading="lazy"
+//     />
+//     <h3 className="text-xl font-semibold text-gray-800 mb-1">{doctor.name}</h3>
+//     <p className="text-blue-600 font-medium mb-1">{doctor.specialization}</p>
+//     {doctor.qualifications && (
+//       <p className="text-gray-600 text-sm mb-1">{doctor.qualifications}</p>
+//     )}
+//     <p className="text-gray-600 text-sm">{doctor.experience} Years Experience</p>
+//     <div className={`mt-2 px-3 py-1 rounded-full text-xs font-semibold ${
+//       doctor.isAvailable ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
+//     }`}>
+//       {doctor.isAvailable ? 'Available' : 'Not Available'}
+//     </div>
+//     {isSelected && doctor.isAvailable && (
+//       <a
+//         href={`/book-appointment?doctorId=${doctor.id}`}
+//         className="mt-4 px-6 py-2 bg-blue-600 text-white text-base font-semibold rounded-full shadow-lg
+//                    hover:bg-blue-700 transition duration-300 ease-in-out transform hover:-translate-y-0.5
+//                    focus:outline-none focus:ring-2 focus:ring-blue-300"
+//         onClick={(e) => e.stopPropagation()}
+//       >
+//         Book Appointment
+//       </a>
+//     )}
+//   </div>
+// );
+const DoctorCard = ({ doctor, isSelected, onSelect,Id }) => {
+
+const imageUrl = doctor.image || `https://placehold.co/400x240/E0F2F7/000000?text=${doctor.name.split(' ').map(n => n[0]).join('')}`;
+const service1=Id[1];
+const service2=Id[2];
+  return (
+    <div
+      className={`
+        bg-white rounded-xl  overflow-hidden flex flex-col items-center text-center cursor-pointer
+        transform hover:scale-105 transition-transform duration-300
+        ${isSelected ? 'border-4 border-blue-500 ring-4 ring-blue-200' : 'border border-gray-200'}
+        relative
+      `}
+      onClick={() => onSelect(doctor._id)}
+    >
+      <img
+        src={imageUrl}
+        alt={doctor.name}
+        className="w-full h-40 object-cover  rounded-t-xl object-top"
+        loading="lazy"
+        onError={(e) => {
+          e.target.onerror = null
+          e.target.src = `https://placehold.co/400x240/E0F2F7/000000?text=${doctor.name.split(' ').map(n => n[0]).join('')}`;
+        }}
+      />
+      <div className="p-4 w-full flex flex-col items-center">
+        <h3 className="text-2xl font-bold text-gray-900 mb-1 leading-tight">{doctor.name}</h3>
+        <p className="text-blue-700 font-semibold text-lg mb-2">{doctor.specialization.join(', ')}</p> {/* Join specializations */}
+
+        {doctor?.degree && (
+          <p className="text-gray-600 text-sm mb-1">{doctor.degree}</p>
+        )}
+        <p className="text-gray-700 text-base font-medium">{doctor.experience} Years Experience</p>
+
+        <div className={`mt-3 px-4 py-1.5 rounded-full text-sm font-bold tracking-wide
+          ${doctor.isAvaliable ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}
+        `}>
+          {doctor.isAvaliable ? 'Available' : 'Not Available'}
+        </div>
+
+  
+        {isSelected && doctor.isAvaliable && (
+          <Link to={`?type=hospital/${service1}/${service2}/Book Appointment/doctor&book=${doctor?._id}`}>
+          <button
+            className="mt-6 px-8 py-3 bg-blue-600 text-white text-lg font-bold rounded-full shadow-xl
+                       hover:bg-blue-700 transition duration-300 ease-in-out transform hover:-translate-y-1
+                       focus:outline-none focus:ring-4 focus:ring-blue-300 focus:ring-opacity-75"
+            onClick={(e) => e.stopPropagation()} // Prevent card selection when clicking button
+          >
+            Book Appointment
+          </button>
+          </Link>
+        )}
+      </div>
     </div>
-
-    {/* Book Appointment button - shown only if selected AND available */}
-    {isSelected && doctor.isAvailable && (
-      <a
-        href={`/book-appointment?doctorId=${doctor.id}`}
-        className="mt-4 px-6 py-2 bg-blue-600 text-white text-base font-semibold rounded-full shadow-lg
-                   hover:bg-blue-700 transition duration-300 ease-in-out transform hover:-translate-y-0.5
-                   focus:outline-none focus:ring-2 focus:ring-blue-300"
-        onClick={(e) => e.stopPropagation()} // Prevent card deselection when clicking button
-      >
-        Book Appointment
-      </a>
-    )}
-  </div>
-);
-
-// SkeletonDoctorCard for loading state
+  );
+};
 const SkeletonDoctorCard = () => (
   <div className="bg-gray-100 p-6 rounded-lg shadow-sm flex flex-col items-center text-center h-64 animate-pulse">
     <div className="w-32 h-32 rounded-full bg-gray-200 mb-4"></div>
@@ -54,38 +106,36 @@ const SkeletonDoctorCard = () => (
   </div>
 );
 
-// DoctorsPage component (renamed from DoctorsContent for clarity as it's a full page)
 function DoctorsContent() {
   const [loading, setLoading] = useState(true);
   const [doctorsData, setDoctorsData] = useState([]);
   const [selectedDoctorId, setSelectedDoctorId] = useState(null); // Stores ID of the single selected doctor for the button
 
+const location=useLocation();
+  const url=new URLSearchParams(location.search);
+  const typeUrl=url.get('type');
+  console.log(typeUrl?.split("/"))
+  const Id=typeUrl?.split("/");
+  const HospitalId=Id[2];
   useEffect(() => {
     const fetchDoctors = async () => {
-      // Simulate API call delay
-      await new Promise(resolve => setTimeout(resolve, 1500)); // 1.5 second delay
-
-      // Mock doctors data with availability and qualifications
-      const data = [
-        { id: 'doc1', name: 'Dr. Preethi. P', specialization: 'ENT Head and Neck Surgery', qualifications: 'M.B.B.S., D.L.O., D.N.B (ENT)', experience: 15, image: 'https://placehold.co/128x128/a7c9f7/0056b3?text=PP', isAvailable: true },
-        { id: 'doc2', name: 'Dr. Priya Philip', specialization: 'Radiation Oncology', qualifications: 'M.B.B.S., D.M.R.T., D.N.B (Radiation Oncology), CCEPC', experience: 10, image: 'https://placehold.co/128x128/a7c9f7/0056b3?text=PP', isAvailable: true },
-        { id: 'doc3', name: 'Dr. Rupini. S', specialization: 'Radiology', qualifications: 'MDRD from BIR, MMC', experience: 8, image: 'https://placehold.co/128x128/a7c9f7/0056b3?text=RS', isAvailable: false }, // Not available
-        { id: 'doc4', name: 'Dr. Anya Sharma', specialization: 'Cardiologist', qualifications: 'MD, DM (Cardiology)', experience: 20, image: 'https://placehold.co/128x128/a7c9f7/0056b3?text=AS', isAvailable: true },
-        { id: 'doc5', name: 'Dr. Rohan Patel', specialization: 'Orthopedic Surgeon', qualifications: 'MS (Ortho), DNB (Ortho)', experience: 12, image: 'https://placehold.co/128x128/a7c9f7/0056b3?text=RP', isAvailable: true },
-        { id: 'doc6', name: 'Dr. Sana Khan', specialization: 'Dermatologist', qualifications: 'MD (Derm), DNB (Derm)', experience: 18, image: 'https://placehold.co/128x128/a7c9f7/0056b3?text=SK', isAvailable: false }, // Not available
-        { id: 'doc7', name: 'Dr. Arjun Mehta', specialization: 'General Surgeon', qualifications: 'MS (Gen. Surg), FMAS', experience: 14, image: 'https://placehold.co/128x128/a7c9f7/0056b3?text=AM', isAvailable: true },
-        { id: 'doc8', name: 'Dr. Neha Gupta', specialization: 'Oncologist', qualifications: 'MD, DM (Oncology)', experience: 11, image: 'https://placehold.co/128x128/a7c9f7/0056b3?text=NG', isAvailable: true },
-        { id: 'doc9', name: 'Dr. Sameer Verma', specialization: 'Urologist', qualifications: 'MS (Urology), MCh (Urology)', experience: 16, image: 'https://placehold.co/128x128/a7c9f7/0056b3?text=SV', isAvailable: true },
-      ];
-      setDoctorsData(data);
-      setLoading(false);
+      const url=`${import.meta.env.VITE_SERVER_URL}/api/doctor/${HospitalId}`
+      axios.get(url,{withCredentials:true})
+      .then((response)=>{
+          setDoctorsData(response.data);
+          setLoading(false);
+      })
+      .catch((error)=>{
+        alert("error fetching doctors..");
+      })
+    
+    
     };
 
     fetchDoctors();
   }, []);
 
   const handleDoctorSelect = (id) => {
-    // If the same doctor is clicked, deselect them. Otherwise, select the new doctor.
     setSelectedDoctorId(prevSelectedId => (prevSelectedId === id ? null : id));
   };
 
@@ -110,10 +160,11 @@ function DoctorsContent() {
           ) : (
             doctorsData.map((doctor) => (
               <DoctorCard
-                key={doctor.id}
+                key={doctor?._id}
                 doctor={doctor}
-                isSelected={selectedDoctorId === doctor.id} // Check against single selected ID
-                onSelect={handleDoctorSelect}
+                isSelected={selectedDoctorId === doctor?._id} // Check against single selected ID
+                onSelect={()=>handleDoctorSelect(doctor?._id)}
+                Id={Id}
               />
             ))
           )}

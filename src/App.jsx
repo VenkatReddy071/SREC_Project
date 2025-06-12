@@ -11,6 +11,11 @@ import { Heading } from "./Components/MainPage/Heading";
 import { Home } from "./Components/Hospital/Home/Home";
 import { MailHome } from "./Components/Mails/Home";
 import { HomeScl } from "./Components/Schools";
+import LearnDepartment from "./Components/Hospital/Home/AboutDepartment"
+import  Meet from "./Components/Hospital/Home/Meet"
+import OurServicePage from "./Components/Hospital/Home/OurService"
+import Technology from "./Components/Hospital/Home/ExploreTechnologyPage"
+import LearnMore from "./Components/Hospital/Home/LearnMore"
 import  FAQS  from "./Components/Fotter/AboutSection/FAQS";
 import HospitalForm from "./Pages/Register/Hospital";
 import  Support  from "./Components/Fotter/AboutSection/Support";
@@ -30,6 +35,15 @@ import { Settings } from "./Dashboard/Admin/DashHome/Settings";
 import { Users } from "./Dashboard/Admin/DashHome/Users";
 import {Logs} from "./Dashboard/Admin/HistoryLogs/Logs"
 
+
+//hospital dashboard 
+import {DashHomeHospital}from "./Dashboard/Hospital/Home";
+import { DashboardHospital } from "./Dashboard/Hospital/DashboardHospital";
+import DoctorsSection from "./Dashboard/Hospital/DoctorSection"
+import BookingPage from "./Pages/BookingPage"
+import OffersPage from "./Pages/OffersPage"
+import NotificationPage from "./Pages/NotificationPage"
+import ServicePage from "./Pages/ServicePage"
 //about Page
 
 import { About } from "./Components/Fotter/AboutSection/About";
@@ -64,12 +78,17 @@ function App() {
           <Route path="/schools" element={<HomeScl />} />
           <Route path="/restaurants" element={<RestaurantHomePage/>}/>
           <Route path="/Support" element={<Support/>}></Route>
-          <Route path="/showcase/page" element={<SectionType/>}/>
-          <Route path="/showcase/page/overview" element={<Overview/>}/>
+          <Route path="/showcase/page/" element={<SectionType/>}/>
           <Route path="/Faq" element={<FAQS/>}/>
+          <Route path="/learn-more" element={<LearnMore/>}/>
+          <Route path="/explore-service" element={<OurServicePage/>}/>
+          <Route path="/explore-technology" element={<Technology/>}/>
+          <Route path="/learn-department" element={<LearnDepartment/>}/>
+          <Route path="/join-team" element={<Meet/>}/>
         </Route>
-        <Route path="/join/dashboard" element={<DashboardLogin/>}/>
+        
         <Route path="/Register" element={<HospitalForm/>}/>
+        <Route path="/join/dashboard" element={<DashboardLogin/>}/>
         <Route path="/dashboard/type" element={<Type/>}/>
         {/* Admin Layout -> DashHome acts as layout with footer links */}
         <Route path="/admin-dashboard" element={<DashHome />}>
@@ -85,6 +104,16 @@ function App() {
           <Route path="faqs" element={<Faq />} />
           <Route path="settings" element={<Settings />} />
           <Route path="logs" element={<Logs/>}/>
+        </Route>
+
+        <Route path="/hospital-dashboard" element={<DashHomeHospital/>}>
+          <Route index element={<DashboardHospital/>}/>
+          <Route path="dashboard" element={<DashboardHospital/>}/>
+          <Route path="doctors" element={<DoctorsSection/>}/>
+          <Route path="bookings" element={<BookingPage/>}/>
+          <Route path="offers" element={<OffersPage/>}/>
+          <Route path="notifications" element={<NotificationPage/>}/>
+          <Route path="services" element={<ServicePage/>}/>
         </Route>
         <Route element={<AboutLayout/>}>
             <Route path="/About-us" element={<About/>}/>

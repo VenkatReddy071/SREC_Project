@@ -4,6 +4,7 @@ import { HiArrowNarrowRight } from "react-icons/hi";
 import Ambulance from "../../../assets/Ambulance.jpg";
 import header3 from "../../../assets/header3.jpg"
 import header from "../../../assets/HospitalHeader.jpg"
+import {Link} from "react-router-dom"
 const HealthcareSection = () => {
   return (
     <div className="bg-gray-50 py-12 md:py-20">
@@ -24,9 +25,11 @@ const HealthcareSection = () => {
                 your well-being.
               </p>
               <div className="flex gap-3">
+                <Link to="/learn-more">
                 <button className="bg-transparent hover:bg-blue-500 text-blue-500 font-semibold hover:text-white py-3 px-6 border border-blue-500 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75">
                   Learn More
                 </button>
+                </Link>
                 <button className="bg-blue-500 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75">
                   Sign Up
                 </button>
@@ -82,12 +85,16 @@ const HealthcareSection = () => {
                 conditions.
               </p>
               <div className="flex gap-3">
+                <Link to="/explore-technology">
                 <button className="bg-transparent hover:bg-purple-500 text-purple-500 font-semibold hover:text-white py-3 px-6 border border-purple-500 rounded-full focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-opacity-75">
                   Explore Technologies
                 </button>
+                </Link>
+                <Link to="/explore-service">
                 <button className="bg-purple-500 hover:bg-purple-700 text-white font-semibold py-3 px-6 rounded-full focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-opacity-75">
                   Our Services
                 </button>
+                </Link>
               </div>
             </div>
           </div>
@@ -106,10 +113,12 @@ const HealthcareSection = () => {
                   ensuring you receive expert care tailored to your specific
                   needs.
                 </p>
+                <Link to="/learn-department">
                 <button className="flex items-center text-blue-500 font-semibold hover:text-blue-700 focus:outline-none">
                   Learn About Departments
                   <HiArrowNarrowRight className="ml-2 w-5 h-5" />
                 </button>
+                </Link>
               </div>
             </div>
             <div className="bg-white rounded-lg shadow-md overflow-hidden">
@@ -121,10 +130,12 @@ const HealthcareSection = () => {
                   Our team of doctors, nurses, and support staff are dedicated to
                   providing you with the highest level of care and empathy.
                 </p>
+                <Link to="/join-team">
                 <button className="flex items-center text-green-500 font-semibold hover:text-green-700 focus:outline-none">
                   Meet Our Team
                   <HiArrowNarrowRight className="ml-2 w-5 h-5" />
                 </button>
+                </Link>
               </div>
             </div>
           </div>
