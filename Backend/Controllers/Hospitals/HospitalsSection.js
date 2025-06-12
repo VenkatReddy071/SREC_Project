@@ -4,10 +4,10 @@ const path = require("path");
 const Hospital = require("../../models/Hospital/Hospital"); // Assuming this is your Mongoose model
 const historyLogRecorder = require("../../Utilities/HistoryLogs");
 const createNotifications = require("../../Utilities/NotifyLogs");
-
+const Doctor=require("../../models/Hospital/Doctoer");
+const {authenticateToken}=require("../Authorization/auth")
 const router = express.Router();
 
-// --- Multer Storage Configuration (General for images) ---
 const imageStorage = multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, "uploads/images/"); // Store images in a dedicated 'uploads/images' folder
@@ -86,8 +86,6 @@ const uploadDoctorImage = multer({
     }
 });
 
-
-// --- ROUTE 1: Add New Hospital (Step 1) ---
 router.post(
     "/addNew/Hospital",
     uploadImage.fields([
@@ -204,188 +202,109 @@ router.post(
     }
 );
 
-// // --- ROUTE 2: Upload Hospital Documents (Step 2) ---
-// router.post(
-//     "/uploadHospitalDocuments",
-//     uploadDocument.fields([
-//         { name: "hospitalLicense", maxCount: 1 },
-//         { name: "verificationDocument", maxCount: 1 }
-//     ]),
-//     async (req, res) => {
+
+// router.get("/all", async (req, res) => {
+//     try {
+//         const page = parseInt(req.query.page) || 1;
+//         const limit = parseInt(req.query.limit) || 15;
+//         const skip = (page - 1) * limit;
+//         const hospitals = await Hospital.find({})
+//                                       .skip(skip)
+//                                       .limit(limit)
+//                                       .sort({ createdAt: -1 });
+//         const hasMore = hospitals.length === limit;
+
+//         if (!hospitals || hospitals.length === 0) {
+//             return res.status(200).json({ hospitals: [], message: "No more data found", hasMore: false });
+//         }
 //         try {
-//             const { hospitalId, verificationDocumentType } = req.body;
-
-//             if (!hospitalId) {
-//                 return res.status(400).json({ message: "Hospital ID is required to upload documents." });
-//             }
-
-//             const hospital = await Hospital.findById(hospitalId);
-//             if (!hospital) {
-//                 return res.status(404).json({ message: "Hospital not found." });
-//             }
-
-//             const updateFields = {};
-//             let isUpdateNeeded = false;
-
-//             if (req.files && req.files.hospitalLicense && req.files.hospitalLicense.length > 0) {
-//                 updateFields.hospitalLicense = req.files.hospitalLicense[0].path;
-//                 isUpdateNeeded = true;
-//             } else {
-//                 return res.status(400).json({ message: "Hospital license document is required." });
-//             }
-
-//             if (req.files && req.files.verificationDocument && req.files.verificationDocument.length > 0) {
-//                 if (!verificationDocumentType) {
-//                     return res.status(400).json({ message: "Verification document type is required." });
-//                 }
-//                 updateFields.verificationDocument = {
-//                     type: verificationDocumentType,
-//                     path: req.files.verificationDocument[0].path
-//                 };
-//                 isUpdateNeeded = true;
-//             } else {
-//                 return res.status(400).json({ message: "Verification document is required." });
-//             }
-
-//             if (isUpdateNeeded) {
-//                 await Hospital.findByIdAndUpdate(hospitalId, { $set: updateFields }, { new: true });
-//             }
-
 //             await historyLogRecorder(
 //                 req,
-//                 hospital.constructor.modelName,
-//                 "UPDATE",
-//                 hospital._id,
-//                 `Documents uploaded for hospital '${hospital.name}' (ID: ${hospital._id})`
+//                 "Hospital",
+//                 "READ",
+//                 "GET",
+//                 hospitals[0]?._id,
+//                 `User fetched hospital details (page ${page}, limit ${limit}).`
 //             );
-
-//             await createNotifications({
-//                 userId: req.user?._id || null,
-//                 dashboardType: ["AdminDashboard", "HospitalDashboard"],
-//                 type: "info",
-//                 title: "Hospital Documents Uploaded",
-//                 message: `Documents for hospital '${hospital.name}' have been uploaded.`,
-//                 link: `/hospitals/${hospital._id}/documents`,
-//             });
-
-//             res.status(200).json({ message: "Documents uploaded successfully. Proceed to next step." });
-
-//         } catch (error) {
-//             console.error("Error uploading hospital documents:", error);
-//             if (error.message.includes("Only image and PDF files") || error.message.includes("File too large")) {
-//                 return res.status(400).json({ message: error.message });
-//             }
-//             res.status(500).json({ message: "Failed to upload documents due to an internal server error. Please try again later." });
+//         } catch (logError) {
+//             console.error("Error logging action:", logError);
 //         }
+//         return res.status(200).json({
+//             hospitals: hospitals,
+//             hasMore: hasMore,
+//             currentPage: page,
+//             limit: limit
+//         });
+//     } catch (error) {
+//         console.error("Error fetching hospitals:", error);
+//         return res.status(500).json({
+//             error: "An error occurred while fetching data.",
+//             details: process.env.NODE_ENV === "development" ? error.message : undefined,
+//             hasMore: false
+//         });
 //     }
-// );
-
-// // --- ROUTE 3: Add Doctors (Step 3) ---
-// router.post(
-//     "/addDoctors",
-//     // Dynamically generate fields for doctor images based on how many doctors might be sent
-//     uploadDoctorImage.any(), // Use .any() to catch all incoming files and process them dynamically
-//     async (req, res) => {
-//         try {
-//             const hospitalId = req.body.hospitalId; // Get hospital ID from the request body
-
-//             if (!hospitalId) {
-//                 return res.status(400).json({ message: "Hospital ID is required to add doctors." });
-//             }
-
-//             const hospital = await Hospital.findById(hospitalId);
-//             if (!hospital) {
-//                 return res.status(404).json({ message: "Hospital not found." });
-//             }
-
-//             const newDoctors = [];
-//             // Frontend sends doctorData[index] as JSON strings.
-//             // Loop through req.body to find all doctorData entries.
-//             for (let i = 0; ; i++) {
-//                 const doctorDataKey = `doctorData[${i}]`;
-//                 if (!req.body[doctorDataKey]) {
-//                     break; // No more doctor data entries
-//                 }
-
-//                 let doctor;
-//                 try {
-//                     doctor = JSON.parse(req.body[doctorDataKey]);
-//                 } catch (e) {
-//                     return res.status(400).json({ message: `Invalid JSON format for doctor data entry ${i}.` });
-//                 }
-
-//                 // Find the corresponding image for this doctor
-//                 const doctorImageFile = req.files && req.files.find(file => file.fieldname === `doctorImage${i}`);
-
-//                 // Validate doctor fields
-//                 if (!doctor.name || !doctor.experience || !doctor.specialization) {
-//                     return res.status(400).json({ message: `Missing required fields for doctor entry ${i + 1}.` });
-//                 }
-//                 if (!doctorImageFile) {
-//                     return res.status(400).json({ message: `Image is required for doctor entry ${i + 1}.` });
-//                 }
-
-//                 newDoctors.push({
-//                     name: doctor.name,
-//                     experience: doctor.experience,
-//                     specialization: doctor.specialization,
-//                     image: doctorImageFile.path, // Store path to the uploaded image
-//                     operationSuccessRate: doctor.operationSuccessRate || null,
-//                 });
-//             }
-
-//             if (newDoctors.length === 0) {
-//                 return res.status(400).json({ message: "No doctor data provided." });
-//             }
-
-//             // Append new doctors to the existing hospital's doctors array
-//             hospital.doctors.push(...newDoctors);
-//             hospital.status = 'pending_approval'; // Mark as pending approval after all steps
-//             await hospital.save(); // Save the updated hospital document
-
-//             await historyLogRecorder(
-//                 req,
-//                 hospital.constructor.modelName,
-//                 "UPDATE",
-//                 hospital._id,
-//                 `Doctors added to hospital '${hospital.name}' (ID: ${hospital._id}) and submitted for approval.`
-//             );
-
-//             await createNotifications({
-//                 userId: req.user?._id || null,
-//                 dashboardType: ["AdminDashboard", "HospitalDashboard"],
-//                 type: "success",
-//                 title: "Hospital Registration Completed",
-//                 message: `Hospital '${hospital.name}' has completed registration and is pending admin approval.`,
-//                 link: `/hospitals/${hospital._id}`,
-//             });
-
-//             res.status(200).json({ message: "Doctors added successfully. Hospital registration completed and awaiting approval." });
-
-//         } catch (error) {
-//             console.error("Error adding doctors:", error);
-//             if (error.message.includes("Only image files") || error.message.includes("File too large")) {
-//                 return res.status(400).json({ message: error.message });
-//             }
-//             res.status(500).json({ message: "Failed to add doctors due to an internal server error. Please try again later." });
-//         }
-//     }
-// );
+// });
 
 router.get("/all", async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 15;
         const skip = (page - 1) * limit;
-        const hospitals = await Hospital.find({})
-                                      .skip(skip)
-                                      .limit(limit)
-                                      .sort({ createdAt: -1 });
-        const hasMore = hospitals.length === limit;
+
+        const queryConditions = [];
+
+        // 1. Search by Name OR Location (using searchTerm from frontend)
+        if (req.query.searchTerm) {
+            const searchRegex = new RegExp(req.query.searchTerm, 'i'); // Case-insensitive regex
+            queryConditions.push({
+                $or: [
+                    { name: searchRegex },
+                    { locationName: searchRegex }
+                ]
+            });
+        }
+
+        // 2. Specialization OR Services (matching against specialization or services array)
+        if (req.query.specialization) {
+            const specialtiesArray = req.query.specialization.split(',');
+            const specializationRegexes = specialtiesArray.map(s => new RegExp(s.trim(), 'i')); // Case-insensitive regex for each
+            queryConditions.push({
+                $or: [
+                    { specialization: { $in: specializationRegexes } }, // Match in specialization array
+                    { services: { $in: specializationRegexes } }       // Match in services array
+                ]
+            });
+        }
+
+        // 3. Minimum Rating
+        if (req.query.minRating) {
+            const minRating = parseFloat(req.query.minRating);
+            if (!isNaN(minRating)) {
+                queryConditions.push({ rating: { $gte: minRating } });
+            }
+        }
+
+        // 4. Ambulance Filter
+        if (req.query.ambulance === 'true') {
+            queryConditions.push({ ambulance: true });
+        }
+
+        // Combine all conditions using $and if there are multiple.
+        // If only one condition, it's directly used. If no conditions, it's an empty object.
+        const finalFindQuery = queryConditions.length > 0 ? { $and: queryConditions } : {};
+
+        const hospitals = await Hospital.find(finalFindQuery)
+            .skip(skip)
+            .limit(limit)
+            .sort({ createdAt: -1 });
+
+        const totalCount = await Hospital.countDocuments(finalFindQuery);
+        const hasMore = (page * limit) < totalCount;
 
         if (!hospitals || hospitals.length === 0) {
             return res.status(200).json({ hospitals: [], message: "No more data found", hasMore: false });
         }
+
         try {
             await historyLogRecorder(
                 req,
@@ -393,16 +312,18 @@ router.get("/all", async (req, res) => {
                 "READ",
                 "GET",
                 hospitals[0]?._id,
-                `User fetched hospital details (page ${page}, limit ${limit}).`
+                `User fetched hospital details with filters (page ${page}, limit ${limit}).`
             );
         } catch (logError) {
             console.error("Error logging action:", logError);
         }
+
         return res.status(200).json({
             hospitals: hospitals,
             hasMore: hasMore,
             currentPage: page,
-            limit: limit
+            limit: limit,
+            totalCount: totalCount
         });
     } catch (error) {
         console.error("Error fetching hospitals:", error);
@@ -414,8 +335,11 @@ router.get("/all", async (req, res) => {
     }
 });
 
+
+
 router.get("/:id", async (req, res) => {
     const { id } = req.params;
+    console.log(req.params)
     try {
         const hospital = await Hospital.findById(id);
 
@@ -430,6 +354,256 @@ router.get("/:id", async (req, res) => {
             return res.status(400).json({ message: "Invalid hospital ID format. Please provide a valid ID." });
         }
         return res.status(500).json({ message: "An internal server error occurred while fetching the hospital." });
+    }
+});
+
+// router.get("/book/:id",async(req,res)=>{
+//     try{
+//         const {id}=req.params;
+//         console.log(id)
+//         const {doctorId}=req.body;
+//         const hospital=await Hospital.findById(id).populte({
+//             select:`specialization`
+//         });
+//         let message='';
+//         if(!hospital){
+//             message="hospital not found";
+//         }
+//         const doctors=await Doctor.find({Hospital:id}).populate({
+//             select:"name _id specialization"
+//         })
+//         const selectedDoctor=doctors.filter((doctor)=>doctor?._id===doctorId);
+
+//         if(!selectedDoctor){
+//             message="doctor not found";
+//         }
+
+//         const result={
+//             hospital,
+//             doctors,
+//             selectedDoctor
+//         }
+//         return res.status(200).json({result,message});
+
+//     }
+//     catch(error){
+//         return res.status(400).json({message:"Server error",error})
+//     }
+// })
+
+
+router.get("/book/:id", async (req, res) => {
+    try {
+        const { id } = req.params;
+        console.log("Hospital ID from URL:", id);
+        const { doctorId } = req.query;
+        console.log("Doctor ID from query:", doctorId);
+
+        const hospital = await Hospital.findById(id).select('services');
+
+        if (!hospital) {
+            return res.status(404).json({ message: "Hospital not found" });
+        }
+
+        const doctors = await Doctor.find({ Hospital: id });
+
+        const selectedDoctor = doctors.find((doctor) => doctor?._id.toString() === doctorId);
+
+        let message = '';
+
+        if (!selectedDoctor) {
+            message = "Doctor not found matching the provided doctorId";
+        } else {
+            message = "Success";
+        }
+
+        const result = {
+            hospital,
+            doctors,
+            selectedDoctor
+        };
+
+        return res.status(200).json(result);
+
+    } catch (error) {
+        console.error("Error in /book/:id route:", error);
+        return res.status(500).json({ message: "Server error", error: error.message });
+    }
+});
+
+router.get("/email/doctors",authenticateToken, async (req, res) => {
+    try {
+        const {email}=req.user
+        const hospital = await Hospital.find({ownerEmail:email}).select('specialization');
+
+        if (!hospital) {
+            return res.status(404).json({ message: "Hospital not found" });
+        }
+
+        const doctors = await Doctor.find({ Hospital: hospital[0]?._id });
+
+        
+
+        const result = {
+            hospital,
+            doctors,
+        };
+
+        return res.status(200).json(result);
+
+    } catch (error) {
+        console.error("Error in /book/:id route:", error);
+        return res.status(500).json({ message: "Server error", error: error.message });
+    }
+});
+router.get("/hospital/email",authenticateToken, async (req, res) => {
+    try {
+        const { email } = req.user;
+        console.log(email);
+        const hospital = await Hospital.find({ownerEmail:email});
+
+        if (!hospital) {
+            return res.status(404).json({ message: "Hospital not found" });
+        }
+        console.log(hospital)
+        const doctors = await Doctor.find({ Hospital:hospital[0]?._id });
+        const result = {
+            hospital,
+            doctors,
+        };
+
+        return res.status(200).json(result);
+
+    } catch (error) {
+        console.error("Error in /book/:id route:", error);
+        return res.status(500).json({ message: "Server error", error: error.message });
+    }
+});
+
+router.get("/services/list",authenticateToken,async(req,res)=>{
+    try{
+    const {email}=req.user;
+    const hospital=await Hospital.findOne({ownerEmail:email})
+    if(!hospital){
+        return res.status(400).json({message:"no hospital found"});
+    }
+    return res.status(200).json(hospital);
+    }
+    catch(error){
+        return res.status(404).json({message:"server error",error});
+    }
+})
+
+router.post('/:hospitalId/services', authenticateToken, async (req, res) => {
+    try {
+        const { email } = req.user;
+        const { serviceName } = req.body;
+        if (!serviceName || typeof serviceName !== 'string' || serviceName.trim() === '') {
+            return res.status(400).json({ message: 'Service name is required and must be a non-empty string.' });
+        }
+        const hospital = await Hospital.findOne({ownerEmail:email});
+
+        if (!hospital) {
+            return res.status(404).json({ message: 'Hospital not found.' });
+        }
+        const updatedHospital = await Hospital.findOneAndUpdate(
+            {ownerEmail:email},
+            { $addToSet: { services: serviceName.trim() } },
+            { new: true, runValidators: true }
+        );
+
+        if (!updatedHospital) {
+            return res.status(404).json({ message: 'Hospital not found after update attempt.' });
+        }
+
+        res.status(200).json({
+            message: 'Service added successfully.',
+            hospital: updatedHospital,
+            addedService: serviceName.trim()
+        });
+
+    } catch (error) {
+        console.error('Error adding service:', error);
+        if (error.name === 'CastError') {
+            return res.status(400).json({ message: 'Invalid hospital ID format.' });
+        }
+        res.status(500).json({ message: 'Server error.', error: error.message });
+    }
+});
+
+
+
+router.put('/services/:serviceName', authenticateToken, async (req, res) => {
+    try {
+        const {serviceName } = req.body;
+        const {email}=req.user;
+
+        const hospital = await Hospital.findOne({ownerEmail:email});
+
+        if (!hospital) {
+            return res.status(404).json({ message: 'Hospital not found.' });
+        }
+        if (!hospital.services.includes(serviceName)) {
+            return res.status(404).json({ message: `Service "${serviceName}" not found in hospital's services.` });
+        }
+        const updatedHospital = await Hospital.findOneAndUpdate(
+            {ownerEmail:email},
+            { $pull: { services: serviceName } },
+            { new: true }
+        );
+
+        if (!updatedHospital) {
+            return res.status(404).json({ message: 'Hospital not found after update attempt.' });
+        }
+
+        res.status(200).json({
+            message: 'Service deleted successfully.',
+            hospital: updatedHospital,
+            deletedService: serviceName
+        });
+
+    } catch (error) {
+        console.error('Error deleting service:', error);
+        if (error.name === 'CastError') {
+            return res.status(400).json({ message: 'Invalid hospital ID format.' });
+        }
+        res.status(500).json({ message: 'Server error.', error: error.message });
+    }
+});
+
+router.put('/services/:serviceName', authenticateToken, async (req, res) => {
+    try {
+        const { serviceName, original } = req.body;
+        const { email } = req.user;
+        const hospital = await Hospital.findOne({ ownerEmail: email });
+
+        if (!hospital) {
+            return res.status(404).json({ message: 'Hospital not found.' });
+        }
+        if (!hospital.services.includes(original)) {
+            return res.status(404).json({ message: `Service "${original}" not found in hospital's services.` });
+        }
+        if (hospital.services.includes(serviceName) && original !== serviceName) {
+            return res.status(409).json({ message: `Service "${serviceName}" already exists.` });
+        }
+
+        const serviceIndex = hospital.services.indexOf(original);
+
+        hospital.services[serviceIndex] = serviceName;
+        const updatedHospital = await hospital.save();
+
+        res.status(200).json({
+            message: `Service "${original}" updated to "${serviceName}" successfully.`,
+            hospital: updatedHospital,
+            updatedService: serviceName
+        });
+
+    } catch (error) {
+        console.error('Error updating service:', error);
+        if (error.name === 'CastError') {
+            return res.status(400).json({ message: 'Invalid data format.' });
+        }
+        res.status(500).json({ message: 'Server error.', error: error.message });
     }
 });
 

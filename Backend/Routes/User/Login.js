@@ -1,12 +1,12 @@
 const express=require("express");
-const {Login,Sign,details,dashboard}=require("../../Controllers/User/Login")
+const {Login,Sign,details,dashboard,adminProfile}=require("../../Controllers/User/Login")
 const router=express.Router();
-
+const {authenticateToken}=require("../../Controllers/Authorization/auth")
 router.post("/login",Login);
 router.post("/sign",Sign);
-router.get("/users",details)
-
-router.post("/dashboard",dashboard)
+router.get("/users",details);
+router.get("/profile",authenticateToken,adminProfile);
+router.post("/dashboard",dashboard);
 
 router.get("/check-session", (req, res) => {
   if (req.session.user) {

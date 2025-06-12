@@ -52,7 +52,10 @@ app.use(express.urlencoded({ extended: true }));
 const HistoryRouter=require("./Routes/History")
 const LoginRouter = require("./Routes/User/Login");
 const HospitalRouter=require("./Controllers/Hospitals/HospitalsSection")
-const DoctorRouter=require("./Routes/Hospital/Doctor")
+const DoctorRouter=require("./Routes/Hospital/Doctor");
+const BookingRouter=require("./Controllers/Hospitals/Booking/Bokking");
+const MallRouter=require("./Routes/Malls/Malls");
+const ProductRouter=require("./Routes/Malls/Product")
 app.get("/", (req, res) => {
   res.send("Server is running");
 });
@@ -60,7 +63,10 @@ app.get("/", (req, res) => {
 app.use("/api", LoginRouter);
 app.use("/api/hospitals",HospitalRouter);
 app.use("/api",HistoryRouter);
-app.use("/api/doctor",DoctorRouter)
+app.use("/api/doctor",DoctorRouter);
+app.use("/api/booking",BookingRouter);
+app.use("/api/malls",MallRouter);
+app.use("/api/product",ProductRouter)
 // Start Server
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
