@@ -1,5 +1,6 @@
 const User = require("../../models/User/LoginModel");
 const bcrypt = require("bcryptjs");
+const { generateAuthToken,authenticateToken}=require("../Authorization/auth");
 
 const Login = async (req, res) => {
     try {
@@ -37,23 +38,24 @@ const Sign = async (req, res) => {
         if (existUser) {
             return res.status(409).json({ message: "User with this email already exists. Please login." }); // 409 Conflict is more appropriate
         }
-
-        const hashedPassword = await bcrypt.hash(password, 10);
         const newUser = new User({
             username,
             email,
-            password: hashedPassword,
+            password,
             type,
         });
 
         await newUser.save();
+
         req.session.user = { username, id: newUser._id,email:email };
+        const token = generateAuthToken(newUser);
+        
         req.session.save(err => {
             if (err) {
                 console.error("Session save error in Sign:", err);
                 return res.status(500).json({ message: "Sign up successful but failed to save session." });
             }
-            return res.status(200).json({ message: "Sign in successful" });
+            return res.status(200).json({ message: "Sign in successful",token,newUser });
         });
 
     } catch (error) {
@@ -87,11 +89,6 @@ const dashboard = async (req, res) => {
         }
 
         const { type, username, _id } = findUser;
-        if (!req.session.user || req.session.user.id !== _id.toString()) {
-             return res.status(401).json({ message: "User not authenticated via session." });
-        }
-
-
         let url;
         if (type === "user") {
             return res.status(403).json({ message: "Access denied. This type of user does not have a dedicated dashboard." });
@@ -127,4 +124,11 @@ const dashboard = async (req, res) => {
     }
 };
 
-module.exports = { Login, Sign, details, dashboard };
+
+const adminProfile=async(req,res)=>{
+     res.json({
+        message: `Hello, ${req.user.username || req.user.email}! This is your profile data.`,
+        userDataFromToken: req.user
+    });
+}
+module.exports = { Login, Sign, details, dashboard,adminProfile };
