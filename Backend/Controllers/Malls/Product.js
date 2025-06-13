@@ -213,13 +213,13 @@ exports.updateProduct = async (req, res) => {
 exports.getPopularProduct=async(req,res)=>{
     try {
         const { id } = req.params;
-
+        console.log(id);
         if (!mongoose.Types.ObjectId.isValid(id)) {
             return sendErrorResponse(res, 400, "Invalid Product ID.");
         }
         const mall=await Mall.findById(id);
-        const updatedProduct = await Product.findById(
-            mall?._id,
+        const updatedProduct = await Product.find(
+            {mall:mall?._id}
         ).limit(10);
 
         if (!updatedProduct) {
@@ -266,7 +266,6 @@ exports.getProductById = async (req, res) => {
         if (!mongoose.Types.ObjectId.isValid(productId)) {
             return sendErrorResponse(res, 400, "Invalid Product ID.");
         }
-
         const product = await Product.findById(productId);
 
         if (!product) {

@@ -1,168 +1,86 @@
 const mongoose = require("mongoose");
-const Mall = require('../models/Malls/Malls'); // Adjust path if your models are in a different folder
+const Product = require('../models/Malls/Products'); // Adjust path if your models are in a different folder
 
 // --- Configuration ---
 const MONGO_URI = "mongodb+srv://ndlinfo:ndlinfo@srec.nky2xvg.mongodb.net/SREC?retryWrites=true&w=majority&appName=SREC"; //  <-- IMPORTANT: Replace with your MongoDB URI   // Adjust path if your models are in a different folder
-const Product = require('../models/Malls/Products'); // Adjust path
-const MIN_PRODUCTS_PER_MALL = 70;
-const MAX_PRODUCTS_PER_MALL = 100;
 
-// --- Helper Functions for Data Generation ---
-const getRandomInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
-const getRandomFloat = (min, max) => parseFloat((Math.random() * (max - min) + min).toFixed(2));
-const getRandomItem = (arr) => arr[Math.floor(Math.random() * arr.length)];
-const getRandomSubset = (arr, minCount, maxCount) => {
+// --- Array of Image URLs (your provided links) ---
+const imageUrls = [
+    "https://img.freepik.com/free-photo/shop-clothing-clothes-shop-hanger-modern-shop-boutique_1150-8886.jpg?ga=GA1.1.367584337.1719885901&semt=ais_hybrid&w=740",
+    "https://img.freepik.com/free-photo/side-view-man-looking-clothes-hanging-rail-shop_23-2148175643.jpg?ga=GA1.1.367584337.1719885901&semt=ais_hybrid&w=740",
+    "https://img.freepik.com/free-photo/fashion-clothing-hangers-show_1153-5492.jpg?ga=GA1.1.367584337.1719885901&semt=ais_hybrid&w=740",
+    "https://img.freepik.com/free-photo/two-young-beautiful-girlfriends-are-walking-style-loft-showroom-stylish-things-with-gift-bags-smiling-each-other_496169-2354.jpg?ga=GA1.1.367584337.1719885901&semt=ais_hybrid&w=740",
+    "https://img.freepik.com/free-photo/beautiful-second-hand-market_23-2149353670.jpg?ga=GA1.1.367584337.1719885901&semt=ais_hybrid&w=740",
+    "https://img.freepik.com/free-photo/interior-clothing-store-with-stylish-merchandise-racks-fashionable-brand-design-casual-wear-modern-boutique-empty-fashion-showroom-shopping-centre-with-elegant-merchandise_482257-65537.jpg?ga=GA1.1.367584337.1719885901&semt=ais_hybrid&w=740",
+    "https://img.freepik.com/free-photo/empty-boutique-shopping-centre_482257-78792.jpg?ga=GA1.1.367584337.1719885901&semt=ais_hybrid&w=740",
+    "https://img.freepik.com/free-photo/pretty-girls-choosing-clothes-shop_23-2147669923.jpg?ga=GA1.1.367584337.1719885901&semt=ais_hybrid&w=740",
+    "https://img.freepik.com/free-photo/blurred-clothing-store-shopping-mall_1258-5.jpg?ga=GA1.1.367584337.1719885901&semt=ais_hybrid&w=740",
+    "https://img.freepik.com/free-photo/clothing-store-with-blurred-effect_23-2148164738.jpg?ga=GA1.1.367584337.1719885901&semt=ais_hybrid&w=740",
+    "https://img.freepik.com/free-photo/beautiful-woman-buying-clothes-store-holding-shopping-bags-hand_23-2148101655.jpg?ga=GA1.1.367584337.1719885901&semt=ais_hybrid&w=740",
+    "https://img.freepik.com/free-photo/friends-shopping-second-hand-market_23-2149353695.jpg?ga=GA1.1.367584337.1719885901&semt=ais_hybrid&w=740",
+    "https://img.freepik.com/free-photo/rows-hangers-with-clothes_23-2147669916.jpg?ga=GA1.1.367584337.1719885901&semt=ais_hybrid&w=740",
+    "https://img.freepik.com/free-photo/full-shot-woman-looking-clothes_23-2150082870.jpg?ga=GA1.1.367584337.1719885901&semt=ais_hybrid&w=740",
+    "https://img.freepik.com/free-photo/woman-choosing-clothes-shop_23-2147669917.jpg?ga=GA1.1.367584337.1719885901&semt=ais_hybrid&w=740",
+    "https://img.freepik.com/free-photo/woman-paying-clothes-store_23-2148915620.jpg?ga=GA1.1.367584337.1719885901&semt=ais_hybrid&w=740",
+    "https://img.freepik.com/free-photo/pretty-woman-looking-new-dress_23-2147688392.jpg?ga=GA1.1.367584337.1719885901&semt=ais_hybrid&w=740",
+    "https://img.freepik.com/free-photo/pretty-consumer-posing-clothing-shop_23-2147669926.jpg?ga=GA1.1.367584337.1719885901&semt=ais_hybrid&w=740"
+];
+
+// Helper function to get a random element from an array
+const getRandomElement = (arr) => arr[Math.floor(Math.random() * arr.length)];
+
+// Helper function to get N unique random elements from an array
+const getUniqueRandomElements = (arr, n) => {
+    if (n > arr.length) {
+        console.warn(`Attempted to get ${n} unique elements from an array of size ${arr.length}. Returning all elements.`);
+        return [...arr];
+    }
     const shuffled = [...arr].sort(() => 0.5 - Math.random());
-    return shuffled.slice(0, getRandomInt(minCount, maxCount));
+    return shuffled.slice(0, n);
 };
 
-// --- Static Data for Product Generation ---
-const productNames = [
-    "Designer T-Shirt", "Classic Denim Jeans", "Summer Dress", "Kids Play Set",
-    "Fiction Novel", "Educational Book", "Running Shoes", "Formal Loafers",
-    "Leather Handbag", "Smartwatch", "Gift Basket", "Customized Mug",
-    "Wireless Headphones", "Yoga Mat", "Coffee Maker", "Smartphone Cover",
-    "Backpack", "Sunglasses", "Winter Jacket", "Bluetooth Speaker"
-];
+mongoose.connect(MONGO_URI)
+    .then(() => console.log("MongoDB connected successfully."))
+    .catch(err => console.error("MongoDB connection error:", err));
 
-const productDescriptions = [
-    "High-quality fabric and unique design for ultimate comfort and style.",
-    "Durable and stylish, perfect for everyday wear.",
-    "Lightweight and breathable, ideal for sunny days.",
-    "Engaging and educational, promotes imaginative play.",
-    "A captivating read that will keep you on the edge of your seat.",
-    "Learn something new with this comprehensive guide.",
-    "Engineered for performance and comfort on your daily runs.",
-    "Elegant and sophisticated, suitable for any formal occasion.",
-    "Crafted from genuine leather with ample storage.",
-    "Stay connected and track your fitness with this sleek device.",
-    "A thoughtful collection of curated items for any occasion.",
-    "Personalized with your favorite photo or message.",
-    "Immersive sound experience with crystal-clear audio.",
-    "Perfect grip and cushioning for all your yoga poses.",
-    "Brew the perfect cup every time with this advanced machine.",
-    "Protect your phone in style with this durable cover.",
-    "Spacious and comfortable, ideal for travel or daily commute.",
-    "Stylish and UV-protected, perfect for outdoor activities.",
-    "Warm and cozy, designed for extreme cold weather.",
-    "Portable and powerful, enjoy your music anywhere."
-];
-
-const productImages = [
-    "https://images.unsplash.com/photo-1542291026-79eed3a2bb7b?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", // Shoes
-    "https://images.unsplash.com/photo-1598576404245-0d297a78484e?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", // T-shirt
-    "https://images.unsplash.com/photo-1582299849500-ddc39750058b?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", // Book
-    "https://images.unsplash.com/photo-1601923297594-5509e51c8f8b?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", // Watch/Accessories
-    "https://images.unsplash.com/photo-1596726591244-67d710f63b20?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", // Kids toy
-    "https://images.unsplash.com/photo-1588825867375-101168128362?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", // Bag/Accessories
-    "https://images.unsplash.com/photo-1546213271-9f6b986a8775?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", // Gifts
-    "https://images.unsplash.com/photo-1521789718471-a472c2196024?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", // Apparel
-    "https://images.unsplash.com/photo-1589254881944-933e144a49c9?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", // Electronics
-    "https://images.unsplash.com/photo-1563725838421-4f9e160e909a?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" // Home decor/Gifts
-];
-
-const categories = ["Men", "Women", "Kids", "Books", "Footwear", "Accessories", "Gifts"];
-const brands = ["UrbanFit", "LuxeStyle", "TechNova", "ReadWell", "StridePro", "EleganceCraft", "JoyfulPlay", "ZenHome"];
-const sizesMenWomen = ["XS", "S", "M", "L", "XL", "XXL"];
-const sizesFootwear = ["6", "7", "8", "9", "10", "11"];
-const sizesKids = ["2T", "3T", "4T", "5T", "6", "8", "10"]; // Common kids sizes
-const colors = ["Red", "Blue", "Black", "White", "Green", "Yellow", "Pink", "Gray", "Brown", "Purple"];
-const materials = ["Cotton", "Polyester", "Denim", "Leather", "Canvas", "Plastic", "Wood", "Metal", "Glass", "Wool"];
-const genders = ["Men", "Women", "Unisex", "Kids"];
-const storeNames = [
-    "Fashion Hub", "Tech Galaxy", "Bookworm's Corner", "Sole Mates", "Accessory Haven",
-    "Gift Palace", "Kids World", "The Style Loft", "Gadget Zone", "Page Turner Books",
-    "Footloose Fashions", "Chic & Shine", "Playful Panda", "Novel Nook", "Step Up Shoes"
-];
-
-
-function generateProductData(mallId, storeName, count) {
-    const products = [];
-    for (let i = 0; i < count; i++) {
-        const category = getRandomItem(categories);
-        let availableSizes = [];
-        if (category === "Footwear") {
-            availableSizes = getRandomSubset(sizesFootwear, 2, 4);
-        } else if (category === "Kids") {
-            availableSizes = getRandomSubset(sizesKids, 2, 4);
-        } else {
-            availableSizes = getRandomSubset(sizesMenWomen, 2, 4);
-        }
-
-        const gender = (category === "Men" || category === "Women" || category === "Kids") ? category : getRandomItem(genders);
-
-        const product = {
-            name: `${getRandomItem(productNames)} ${i + 1}`,
-            description: getRandomItem(productDescriptions),
-            images: getRandomSubset(productImages, 1, 3), // 1 to 3 images per product
-            price: getRandomFloat(100, 5000), // Prices in INR
-            currency: "INR",
-            category: category,
-            brand: getRandomItem(brands),
-            availableSizes: availableSizes,
-            availableColors: getRandomSubset(colors, 2, 4),
-            material: getRandomItem(materials),
-            gender: gender,
-            mall: new mongoose.Types.ObjectId(mallId), // Store as ObjectId
-            storeName: storeName, // Specific store name for this batch of products
-            stockQuantity: getRandomInt(10, 200),
-            status: Math.random() > 0.9 ? "out_of_stock" : "active", // 10% chance of out_of_stock
-        };
-        products.push(product);
-    }
-    return products;
-}
-
-// --- Main Insertion Logic ---
-async function seedProducts() {
-    let totalProductsInserted = 0;
-
+// --- Function to Assign Images to Existing Mall Data ---
+const assignImagesToMalls = async () => {
     try {
-        console.log('Connecting to MongoDB...');
-        await mongoose.connect(MONGO_URI, {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-        });
-        console.log('MongoDB connected successfully!');
-
-        console.log('Fetching all mall IDs from the database...');
-        const mallIds = await Mall.find({}, { _id: 1 });
-
-        if (mallIds.length === 0) {
-            console.warn('No malls found in the database. Please run the `seedMalls.js` script first.');
+        if (imageUrls.length === 0) {
+            console.warn("No image URLs provided. Cannot assign images to mall data.");
             return;
         }
 
-        console.log(`Found ${mallIds.length} malls. Generating products for each...`);
+        console.log("Fetching all mall documents...");
+        const malls = await Product.find({});
+        console.log(`Found ${malls.length} mall(s) to update.`);
 
-        for (const mallDoc of mallIds) {
-            const mallId = mallDoc._id;
-            const numProducts = getRandomInt(MIN_PRODUCTS_PER_MALL, MAX_PRODUCTS_PER_MALL);
-            const chosenStoreName = getRandomItem(storeNames); // A mall can have multiple stores, so pick one for this batch
-
-            const productsToInsert = generateProductData(mallId, chosenStoreName, numProducts);
-
-            console.log(`  Inserting ${productsToInsert.length} products for Mall ID: ${mallId}`);
-            // Use { ordered: false } to allow insertion of other products even if one fails
-            const result = await Product.insertMany(productsToInsert, { ordered: false });
-            totalProductsInserted += result.length;
-            console.log(`  Successfully inserted ${result.length} products for this mall.`);
+        if (malls.length === 0) {
+            console.log("No malls found in the database. Please add some mall data first.");
+            return;
         }
 
-        console.log(`\n--- Product seeding complete! ---`);
-        console.log(`Total products generated and inserted: ${totalProductsInserted}`);
+        let updatedCount = 0;
+        for (const mall of malls) {
+            
+            const availableGalleryImages = imageUrls.filter(url => url !== mall.images[0]);
+            mall.images = getUniqueRandomElements(availableGalleryImages, 3);
+
+            await mall.save();
+            updatedCount++;
+            console.log(`Updated images for mall: ${mall.name} (ID: ${mall._id})`);
+        }
+
+        console.log(`\nSuccessfully updated images for ${updatedCount} mall(s).`);
 
     } catch (error) {
-        console.error('An error occurred during product seeding:', error);
-        if (error.code === 11000) {
-            console.error('Note: Duplicate key error encountered. Some product documents might not have been inserted due to unique constraints if you have any on product fields (though none are defined on current schema).');
-        }
+        console.error("Error assigning images to malls:", error);
     } finally {
-        console.log('Disconnecting from MongoDB...');
-        await mongoose.disconnect();
-        console.log('MongoDB disconnected.');
+        // Disconnect from MongoDB after the operation is complete
+        mongoose.disconnect();
+        console.log("MongoDB disconnected.");
     }
-}
+};
 
-// Execute the product seeding function
-seedProducts();
+// --- Execute the function ---
+assignImagesToMalls();
