@@ -190,7 +190,10 @@ import React,{useState,useEffect}from "react"
 import { useLocation } from "react-router-dom"
 import axios from "axios"
 import {Showcase} from "../../../Pages/Showcase/Showcase"
-import Overview from "./Overview"
+import {MallOverviewContent} from "./Overview"
+import {MallAboutContent} from "./About"
+import ProductCard from "./Product"
+import ViewProduct from './ViewProduct';
 const MallType=()=>{
     const [product,setProduct]=useState('');
     const location=useLocation();
@@ -215,13 +218,14 @@ const MallType=()=>{
         fetch();
     },[mailId])
     const fetch=()=>{
-        const url=`${import.meta.env.VITE_SERVER_URL}/api/product/popular/:${mailId}`
+        const url=`${import.meta.env.VITE_SERVER_URL}/api/product/popular/${mailId}`
         axios.get(url,{withCredentials:true})
         .then((response)=>{
+          console.log(response.data);
             setProduct(response.data.product);
         })
         .catch((error)=>{
-            console.log(response);
+            console.log(error);
         })
     }
     const getInitialActiveNavLink = () => {
@@ -236,7 +240,8 @@ const MallType=()=>{
     { label: 'Overview', id: 'overview' },
     { label: 'Products', id: 'products' },
     { label: 'Reviews', id: 'reviews' },
-    { label: 'Contact Us', id: 'contact_us' },
+    { label: 'AboutUs', id: 'about_us' },
+    {label:'viewProduct',id:'view_product'},
   ];
   useEffect(()=>{
     setActiveNavLink(service3);
@@ -245,9 +250,15 @@ const MallType=()=>{
   const renderContent = () => {
       switch (activeNavLink) {
         case 'Overview':
-          return <Overview mallData={mall} product={product}/>;
+          return <MallOverviewContent hospital={mall} product={product}/>;
+        case 'AboutUs':
+          return <MallAboutContent hospital={mall}/>;
+        case 'Products':
+          return <ProductCard mallId={mailId}/>;
+        case 'viewProduct':
+          return <ViewProduct defaultProduct={product[0]}/>;
         default:
-          return <Overview hospital={hospital} />;
+          return <MallOverviewContent hospital={mall} />;
       }
     };
     return(
@@ -258,8 +269,7 @@ const MallType=()=>{
                 setActiveNavLink={setActiveNavLink}
                 hospital={mall}
               />
-              {/* Content area for displaying different sections (Overview, Doctors, etc.) */}
-              <div className="relative content-area min-h-[500px] md:flex md:items-center md:justify-center">
+              <div className="relative content-area min-h-[500px] md:flex md:items-center  md:mx-10">
                 {renderContent()}
               </div>
             </div>

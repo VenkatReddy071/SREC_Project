@@ -188,9 +188,12 @@ export const Heading = () => {
             we ensure you find exactly what you need, when you need it.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
+            <Link to="/services">
             <button className="h-12 border-2 border-blue-600 text-blue-600 px-6 py-3 font-semibold rounded-full hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50">
+
               Learn More
             </button>
+            </Link>
             <button className="flex gap-2 justify-center items-center bg-blue-600 text-white px-6 py-3 font-semibold rounded-full hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50">
               Sign Up <IoIosArrowForward />
             </button>

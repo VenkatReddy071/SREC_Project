@@ -19,6 +19,7 @@ import LearnMore from "./Components/Hospital/Home/LearnMore"
 import  FAQS  from "./Components/Fotter/AboutSection/FAQS";
 import HospitalForm from "./Pages/Register/Hospital";
 import  Support  from "./Components/Fotter/AboutSection/Support";
+import MainServicePage from "./Components/Hospital/ShowCaseSection/Service/ServicePage"
 import {RestaurantHomePage} from "./Components/Dining/Restaurant"
 // Admin Layout with sidebar and footer links
 import { DashHome } from "./Dashboard/Admin/DashHome/Home";
@@ -51,6 +52,7 @@ import DashboardLogin from "./user/DashboardLogin";
 import { Type } from "./Dashboard/DashboardType/Type";
 import { SectionType } from "./Components/Hospital/HospitalSection/SectionType";
 import Overview from "./Components/Hospital/ShowCaseSection/Overview/Overview";
+import CheckoutPage from "./Components/Mails/CheckoutPage";
 
 
 function App() {
@@ -85,8 +87,10 @@ function App() {
           <Route path="/explore-technology" element={<Technology/>}/>
           <Route path="/learn-department" element={<LearnDepartment/>}/>
           <Route path="/join-team" element={<Meet/>}/>
+          <Route path="/services" element={<MainServicePage/>}/>
+          
         </Route>
-        
+        <Route path="/checkout" element={<CheckoutPage/>}/>
         <Route path="/Register" element={<HospitalForm/>}/>
         <Route path="/join/dashboard" element={<DashboardLogin/>}/>
         <Route path="/dashboard/type" element={<Type/>}/>

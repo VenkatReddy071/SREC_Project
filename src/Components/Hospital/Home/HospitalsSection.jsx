@@ -326,7 +326,7 @@ export const HospitalsSection = () => {
             {list.map((item, index) => (
               <button
                 key={index}
-                className={`px-4 py-2 text-center cursor-pointer font-semibold text-gray-700 hover:text-blue-600 focus:outline-none ${
+                className={`md:px-4 md:py-2 text-center cursor-pointer font-semibold text-gray-700 hover:text-blue-600 focus:outline-none ${
                   activeIndex === index ? 'border-b-2 border-blue-500 text-blue-600' : ''
                 }`}
                 onClick={() => setActiveIndex(index)}
@@ -336,7 +336,7 @@ export const HospitalsSection = () => {
             ))}
             {activeIndex === 0 && (
               <button
-                className="ml-auto flex items-center px-4 py-2 text-blue-600 font-semibold rounded-md hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+                className="hidden  md:ml-auto md:flex items-center md:px-4 py-2 text-blue-600 font-semibold rounded-md hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
                 onClick={() => setShowFilterSidebar(true)}
               >
                 {/* Filter Icon SVG */}
@@ -356,7 +356,7 @@ export const HospitalsSection = () => {
             overflowY: 'auto',
             marginTop: '2rem',
             paddingRight: '15px',
-            marginLeft:'2rem'
+            marginLeft:'0.2rem'
           }}
           className="relative"
         >
