@@ -1,75 +1,119 @@
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
+const {authenticateToken}=require("../../../Controllers/Authorization/auth")
 
 const Order = require('../../../models/Malls/Order');
 const Cart = require('../../../models/Malls/Cart');
 const Product = require('../../../models/Malls/Products');
 const User = require('../../../models/User/LoginModel');
+const Menu = require('../../../models/Dining/Menu');
+const orderController = require('../../../Controllers/Malls/Order');
 
 const calculateOrderTotalsAndValidate = async (cartItems) => {
     let subtotal = 0;
     let estimatedTaxes = 0;
-    const orderProducts = [];
-    const productUpdates = [];
+    const orderItems = [];
+    const productStockUpdates = [];
 
-    let orderMallId = null;
-    let orderStoreName = null;
-    let orderCurrency = 'INR';
+    let orderSourceType = null;
+    let orderSourceId = null;
 
     if (cartItems.length === 0) {
-        throw new Error('Cart is empty. Cannot place an order.');
+        throw new Error('No items to process for order.');
     }
-    orderMallId = cartItems[0].mall;
-    orderStoreName = cartItems[0].storeName;
-    orderCurrency = cartItems[0].currency;
+
+    orderSourceType = cartItems[0].sourceType;
+    orderSourceId = cartItems[0].sourceId;
 
     for (const cartItem of cartItems) {
-        const product = await Product.findById(cartItem.product._id);
+        let currentItemDoc = null;
+        let itemPrice = 0;
+        let itemCategory = null;
+        let availableQuantity = Infinity;
 
-        if (!product) {
-            throw new Error(`Product ${cartItem.name} not found.`);
-        }
-        if (product.status === 'inactive') {
-            throw new Error(`Product ${product.name} is inactive and cannot be ordered.`);
-        }
-        if (product.stockQuantity < cartItem.quantity) {
-            throw new Error(`Insufficient stock for ${product.name}. Only ${product.stockQuantity} available.`);
-        }
-        if (orderMallId && cartItem.mall.toString() !== orderMallId.toString()) {
-            throw new Error('Cart contains items from multiple malls. Please checkout items from one mall at a time.');
+        if (cartItem.sourceType !== orderSourceType || cartItem.sourceId.toString() !== orderSourceId.toString()) {
+            throw new Error(`Cart contains items from multiple ${orderSourceType === 'Restaurant' ? 'restaurants' : 'malls/stores'}. Please checkout items from one ${orderSourceType === 'Restaurant' ? 'restaurant' : 'mall/store'} at a time.`);
         }
 
-        const priceAtOrder = product.price;
-        subtotal += priceAtOrder * cartItem.quantity;
+        if (cartItem.itemModelType === 'Product') {
+            currentItemDoc = await Product.findById(cartItem.product);
 
-        if (product.category === 'Electronics') {
-            estimatedTaxes += (priceAtOrder * cartItem.quantity) * 0.18;
+            if (!currentItemDoc) {
+                throw new Error(`Product "${cartItem.name}" not found.`);
+            }
+            if (currentItemDoc.status === 'inactive') {
+                throw new Error(`Product "${currentItemDoc.name}" is inactive and cannot be ordered.`);
+            }
+            if (currentItemDoc.stockQuantity < cartItem.quantity) {
+                throw new Error(`Insufficient stock for "${currentItemDoc.name}". Only ${currentItemDoc.stockQuantity} available.`);
+            }
+
+            itemPrice = currentItemDoc.price;
+            itemCategory = currentItemDoc.category;
+            availableQuantity = currentItemDoc.stockQuantity;
+
+            productStockUpdates.push({
+                productId: currentItemDoc._id,
+                newStock: currentItemDoc.stockQuantity - cartItem.quantity
+            });
+
+        } else if (cartItem.itemModelType === 'Menu') {
+            currentItemDoc = await Menu.findById(cartItem.product);
+
+            if (!currentItemDoc) {
+                throw new Error(`Menu item "${cartItem.name}" not found.`);
+            }
+            if (!currentItemDoc.isAvailable) {
+                throw new Error(`Menu item "${currentItemDoc.name}" is currently unavailable and cannot be ordered.`);
+            }
+
+            itemPrice = currentItemDoc.priceINR;
+            itemCategory = currentItemDoc.category;
         } else {
-            estimatedTaxes += (priceAtOrder * cartItem.quantity) * 0.05;
+            throw new Error(`Invalid itemModelType "${cartItem.itemModelType}" found in cart.`);
         }
 
-        orderProducts.push({
-            product: cartItem.product._id,
+        subtotal += itemPrice * cartItem.quantity;
+
+        if (orderSourceType === 'Product' && itemCategory === 'Electronics') {
+            estimatedTaxes += (itemPrice * cartItem.quantity) * 0.18;
+        } else {
+            estimatedTaxes += (itemPrice * cartItem.quantity) * 0.05;
+        }
+
+        orderItems.push({
+            product: cartItem.product,
+            name: cartItem.name,
+            image: cartItem.image,
+            price: itemPrice,
+            currency: 'INR',
             quantity: cartItem.quantity,
-            priceAtOrder: priceAtOrder,
-            selectedSize: cartItem.selectedSize,
-            selectedColor: cartItem.selectedColor,
-        });
-        productUpdates.push({
-            productId: product._id,
-            newStock: product.stockQuantity - cartItem.quantity
+            itemModelType: cartItem.itemModelType,
+            sourceType: cartItem.sourceType,
+            sourceId: cartItem.sourceId,
+            selectedSize: cartItem.selectedSize || undefined,
+            selectedColor: cartItem.selectedColor || undefined,
+            storeName: cartItem.storeName || undefined
         });
     }
 
     const totalAmount = parseFloat((subtotal + estimatedTaxes).toFixed(2));
 
-    return { orderProducts, totalAmount, estimatedTaxes, orderMallId, orderStoreName, orderCurrency, productUpdates };
+    return {
+        orderItems,
+        totalAmount,
+        estimatedTaxes,
+        orderSourceType,
+        orderSourceId,
+        productStockUpdates
+    };
 };
+
 
 router.post('/', async (req, res) => {
     const userId = req.session.user?.id;
-    const { customerName, customerEmail, customerPhoneNumber, paymentMethod } = req.body;
+    const { customerName, customerEmail, customerPhoneNumber, paymentMethod, orderType, pickupTime, notes } = req.body;
 
     if (!userId) {
         return res.status(401).json({ message: 'Authentication required. No user session.' });
@@ -88,7 +132,23 @@ router.post('/', async (req, res) => {
             throw new Error('Your cart is empty. Cannot place an order.');
         }
 
-        const { orderProducts, totalAmount, orderMallId, orderStoreName, orderCurrency, productUpdates } = await calculateOrderTotalsAndValidate(cart.items);
+        const firstCartItemModelType = cart.items.length > 0 ? cart.items[0].itemModelType : null;
+        if (!firstCartItemModelType) {
+            throw new Error('Cart is empty. Cannot place an order.');
+        }
+
+        const filteredCartItems = cart.items.filter(item => item.itemModelType === firstCartItemModelType);
+
+        if (filteredCartItems.length === 0) {
+            throw new Error(`Your cart does not contain any ${firstCartItemModelType === 'Menu' ? 'menu items' : 'products'} for this type of order.`);
+        }
+        if (filteredCartItems.length !== cart.items.length) {
+            console.warn(`User cart contains mixed item types. Only ${firstCartItemModelType} items will be checked out.`);
+        }
+
+
+        const { orderItems, totalAmount, orderSourceType, orderSourceId, productStockUpdates, estimatedTaxes} = await calculateOrderTotalsAndValidate(filteredCartItems);
+        
         const user = await User.findById(userId).session(session);
         if (!user) {
             throw new Error('User not found.');
@@ -99,32 +159,46 @@ router.post('/', async (req, res) => {
             customerName,
             customerEmail,
             customerPhoneNumber,
-            mall: orderMallId,
-            storeName: orderStoreName,
-            products: orderProducts,
+            orderDate: Date.now(),
+            sourceType: orderSourceType,
+            sourceId: orderSourceId,
+            items: orderItems,
             totalAmount,
-            currency: orderCurrency,
+            currency: 'INR',
             paymentMethod,
-            orderStatus: 'Pending',
+            orderStatus: 'pending',
+            orderType: orderSourceType === 'Restaurant' ? orderType : undefined,
+            pickupTime: (orderSourceType === 'Restaurant' && orderType === 'Takeaway') ? pickupTime : undefined,
+            notes,
+            Tax:estimatedTaxes,
         });
 
         await newOrder.save({ session });
-        for (const update of productUpdates) {
-            await Product.findByIdAndUpdate(
-                update.productId,
-                { $set: { stockQuantity: update.newStock } },
-                { new: true, session }
-            );
+
+        if (orderSourceType === 'Product') {
+            for (const update of productStockUpdates) {
+                await Product.findByIdAndUpdate(
+                    update.productId,
+                    { $set: { stockQuantity: update.newStock } },
+                    { new: true, session }
+                );
+            }
         }
 
-        cart.items = [];
-        cart.totalPrice = 0;
+        cart.items = cart.items.filter(item => item.itemModelType !== firstCartItemModelType);
+        
+        if (cart.items.length > 0) {
+             console.warn("Cart still contains other item types after checkout. Total price might need full recalculation.");
+             cart.totalPrice = 0;
+        } else {
+            cart.totalPrice = 0;
+        }
         await cart.save({ session });
 
         await session.commitTransaction();
         session.endSession();
 
-        res.status(201).json({ message: 'Order placed successfully!', order: newOrder });
+        res.status(201).json({ message: `${orderSourceType} Order placed successfully!`, order: newOrder });
 
     } catch (err) {
         if (session) {
@@ -135,5 +209,21 @@ router.post('/', async (req, res) => {
         res.status(500).json({ message: err.message || 'Failed to place order.' });
     }
 });
+
+
+
+router.get('/orders', authenticateToken, orderController.getAllOrders);
+
+router.get('/orders/user', orderController.getUserOrders);
+
+router.get('/orders/mall',authenticateToken, orderController.getMallOrders);
+router.get('/orders/restaurant',authenticateToken, orderController.getRestaurantOrders);
+
+router.get('/orders/:orderId',authenticateToken, orderController.getOrderById);
+router.put('/orders/:orderId/status', orderController.updateOrderStatus);
+router.delete('/orders/:orderId',  orderController.deleteOrder);
+
+
+module.exports = router;
 
 module.exports = router;

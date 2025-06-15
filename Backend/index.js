@@ -57,7 +57,9 @@ const BookingRouter=require("./Controllers/Hospitals/Booking/Bokking");
 const MallRouter=require("./Routes/Malls/Malls");
 const ProductRouter=require("./Routes/Malls/Product");
 const CartRouter=require("./Routes/Malls/Cart");
-const OrderRouter=require("./Routes/Malls/ORder/Order")
+const OrderRouter=require("./Routes/Malls/ORder/Order");
+const RestaurantRouter=require("./Routes/Restaurant/Restaurant");
+const MenuRouter=require("./Routes/Restaurant/Menu");
 app.get("/", (req, res) => {
   res.send("Server is running");
 });
@@ -71,6 +73,8 @@ app.use("/api/malls",MallRouter);
 app.use("/api/product",ProductRouter);
 app.use("/api/cart",CartRouter);
 app.use("/api/order",OrderRouter);
+app.use("/api/restaurant",RestaurantRouter);
+app.use("/api/menu",MenuRouter);
 // Start Server
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {

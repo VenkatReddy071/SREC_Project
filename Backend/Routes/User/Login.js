@@ -10,6 +10,7 @@ router.post("/dashboard",dashboard);
 
 router.get("/check-session", (req, res) => {
   if (req.session.user) {
+    console.log(req.session.user);
     res.status(200).json({ loggedIn: true, user: req.session.user });
   } else {
     res.status(200).json({ loggedIn: false });
