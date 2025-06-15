@@ -14,7 +14,7 @@ export const CartProvider = ({ children }) => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [cartMessage, setCartMessage] = useState(null);
-
+    const [cartLength,setCartLength]=useState(0);
     const VITE_SERVER_URL = import.meta.env.VITE_SERVER_URL;
 
     const showCartMessage = (message, type = 'success') => {
@@ -35,6 +35,7 @@ export const CartProvider = ({ children }) => {
                 estimatedTaxes: response.data.estimatedTaxes,
                 grandTotal: response.data.grandTotal,
             });
+            setCartLength(response?.data?.cart?.items?.length);
             showCartMessage('Cart loaded successfully.', 'success');
         } catch (err) {
             console.error("Error fetching cart:", err);
@@ -142,6 +143,7 @@ export const CartProvider = ({ children }) => {
         loading,
         error,
         cartMessage,
+        cartLength,
         fetchCart,
         addToCart,
         updateCartQuantity,

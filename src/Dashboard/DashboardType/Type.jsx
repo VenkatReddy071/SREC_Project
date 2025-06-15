@@ -16,6 +16,9 @@ export const Type = () => {
         case "restaurant-dashboard":
           naviagte("/restaurant-dashboard")
           break;
+        case "fashion-dashboard":
+          naviagte("/fashion-dashboard")
+          break;
         case "school-dashboard":
           naviagte("/school-Dashboard")
       }

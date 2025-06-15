@@ -204,11 +204,11 @@ export const Showcase = ({
     const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
 
     const navLinks = defaultNavLinks;
-    const mainImage = hospital?.image;
-    const thumbnail1 = hospital?.gallery?.[0];
-    const viewGalleryImage = hospital?.gallery?.[1];
+    const mainImage = hospital?.image || hospital?.imageUrls?.mainImage;
+    const thumbnail1 = hospital?.gallery?.[0] ||hospital?.imageUrls?.galleryImages[0];
+    const viewGalleryImage = hospital?.gallery?.[1] || hospital?.imageUrls?.galleryImages?.length>=1 ? hospital?.imageUrls?.galleryImages[1]:hospital?.imageUrls?.galleryImages[0];
 
-    const galleryModalImages = hospital?.gallery?.length > 0 ? hospital.gallery : [];
+    const galleryModalImages = hospital?.gallery?.length > 0 ? hospital.gallery :hospital?.imageUrls?.galleryImages?.length>0 ? hospital?.imageUrls?.galleryImages:[];
 
     useState(()=>{
         if(hospital){

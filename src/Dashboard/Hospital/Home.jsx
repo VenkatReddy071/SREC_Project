@@ -1,4 +1,4 @@
-// src/components/hospital-dashboard/DashHome.jsx
+
 import React, { useState, useEffect } from "react";
 import { NavLink, Outlet } from "react-router-dom";
 import axios from "axios"; 
@@ -27,6 +27,7 @@ const menuItems = [
   { name: "Offers", path: "/hospital-dashboard/offers", icon: <FaTags /> },
   { name: "Customer Notifications", path: "/hospital-dashboard/notifications", icon: <FaBell /> },
   { name: "Services Page", path: "/hospital-dashboard/services", icon: <FaClinicMedical /> },
+  {name:"Articles",path:'/hospital-dashboard/articles',icon:<FaComments />},
   { name: "CMS (General)", path: "/hospital-dashboard/cms", icon: <FaComments /> },
   { name: "Settings", path: "/hospital-dashboard/settings", icon: <FaCog /> },
 ];
@@ -37,12 +38,11 @@ export const DashHomeHospital = () => {
   const [pageTitle, setPageTitle] = useState("Dashboard"); 
   const [profileOpen, setProfileOpen] = useState(false);
   const [isLogin, setIsLogin] = useState(false); 
-  const [name, setName] = useState('Admin'); 
+  const [name, setName] = useState(''); 
   
   const toggleSidebar = () => setIsOpen(!isOpen);
 
   useEffect(() => {
-    // Set initial page title based on current path
     const currentPath = window.location.pathname;
     const activeItem = menuItems.find(item => currentPath.startsWith(item.path));
     if (activeItem) {
@@ -61,7 +61,7 @@ export const DashHomeHospital = () => {
       .then((response) => {
         console.log(response.data)
         setIsLogin(response.data?.loggedIn);
-        setName(response.data?.user?.username || 'Admin'); 
+        setName(response.data?.userDataFromToken?.username);
       })
       .catch((error) => {
         console.error("Session check error:", error);
@@ -126,11 +126,11 @@ export const DashHomeHospital = () => {
               </span>
             </NavLink>
           ))}
-          {/* Logout Button (Moved outside menuItems for distinct styling if desired) */}
+        
           <NavLink
-            to="/logout" // Assuming you have a logout route
+            to="/logout" 
             className="flex items-center gap-4 p-3 mx-2 rounded-lg text-lg text-gray-700 hover:bg-red-100 hover:text-red-600 transition-colors duration-200"
-            // You might need to adjust 'mt-auto' or container height if this is pushed too far down
+  
           >
             <span className="text-xl"><FaSignOutAlt /></span>
             <span className={`${isOpen ? "block" : "hidden"} whitespace-nowrap overflow-hidden text-ellipsis`}>
@@ -138,6 +138,14 @@ export const DashHomeHospital = () => {
             </span>
           </NavLink>
         </nav>
+          <div className={`fixed bottom-0 bg-blue-800 text-gray-300 p-4 mt-auto border-t border-gray-700  ${isOpen ? "w-60" : "w-20 h-20"}`}>
+          <div className={`${isOpen ? "block " : "hidden "}`}>
+          <h2 className="font-semibold text-lg text-white">venkat</h2>
+          <p className="text-sm text-gray-400">Address: ff</p>
+          <p className="text-sm text-gray-400">Location:</p>
+          </div>
+    
+        </div>
       </div>
 
       <div className="flex-1 flex flex-col bg-gray-100">
@@ -146,15 +154,14 @@ export const DashHomeHospital = () => {
           <h1 className="text-2xl font-semibold text-gray-800">{pageTitle}</h1>
 
           <div className="flex items-center gap-6 relative">
-            {/* Notification Bell (for internal notifications) */}
+            
             <div className="relative cursor-pointer text-gray-600 hover:text-blue-600 transition-colors">
               <FaBell className="w-6 h-6" />
               <span className="absolute -top-2 -right-2 bg-red-600 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full border border-white">
-                0 {/* Dynamic notification count */}
+                0 
               </span>
             </div>
 
-            {/* User Profile Dropdown */}
             <div className="relative">
               <button onClick={() => setProfileOpen(!profileOpen)} className="flex items-center gap-2 cursor-pointer focus:outline-none">
                 <div className="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center text-lg font-bold ring-2 ring-blue-300">

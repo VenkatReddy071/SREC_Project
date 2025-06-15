@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { IoMdArrowDropdown } from "react-icons/io";
-import { IoMenu, IoClose } from "react-icons/io5"; // Mobile menu icons
+import { IoMenu, IoClose } from "react-icons/io5";
 import { Link } from 'react-router-dom';
+
 import Logo from "./assets/images.png";
 import { Login } from './user/Login';
 import axios from 'axios';
@@ -46,7 +47,6 @@ export const Navbar = () => {
     <div className="p-2 m-2 border-b-2">
       {/* Navbar */}
       <div className="flex items-center justify-between h-14 w-full">
-        {/* Logo with Menu Toggle */}
         <div className="flex items-center gap-4">
           <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="md:hidden absolute right-4 rounded-full bg-black p-1">
             {<IoMenu size={40} className='text-white' />}
@@ -56,7 +56,6 @@ export const Navbar = () => {
           </div>
         </div>
 
-        {/* Desktop Navigation */}
         <nav className="hidden md:flex md:items-center md:gap-10">
           <ul className="flex gap-10">
             <Link to={"/"}><li className="hover:text-blue-600">Local Services</li></Link>
@@ -65,13 +64,11 @@ export const Navbar = () => {
             <Link to={"/schools"}><li className="hover:text-blue-600">Education Hub</li></Link>
             <Link to="/restaurants">
             <li className="flex items-center gap-1 cursor-pointer hover:text-blue-600">
-              Dining Options
+              Restaurants
             </li>
             </Link>
           </ul>
         </nav>
-
-        {/* Profile and Buttons */}
         <div className="hidden md:block">
           <div className="flex items-center gap-6">
             {isLogin ? (
@@ -126,7 +123,6 @@ export const Navbar = () => {
     isMenuOpen ? "translate-x-0" : "translate-x-full"
   } md:hidden z-20`}
 >
-  {/* Close Button */}
   <button
     onClick={() => setIsMenuOpen(false)}
     className="absolute top-4 right-4 rounded-full bg-black m-2"
@@ -134,7 +130,6 @@ export const Navbar = () => {
     <IoClose size={28} className="text-white" />
   </button>
 
-  {/* Navigation Links */}
   <ul className="flex flex-col gap-4 mt-8 bg-white">
     <Link to={"/"} onClick={() => setIsMenuOpen(false)}>
       <li className="hover:text-blue-600 border-b-2 text-lg font-semibold">
@@ -156,9 +151,11 @@ export const Navbar = () => {
         Education Hub
       </li>
     </Link>
+    <Link to="/restaurants">
     <li className="flex items-center gap-1 cursor-pointer hover:text-blue-600 border-b-2 text-lg font-semibold">
-      Dining Options <IoMdArrowDropdown className="w-5 h-5" />
+      Restaurants <IoMdArrowDropdown className="w-5 h-5" />
     </li>
+    </Link>
   </ul>
 
   {/* User Profile or Login/Signup */}

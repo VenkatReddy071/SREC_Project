@@ -21,6 +21,7 @@ import HospitalForm from "./Pages/Register/Hospital";
 import  Support  from "./Components/Fotter/AboutSection/Support";
 import MainServicePage from "./Components/Hospital/ShowCaseSection/Service/ServicePage"
 import {RestaurantHomePage} from "./Components/Dining/Restaurant"
+
 // Admin Layout with sidebar and footer links
 import { DashHome } from "./Dashboard/Admin/DashHome/Home";
 
@@ -45,6 +46,12 @@ import BookingPage from "./Pages/BookingPage"
 import OffersPage from "./Pages/OffersPage"
 import NotificationPage from "./Pages/NotificationPage"
 import ServicePage from "./Pages/ServicePage"
+
+//fashion dashboard
+import {FashionDashboard} from "./Dashboard/Fashion/Home"
+import {DashboardHome} from "./Dashboard/Fashion/DashboardHome"
+import {ProductsPage} from "./Dashboard/Fashion/Product"
+import {OrdersPage}from "./Dashboard/Fashion/OrdersPage"
 //about Page
 
 import { About } from "./Components/Fotter/AboutSection/About";
@@ -94,7 +101,6 @@ function App() {
         <Route path="/Register" element={<HospitalForm/>}/>
         <Route path="/join/dashboard" element={<DashboardLogin/>}/>
         <Route path="/dashboard/type" element={<Type/>}/>
-        {/* Admin Layout -> DashHome acts as layout with footer links */}
         <Route path="/admin-dashboard" element={<DashHome />}>
           <Route index element={<Dashboard />} />
           <Route path="dashboard" element={<Dashboard />} />
@@ -118,6 +124,11 @@ function App() {
           <Route path="offers" element={<OffersPage/>}/>
           <Route path="notifications" element={<NotificationPage/>}/>
           <Route path="services" element={<ServicePage/>}/>
+        </Route>
+        <Route path="/fashion-dashboard" element={<FashionDashboard/>}>
+          <Route index element={<DashboardHome/>}/>
+          <Route path='products' element={<ProductsPage/>}/>
+          <Route path='orders'element={<OrdersPage/>}/>
         </Route>
         <Route element={<AboutLayout/>}>
             <Route path="/About-us" element={<About/>}/>

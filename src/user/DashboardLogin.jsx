@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
+import Axios from "axios";
+import { ArrowRight, Briefcase, Handshake, Square, UserPlus, X } from 'lucide-react'; // Added X for close icon
+import { useState } from 'react';
 import { FiLogIn } from 'react-icons/fi';
+import { useNavigate } from "react-router-dom";
 import Doctor from "../assets/Doctor.avif";
 import Restaurant from "../assets/Restaurant.avif";
-import Shopping from "../assets/Shopping.jpg";
 import Schools from "../assets/Schools.jpg";
-import {useNavigate} from "react-router-dom";
-import { Hospital, Utensils, School, GraduationCap, ShoppingBag, UserPlus, Square, ArrowRight, LogIn, Briefcase, Handshake, X } from 'lucide-react'; // Added X for close icon
-import Axios from "axios"
+import Shopping from "../assets/Shopping.jpg";
 const ForgetPassword = ({ setOpen }) => {
   const [resetEmail, setResetEmail] = useState("");
 
@@ -143,7 +143,9 @@ const PartnerAuthModal = ({ onClose, setOpenForgotPassword }) => {
   };
 
   const handleSignupSubmit =async (e) => {
+    console.log(dashboardType);
     e.preventDefault();
+
     if (signupName && signupEmail && signupPassword) {
         const url = `${import.meta.env.VITE_SERVER_URL}/api/sign`;
               const response = await Axios.post(
@@ -153,7 +155,7 @@ const PartnerAuthModal = ({ onClose, setOpenForgotPassword }) => {
               );
               console.log(response.data)
               localStorage.setItem("dashboard",response.data?.token)
-              setLoginMode(true);
+              setIsLoginMode(true);
     } else {
       console.error("Signup failed: Please fill all fields.");
     }
@@ -204,7 +206,7 @@ const PartnerAuthModal = ({ onClose, setOpenForgotPassword }) => {
                 <option value="hospital">Hospital</option>
                 <option value="school">School</option>
                 <option value="restaurant">Restaurant</option>
-                <option value="mall">Mall</option>
+                <option value="fashion">Fashion</option>
               </select>
             </div>
             <div>
@@ -266,7 +268,7 @@ const PartnerAuthModal = ({ onClose, setOpenForgotPassword }) => {
                 <option value="hospital">Hospital</option>
                 <option value="school">School</option>
                 <option value="restaurant">Restaurant</option>
-                <option value="mall">Mall</option>
+                <option value="fashion">Fashion</option>
               </select>
             </div>
             <div>

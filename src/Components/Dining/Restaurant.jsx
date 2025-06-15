@@ -1,399 +1,501 @@
-import React, { useState, useMemo } from 'react';
-import { FiSearch, FiStar } from 'react-icons/fi'; // Icons for search and star (outline)
-import { FaStar } from 'react-icons/fa'; // Solid star for ratings
-import { MapPinIcon, ClockIcon, CurrencyDollarIcon, TagIcon } from '@heroicons/react/24/outline'; // Heroicons
 
-// --- Dummy Data for Restaurants ---
-const allRestaurants = [
-  {
-    id: 'r1',
-    name: 'The Grand Diner',
-    cuisine: ['American', 'Fast Food'],
-    rating: 4.5,
-    deliveryTime: '25-35 min',
-    priceRange: '$$',
-    location: 'Main Street, Nandyal',
-    image: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    isFeatured: true,
-  },
-  {
-    id: 'r2',
-    name: 'Spice Route Indian',
-    cuisine: ['Indian', 'Curry'],
-    rating: 4.8,
-    deliveryTime: '40-50 min',
-    priceRange: '$$$',
-    location: 'Railway Road, Nandyal',
-    image: 'https://images.unsplash.com/photo-1565299624946-b28f40a0429f?q=80&w=2814&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    isFeatured: false,
-  },
-  {
-    id: 'r3',
-    name: 'Pizza Palace',
-    cuisine: ['Italian', 'Pizza'],
-    rating: 4.2,
-    deliveryTime: '20-30 min',
-    priceRange: '$$',
-    location: 'City Center, Nandyal',
-    image: 'https://images.unsplash.com/photo-1604382164749-002ad7d2d568?q=80&w=2865&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    isFeatured: true,
-  },
-  {
-    id: 'r4',
-    name: 'Green Leaf Cafe',
-    cuisine: ['Healthy', 'Cafe', 'Vegetarian'],
-    rating: 4.6,
-    deliveryTime: '30-40 min',
-    priceRange: '$',
-    location: 'Park Avenue, Nandyal',
-    image: 'https://images.unsplash.com/photo-1498654896293-37aadd65f76c?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    isFeatured: false,
-  },
-  {
-    id: 'r5',
-    name: 'Sushi Zen',
-    cuisine: ['Japanese', 'Sushi'],
-    rating: 4.7,
-    deliveryTime: '35-45 min',
-    priceRange: '$$$',
-    location: 'Riverfront Plaza, Nandyal',
-    image: 'https://images.unsplash.com/photo-1559868725-50289f668ef1?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    isFeatured: true,
-  },
-  {
-    id: 'r6',
-    name: 'Taste of Thailand',
-    cuisine: ['Thai'],
-    rating: 4.3,
-    deliveryTime: '40-60 min',
-    priceRange: '$$',
-    location: 'Old Town Road, Nandyal',
-    image: 'https://images.unsplash.com/photo-1582236688172-132d91986422?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    isFeatured: false,
-  },
-];
+// import React, { useState, useEffect, useRef, useCallback } from 'react';
+// import {ServiceOverview}from "./ServiceOverview"
+// import {FeatureSection}from "./FeatureSection"
+// import {CuisineSlider}from "./CuisineSlider"
+// import {RestaurantSubTabs}from "./RestaurantSubTabs"
+// import Food from "../../assets/food.avif"
+// import Restaurant from "../../assets/restaurant.avif"
+// import Tiffin from "../../assets/tiffin.avif"
+// import Veg from "../../assets/veg.avif"
+// const mockRestaurants = [
+//   {
+//     id: 'rest1',
+//     name: "Gourmet Bites",
+//     description: "Experience the finest culinary delights in a cozy ambiance.",
+//     rating: 4.8,
+//     reviews: 1250,
+//     address: "123 Food Street, Culinary City",
+//     hours: "Mon-Sun: 11:00 AM - 10:00 PM",
+//     phone: "+1 (555) 123-4567",
+//     headerImage: "https://placehold.co/1200x400/FFDDC1/800000?text=Gourmet+Bites",
+//     cuisine: ["Italian", "American"],
+//     priceLevel: "$$",
+//     isTopPick: true,
+//     isTakeaway: true,
+//     servesTiffins: false,
+//     isVegetarian: false,
+//     smallImage: "https://placehold.co/400x300/B2D8D8/005F73?text=Gourmet+Bites",
+//   },
+//   {
+//     id: 'rest2',
+//     name: "Spice Route",
+//     description: "Authentic Indian flavors, a journey for your taste buds.",
+//     rating: 4.5,
+//     reviews: 800,
+//     address: "456 Curry Lane, Spice Town",
+//     hours: "Mon-Sun: 12:00 PM - 10:30 PM",
+//     phone: "+1 (555) 234-5678",
+//     headerImage: "https://placehold.co/1200x400/ADD8E6/4682B4?text=Spice+Route",
+//     cuisine: ["Indian", "Asian"],
+//     priceLevel: "$",
+//     isTopPick: true,
+//     isTakeaway: true,
+//     servesTiffins: true,
+//     isVegetarian: true,
+//     smallImage: "https://placehold.co/400x300/D4F1F4/145DA0?text=Spice+Route",
+//   },
+//   {
+//     id: 'rest3',
+//     name: "Sushi Heaven",
+//     description: "Freshly prepared sushi and sashimi, a taste of Japan.",
+//     rating: 4.9,
+//     reviews: 2100,
+//     address: "789 Sushi Blvd, Ocean City",
+//     hours: "Tue-Sun: 11:30 AM - 9:30 PM",
+//     phone: "+1 (555) 345-6789",
+//     headerImage: "https://placehold.co/1200x400/E0FFFF/20B2AA?text=Sushi+Heaven",
+//     cuisine: ["Japanese", "Asian"],
+//     priceLevel: "$$$",
+//     isTopPick: false,
+//     isTakeaway: true,
+//     servesTiffins: false,
+//     isVegetarian: false,
+//     smallImage: "https://placehold.co/400x300/E0FFFF/20B2AA?text=Sushi+Heaven",
+//   },
+//   {
+//     id: 'rest4',
+//     name: "Mexican Fiesta",
+//     description: "Vibrant Mexican dishes and lively atmosphere.",
+//     rating: 4.2,
+//     reviews: 500,
+//     address: "101 Taco Road, Fiesta Ville",
+//     hours: "Mon-Sat: 10:00 AM - 11:00 PM",
+//     phone: "+1 (555) 456-7890",
+//     headerImage: "https://placehold.co/1200x400/F9DBBD/B15B17?text=Mexican+Fiesta",
+//     cuisine: ["Mexican"],
+//     priceLevel: "$$",
+//     isTopPick: false,
+//     isTakeaway: true,
+//     servesTiffins: false,
+//     isVegetarian: false,
+//     smallImage: "https://placehold.co/400x300/F9DBBD/B15B17?text=Mexican+Fiesta",
+//   },
+//   {
+//     id: 'rest5',
+//     name: "Mediterranean Delights",
+//     description: "Healthy and flavorful Mediterranean cuisine.",
+//     rating: 4.7,
+//     reviews: 950,
+//     address: "202 Olive Grove, Oasis City",
+//     hours: "Mon-Fri: 11:00 AM - 9:00 PM",
+//     phone: "+1 (555) 567-8901",
+//     headerImage: "https://placehold.co/1200x400/D8BFD8/4B0082?text=Mediterranean+Delights",
+//     cuisine: ["Mediterranean", "Middle Eastern"],
+//     priceLevel: "$$",
+//     isTopPick: true,
+//     isTakeaway: false,
+//     servesTiffins: false,
+//     isVegetarian: true,
+//     smallImage: "https://placehold.co/400x300/D8BFD8/4B0082?text=Mediterranean+Delights",
+//   },
+//   {
+//     id: 'rest6',
+//     name: "Vegan Paradise",
+//     description: "Plant-based dishes that are both delicious and nutritious.",
+//     rating: 4.6,
+//     reviews: 700,
+//     address: "303 Green Street, Earthville",
+//     hours: "Wed-Sun: 10:00 AM - 8:00 PM",
+//     phone: "+1 (555) 678-9012",
+//     headerImage: "https://placehold.co/1200x400/F0FFF0/228B22?text=Vegan+Paradise",
+//     cuisine: ["Vegan", "Healthy"],
+//     priceLevel: "$$",
+//     isTopPick: false,
+//     isTakeaway: true,
+//     servesTiffins: false,
+//     isVegetarian: true,
+//     smallImage: "https://placehold.co/400x300/F0FFF0/228B22?text=Vegan+Paradise",
+//   },
+//   {
+//     id: 'rest7',
+//     name: "Burger Joint",
+//     description: "Classic burgers and fries, done right.",
+//     rating: 4.3,
+//     reviews: 600,
+//     address: "404 Patty Place, Burger Town",
+//     hours: "Mon-Sun: 11:00 AM - 11:00 PM",
+//     phone: "+1 (555) 789-0123",
+//     headerImage: "https://placehold.co/1200x400/CCEEFF/36454F?text=Burger+Joint",
+//     cuisine: ["American", "Fast Food"],
+//     priceLevel: "$",
+//     isTopPick: false,
+//     isTakeaway: true,
+//     servesTiffins: false,
+//     isVegetarian: false,
+//     smallImage: "https://placehold.co/400x300/CCEEFF/36454F?text=Burger+Joint",
+//   },
+//   {
+//     id: 'rest8',
+//     name: "Thai Taste",
+//     description: "Spicy and aromatic Thai curries and noodles.",
+//     rating: 4.7,
+//     reviews: 1100,
+//     address: "505 Pad Thai Way, Flavor City",
+//     hours: "Mon-Sat: 12:00 PM - 10:00 PM",
+//     phone: "+1 (555) 890-1234",
+//     headerImage: "https://placehold.co/1200x400/FFFACD/DAA520?text=Thai+Taste",
+//     cuisine: ["Thai", "Asian"],
+//     priceLevel: "$$",
+//     isTopPick: true,
+//     isTakeaway: true,
+//     servesTiffins: false,
+//     isVegetarian: true,
+//     smallImage: "https://placehold.co/400x300/FFFACD/DAA520?text=Thai+Taste",
+//   },
+//   {
+//     id: 'rest9',
+//     name: "French Bistro",
+//     description: "Elegant French cuisine in a charming setting.",
+//     rating: 4.9,
+//     reviews: 1500,
+//     address: "606 Eiffel Street, Parisienne",
+//     hours: "Tue-Sun: 6:00 PM - 11:00 PM",
+//     phone: "+1 (555) 901-2345",
+//     headerImage: "https://placehold.co/1200x400/FFC0CB/C71585?text=French+Bistro",
+//     cuisine: ["French"],
+//     priceLevel: "$$$",
+//     isTopPick: true,
+//     isTakeaway: false,
+//     servesTiffins: false,
+//     isVegetarian: false,
+//     smallImage: "https://placehold.co/400x300/FFC0CB/C71585?text=French+Bistro",
+//   },
+// ];
 
-// --- Dummy Data for Top Food Picks ---
-const topFoodPicks = [
-  {
-    id: 'f1',
-    name: 'Classic Margherita Pizza',
-    restaurant: 'Pizza Palace',
-    price: '$12.99',
-    rating: 4.7,
-    image: 'https://images.unsplash.com/photo-1593560704563-f17e97926210?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-  },
-  {
-    id: 'f2',
-    name: 'Butter Chicken',
-    restaurant: 'Spice Route Indian',
-    price: '$18.50',
-    rating: 4.9,
-    image: 'https://images.unsplash.com/photo-1631379761569-80a221f7c784?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-  },
-  {
-    id: 'f3',
-    name: 'California Roll',
-    restaurant: 'Sushi Zen',
-    price: '$9.99',
-    rating: 4.6,
-    image: 'https://images.unsplash.com/photo-1579584425345-d41f02c61141?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-  },
-  {
-    id: 'f4',
-    name: 'Grilled Salmon Salad',
-    restaurant: 'Green Leaf Cafe',
-    price: '$15.00',
-    rating: 4.5,
-    image: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-  },
-];
+// const getUniqueCuisines = (restaurants) => {
+//   const cuisines = new Set();
+//   restaurants.forEach(rest => {
+//     rest.cuisine.forEach(c => cuisines.add(c));
+//   });
+//   return Array.from(cuisines).sort();
+// };
 
-// Reusable Section Title Component
-const SectionTitle = ({ title, subtitle }) => (
-  <div className="text-center mb-12">
-    <h2 className="text-4xl font-extrabold text-gray-900 leading-tight mb-3">{title}</h2>
-    <p className="text-xl text-gray-600">{subtitle}</p>
-  </div>
+// const GlobalHeader = () => (
+//   <header className="relative w-full h-96 overflow-hidden shadow-lg flex items-center justify-center">
+//     <img
+//       src={Food}
+//       alt="Food Services Header"
+//       className="absolute inset-0 w-full h-full object-cover"
+//       onError={(e) => e.target.src = "https://placehold.co/1600x600/E0E0E0/333333?text=Food+Services+Header"}
+//     />
+//     <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-95"></div>
+//     <div className="relative z-10 flex flex-col items-center justify-center h-full p-8 text-white text-center">
+//       <h1 className="text-6xl font-extrabold mb-4 drop-shadow-lg font-['Inter']">Explore Our Food Services</h1>
+//       <p className="text-2xl italic font-light drop-shadow-md font-['Inter']">Your culinary journey begins here.</p>
+//     </div>
+//   </header>
+// );
+
+// const WebsiteContent = () => (
+//   <section className="bg-white rounded-xl shadow-xl p-8 mx-auto -mt-20 relative z-20 max-w-6xl text-center mb-12">
+//     <h2 className="text-4xl font-bold text-gray-800 mb-4 font-['Inter']">Discover Your Next Favorite Meal</h2>
+//     <p className="text-lg text-gray-700 font-['Inter']">
+//       From authentic local delicacies to international cuisines, our platform connects you with the best restaurants and food services. Whether you're looking for a quick takeaway, a hearty tiffin, or just browsing for inspiration, we've got you covered.
+//     </p>
+//   </section>
+// );
+
+// const ScrollbarHideCss = () => (
+//   <style>{`
+//     .scrollbar-hide::-webkit-scrollbar {
+//       display: none;
+//     }
+//     .scrollbar-hide {
+//       -ms-overflow-style: none;  /* IE and Edge */
+//       scrollbar-width: none;  /* Firefox */
+//     }
+//   `}</style>
+// );
+
+// export const  RestaurantHomePage=()=> {
+//   const allCuisines = getUniqueCuisines(mockRestaurants);
+//   const [activeRestaurantTab, setActiveRestaurantTab] = useState('all');
+//   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+//   const [filters, setFilters] = useState({
+//     searchTerm: '',
+//     minRating: 0,
+//     priceLevels: ["$", "$$", "$$$"],
+//     cuisines: allCuisines,
+//   });
+
+//   const [displayedRestaurantsCount, setDisplayedRestaurantsCount] = useState(8); // Initially show 8 restaurants
+//   const restaurantsPerPage = 4; // Load 4 more restaurants at a time
+
+//   const handleFilterChange = (filterName, value) => {
+//     setFilters(prev => ({
+//       ...prev,
+//       [filterName]: value,
+//     }));
+//     // Reset displayed count when filters change to ensure all filtered results are considered
+//     setDisplayedRestaurantsCount(restaurantsPerPage);
+//   };
+
+//   const handleCuisineSelect = (cuisine) => {
+//     setFilters(prev => {
+//       // Toggle cuisine selection
+//       const newCuisines = prev.cuisines.includes(cuisine)
+//         ? prev.cuisines.filter(c => c !== cuisine)
+//         : [...prev.cuisines, cuisine];
+//       return { ...prev, cuisines: newCuisines };
+//     });
+//     setDisplayedRestaurantsCount(restaurantsPerPage); // Reset count
+//   };
+
+//   const filteredRestaurants = mockRestaurants.filter(restaurant => {
+//     const matchesFilterSearch = restaurant.name.toLowerCase().includes(filters.searchTerm.toLowerCase()) ||
+//                                 restaurant.description.toLowerCase().includes(filters.searchTerm.toLowerCase());
+
+//     const matchesRestaurantTab = activeRestaurantTab === 'all' ||
+//                                  (activeRestaurantTab === 'takeaway' && restaurant.isTakeaway) ||
+//                                  (activeRestaurantTab === 'tiffins' && restaurant.servesTiffins);
+
+//     const matchesRating = restaurant.rating >= filters.minRating;
+//     const matchesPriceLevel = filters.priceLevels.length === 0 || filters.priceLevels.includes(restaurant.priceLevel);
+//     const matchesCuisine = filters.cuisines.length === 0 || filters.cuisines.some(c => restaurant.cuisine.includes(c));
+
+//     return matchesFilterSearch && matchesRestaurantTab && matchesRating && matchesPriceLevel && matchesCuisine;
+//   });
+
+//   // Infinite scrolling logic
+//   const observer = useRef();
+//   const lastRestaurantElementRef = useCallback(node => {
+//     if (observer.current) observer.current.disconnect();
+//     observer.current = new IntersectionObserver(entries => {
+//       if (entries[0].isIntersecting && displayedRestaurantsCount < filteredRestaurants.length) {
+//         setDisplayedRestaurantsCount(prevCount => prevCount + restaurantsPerPage);
+//       }
+//     });
+//     if (node) observer.current.observe(node);
+//   }, [displayedRestaurantsCount, filteredRestaurants.length]);
+
+
+//   return (
+//     <div className="min-h-screen bg-gray-50 font-['Inter']">
+//       <script src="https://cdn.tailwindcss.com"></script>
+//       <ScrollbarHideCss />
+
+//       <GlobalHeader />
+//       <main className="container mx-auto px-4 py-8">
+//         <WebsiteContent />
+//         <FeatureSection
+//           title="Find Your Perfect Restaurant"
+//           content="Browse through a vast collection of restaurants, each with unique ambiance and culinary styles. From casual cafes to elegant fine dining, we have options to suit every mood and occasion. Discover new dining experiences today."
+//           imageUrl={Restaurant}
+//           imageAlt="Diverse Restaurants"
+//           imageRight={true}
+//           button="Explore"
+//         />
+//         <FeatureSection
+//           title="Healthy & Delicious Vegetarian Options"
+//           content="For our vegetarian friends, explore a dedicated selection of restaurants and dishes that are purely plant-based and incredibly flavorful. Enjoy guilt-free dining with a focus on fresh, seasonal ingredients."
+//           imageUrl={Veg}
+//           imageAlt="Vegetarian Food"
+//           imageRight={false}
+//           button="Explore"
+//         />
+//          <FeatureSection
+//           title="Convenient Tiffin Services"
+//           content="Looking for home-style meals delivered daily? Our tiffin services provide nutritious and delicious options, perfect for busy professionals or anyone seeking convenient, wholesome food. Subscribe for a hassle-free meal experience."
+//           imageUrl={Tiffin}
+//           imageAlt="Tiffin Service"
+//           imageRight={true}
+//           button="Explore"
+//         />
+
+//         <CuisineSlider cuisines={allCuisines} onCuisineSelect={handleCuisineSelect} />
+//         <RestaurantSubTabs
+//           activeTab={activeRestaurantTab}
+//           onTabChange={setActiveRestaurantTab}
+//         />
+//         <RestaurantList/>
+//           <ServiceOverview />
+//       </main>
+
+//     </div>
+//   );
+// }
+
+
+import React, { useState, useEffect } from 'react';
+import { ServiceOverview } from "./ServiceOverview";
+import { FeatureSection } from "./FeatureSection";
+import { CuisineSlider } from "./CuisineSlider";
+import { RestaurantSubTabs } from "./RestaurantSubTabs";
+import { RestaurantList } from './RestaurantList';
+import { FilterSidebar } from './RestaurantFiltersSidebar'; 
+import Food from "../../assets/food.avif";
+import Restaurant from "../../assets/restaurant.avif";
+import Tiffin from "../../assets/tiffin.avif";
+import Veg from "../../assets/veg.avif";
+import axios from 'axios';
+
+const GlobalHeader = () => (
+  <header className="relative w-full h-96 overflow-hidden shadow-lg flex items-center justify-center">
+    <img
+      src={Food}
+      alt="Food Services Header"
+      className="absolute inset-0 w-full h-full object-cover"
+      onError={(e) => e.target.src = "https://placehold.co/1600x600/E0E0E0/333333?text=Food+Services+Header"}
+    />
+    <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-95"></div>
+    <div className="relative z-10 flex flex-col items-center justify-center h-full p-8 text-white text-center">
+      <h1 className="text-6xl font-extrabold mb-4 drop-shadow-lg font-['Inter']">Explore Our Food Services</h1>
+      <p className="text-2xl italic font-light drop-shadow-md font-['Inter']">Your culinary journey begins here.</p>
+    </div>
+  </header>
 );
 
-// Restaurant Card Component
-const RestaurantCard = ({ restaurant }) => (
-  <div className="bg-white rounded-2xl shadow-xl overflow-hidden
-                   transform transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl flex flex-col cursor-pointer">
-    <div className="relative overflow-hidden h-56">
-      <img
-        src={restaurant.image}
-        alt={restaurant.name}
-        className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
-        loading="lazy"
-      />
-      {restaurant.isFeatured && (
-        <span className="absolute top-3 right-3 bg-blue-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-md">
-          Featured
-        </span>
-      )}
-    </div>
-    <div className="p-6 flex flex-col flex-grow">
-      <h3 className="text-2xl font-bold text-gray-900 mb-2 leading-tight">{restaurant.name}</h3>
-      <div className="flex flex-wrap gap-2 mb-3">
-        {restaurant.cuisine.map((c, idx) => (
-          <span key={idx} className="bg-gray-100 text-gray-700 text-xs font-semibold px-3 py-1 rounded-full">
-            {c}
-          </span>
-        ))}
-      </div>
-      <div className="flex items-center text-yellow-500 mb-3">
-        <FaStar className="h-5 w-5 mr-1" />
-        <span className="font-bold text-lg">{restaurant.rating}</span>
-        <span className="text-gray-500 text-sm">/5</span>
-      </div>
-      <p className="text-gray-600 text-sm flex items-center mb-2">
-        <MapPinIcon className="h-4 w-4 mr-2 text-gray-500" />
-        {restaurant.location}
-      </p>
-      <p className="text-gray-600 text-sm flex items-center mb-4">
-        <ClockIcon className="h-4 w-4 mr-2 text-gray-500" />
-        Delivery: {restaurant.deliveryTime}
-      </p>
-      <div className="mt-auto pt-4 border-t border-gray-100">
-        <button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg shadow-md transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
-          Order Now
-        </button>
-      </div>
-    </div>
-  </div>
+const WebsiteContent = () => (
+  <section className="bg-white rounded-xl shadow-xl p-8 mx-auto -mt-20 relative z-20 max-w-6xl text-center mb-12">
+    <h2 className="text-4xl font-bold text-gray-800 mb-4 font-['Inter']">Discover Your Next Favorite Meal</h2>
+    <p className="text-lg text-gray-700 font-['Inter']">
+      From authentic local delicacies to international cuisines, our platform connects you with the best restaurants and food services. Whether you're looking for a quick takeaway, a hearty tiffin, or just Browse for inspiration, we've got you covered.
+    </p>
+  </section>
 );
 
-// Food Item Card Component
-const FoodItemCard = ({ item }) => (
-  <div className="bg-white rounded-2xl shadow-lg overflow-hidden
-                   transform transition-all duration-300 hover:scale-[1.03] hover:shadow-xl flex flex-col cursor-pointer">
-    <div className="relative h-48 overflow-hidden">
-      <img
-        src={item.image}
-        alt={item.name}
-        className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
-        loading="lazy"
-      />
-    </div>
-    <div className="p-4 flex flex-col flex-grow">
-      <h4 className="text-lg font-semibold text-gray-900 mb-1 leading-tight">{item.name}</h4>
-      <p className="text-gray-600 text-sm mb-2">{item.restaurant}</p>
-      <div className="flex justify-between items-center mt-auto">
-        <span className="text-green-600 text-xl font-bold">{item.price}</span>
-        <div className="flex items-center text-yellow-500">
-          <FaStar className="h-4 w-4 mr-1" />
-          <span className="text-sm font-semibold">{item.rating}</span>
-        </div>
-      </div>
-    </div>
-  </div>
+const ScrollbarHideCss = () => (
+  <style>{`
+    .scrollbar-hide::-webkit-scrollbar {
+      display: none;
+    }
+    .scrollbar-hide {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+  `}</style>
 );
-
 
 export const RestaurantHomePage = () => {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCuisine, setSelectedCuisine] = useState('All');
-  const [minRating, setMinRating] = useState(0); // 0, 3, 4, 4.5
-  const [priceRange, setPriceRange] = useState('All'); // $, $$, $$$
+  const [allCuisines, setAllCuisines] = useState([]);
+  const [activeRestaurantTab, setActiveRestaurantTab] = useState('all');
+  const [sortBy, setSortBy] = useState('');
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false); // New state for sidebar
 
-  const cuisineOptions = useMemo(() => [
-    'All',
-    ...new Set(allRestaurants.flatMap(r => r.cuisine)),
-  ], []);
-  const priceRangeOptions = ['All', '$', '$$', '$$$'];
-  const ratingOptions = [
-    { label: 'All Ratings', value: 0 },
-    { label: '4.5+ Stars', value: 4.5 },
-    { label: '4+ Stars', value: 4 },
-    { label: '3+ Stars', value: 3 },
-  ];
+  const [filters, setFilters] = useState({
+    searchTerm: '',
+    minRating: 0,
+    priceLevels: [],
+    cuisines: [],
+    isVegetarian: false,
+    services: [],
+  });
 
-  const filteredRestaurants = useMemo(() => {
-    return allRestaurants.filter(restaurant => {
-      const matchesSearch = restaurant.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                            restaurant.cuisine.some(c => c.toLowerCase().includes(searchTerm.toLowerCase()));
-      const matchesCuisine = selectedCuisine === 'All' || restaurant.cuisine.includes(selectedCuisine);
-      const matchesRating = restaurant.rating >= minRating;
-      const matchesPrice = priceRange === 'All' || restaurant.priceRange === priceRange;
+  useEffect(() => {
+    const fetchCuisines = async () => {
+      try {
+        const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/api/restaurant/restaurant/unique-cuisines`,{withCredentials:true});
+        setAllCuisines(response.data?.data?.cuisines);
+      } catch (err) {
+        
+      }
+    };
+    fetchCuisines();
+  }, []);
 
-      return matchesSearch && matchesCuisine && matchesRating && matchesPrice;
+  useEffect(() => {
+  }, [allCuisines]);
+
+  const handleFilterChange = (filterName, value) => {
+    setFilters(prev => ({
+      ...prev,
+      [filterName]: value,
+    }));
+  };
+
+  const handleCuisineSelect = (cuisine) => {
+    setFilters(prev => {
+      const newCuisines = prev.cuisines.includes(cuisine)
+        ? prev.cuisines.filter(c => c !== cuisine)
+        : [...prev.cuisines, cuisine];
+      return { ...prev, cuisines: newCuisines };
     });
-  }, [searchTerm, selectedCuisine, minRating, priceRange]);
+  };
+
+  const handleSortChange = (value) => {
+    setSortBy(value);
+  };
 
   return (
-    <div className="bg-gray-50 min-h-screen font-sans antialiased">
-      {/* Hero Section */}
-      <div className="relative h-[500px] overflow-hidden rounded-b-3xl shadow-2xl mx-2 md:mx-4 lg:mx-6 mb-16">
-        <img
-          src="https://images.unsplash.com/photo-1552504933-28b939c323f4?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-          alt="Restaurant Hero"
-          className="w-full h-full object-cover brightness-[0.8]"
+    <div className="min-h-screen bg-gray-50 font-['Inter']">
+      <script src="https://cdn.tailwindcss.com"></script>
+      <ScrollbarHideCss />
+
+      <GlobalHeader />
+      <main className="container mx-auto px-4 py-8">
+        <WebsiteContent />
+        <FeatureSection
+          title="Find Your Perfect Restaurant"
+          content="Browse through a vast collection of restaurants, each with unique ambiance and culinary styles. From casual cafes to elegant fine dining, we have options to suit every mood and occasion. Discover new dining experiences today."
+          imageUrl={Restaurant}
+          imageAlt="Diverse Restaurants"
+          imageRight={true}
+          button="Explore"
         />
-        <div className="absolute inset-0 flex flex-col justify-center items-center text-center p-4 bg-gradient-to-t from-black/60 to-transparent">
-          <h1 className="text-white text-5xl sm:text-6xl lg:text-7xl font-extrabold leading-tight mb-6 animate-fade-in-up">
-            Craving Something Delicious?
-          </h1>
-          <p className="text-white text-xl sm:text-2xl max-w-3xl animate-fade-in-up animation-delay-300">
-            Discover the best local restaurants and order your favorite food for delivery or pickup.
-          </p>
-          <div className="mt-10 flex justify-center gap-4 animate-fade-in-up animation-delay-500">
-            <button className="bg-blue-600 hover:bg-blue-700 text-white text-lg font-bold px-8 py-4 rounded-full shadow-lg transform hover:-translate-y-1 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
-              Order Now
-            </button>
-            <button className="bg-white bg-opacity-20 backdrop-filter backdrop-blur-sm border border-white text-white text-lg font-semibold px-8 py-4 rounded-full shadow-lg transform hover:-translate-y-1 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2">
-              Explore Cuisines
-            </button>
-          </div>
-        </div>
-      </div>
+        <FeatureSection
+          title="Healthy & Delicious Vegetarian Options"
+          content="For our vegetarian friends, explore a dedicated selection of restaurants and dishes that are purely plant-based and incredibly flavorful. Enjoy guilt-free dining with a focus on fresh, seasonal ingredients."
+          imageUrl={Veg}
+          imageAlt="Vegetarian Food"
+          imageRight={false}
+          button="Explore"
+        />
+        <FeatureSection
+          title="Convenient Tiffin Services"
+          content="Looking for home-style meals delivered daily? Our tiffin services provide nutritious and delicious options, perfect for busy professionals or anyone seeking convenient, wholesome food. Subscribe for a hassle-free meal experience."
+          imageUrl={Tiffin}
+          imageAlt="Tiffin Service"
+          imageRight={true}
+          button="Explore"
+        />
 
-      {/* Search and Filter Section (Sticky) */}
-      <div className="sticky top-0 bg-white shadow-lg py-6 px-4 z-20 border-b border-gray-100 mb-12">
-        <div className="max-w-6xl mx-auto flex flex-col lg:flex-row items-center justify-between gap-6">
-          {/* Search Bar */}
-          <div className="flex-grow w-full lg:w-auto flex items-center border border-gray-300 rounded-lg px-4 py-3 focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-blue-500 transition-all duration-200 shadow-sm">
-            <FiSearch className="text-gray-500 text-xl mr-3" />
-            <input
-              type="text"
-              placeholder="Search restaurants or dishes..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full p-0 text-gray-800 placeholder-gray-400 focus:outline-none text-lg"
-            />
-          </div>
+        
+            
+        <CuisineSlider
+          cuisines={allCuisines}
+          onCuisineSelect={handleCuisineSelect}
+          selectedCuisines={filters.cuisines}
+        />
 
-          {/* Filters */}
-          <div className="flex flex-wrap items-center justify-center gap-4 w-full lg:w-auto">
-            {/* Cuisine Filter */}
-            <select
-              value={selectedCuisine}
-              onChange={(e) => setSelectedCuisine(e.target.value)}
-              className="px-4 py-3 rounded-lg border border-gray-300 bg-white text-gray-700 shadow-sm
-                         focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base min-w-[120px]"
-            >
-              <option value="All">All Cuisines</option>
-              {cuisineOptions.map(cuisine => cuisine !== 'All' && (
-                <option key={cuisine} value={cuisine}>{cuisine}</option>
-              ))}
-            </select>
+        <RestaurantSubTabs
+          activeTab={activeRestaurantTab}
+          onTabChange={setActiveRestaurantTab}
+          setIsSidebarOpen={setIsSidebarOpen}
+        />
 
-            {/* Rating Filter */}
-            <select
-              value={minRating}
-              onChange={(e) => setMinRating(parseFloat(e.target.value))}
-              className="px-4 py-3 rounded-lg border border-gray-300 bg-white text-gray-700 shadow-sm
-                         focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base min-w-[120px]"
-            >
-              {ratingOptions.map(option => (
-                <option key={option.value} value={option.value}>{option.label}</option>
-              ))}
-            </select>
+        <RestaurantList
+          filters={filters}
+          activeRestaurantTab={activeRestaurantTab}
+          sortBy={sortBy}
+          allCuisines={allCuisines} // Pass allCuisines to RestaurantList for filter logic
+        />
 
-            {/* Price Range Filter */}
-            <select
-              value={priceRange}
-              onChange={(e) => setPriceRange(e.target.value)}
-              className="px-4 py-3 rounded-lg border border-gray-300 bg-white text-gray-700 shadow-sm
-                         focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base min-w-[120px]"
-            >
-              {priceRangeOptions.map(option => (
-                <option key={option} value={option}>{option === 'All' ? 'All Prices' : option}</option>
-              ))}
-            </select>
-          </div>
-        </div>
-      </div>
+        <ServiceOverview />
+      </main>
 
-      {/* Featured Restaurants / Popular Picks Section */}
-      <section className="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-        <SectionTitle title="Our Top Picks for You" subtitle="Handpicked restaurants with exceptional taste and service." />
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-          {allRestaurants.filter(r => r.isFeatured).map(restaurant => (
-            <RestaurantCard key={restaurant.id} restaurant={restaurant} />
-          ))}
-        </div>
-      </section>
-
-      {/* All Restaurants Section */}
-      <section className="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-        <SectionTitle title="All Restaurants" subtitle="Explore a world of flavors near you." />
-        {filteredRestaurants.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-            {filteredRestaurants.map(restaurant => (
-              <RestaurantCard key={restaurant.id} restaurant={restaurant} />
-            ))}
-          </div>
-        ) : (
-          <p className="text-gray-600 text-center text-xl py-12">
-            No restaurants found matching your criteria. Try adjusting your filters.
-          </p>
-        )}
-      </section>
-
-      {/* Top Food Items Section */}
-      <section className="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-        <SectionTitle title="Top Food Picks" subtitle="Popular dishes loved by our community." />
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-          {topFoodPicks.map(item => (
-            <FoodItemCard key={item.id} item={item} />
-          ))}
-        </div>
-      </section>
-
-      {/* Promotional Banner (Extra Section) */}
-      <section className="bg-gradient-to-r from-red-600 to-orange-500 text-white py-16 px-4 sm:px-6 lg:px-8 my-16 rounded-3xl mx-2 md:mx-4 lg:mx-6 shadow-xl text-center">
-        <div className="max-w-4xl mx-auto">
-          <TagIcon className="h-16 w-16 mx-auto mb-6 text-white" />
-          <h2 className="text-4xl font-extrabold mb-4">Get 20% Off Your First Order!</h2>
-          <p className="text-xl opacity-90 mb-8">
-            Use code <span className="font-mono bg-white bg-opacity-20 px-3 py-1 rounded-md">FOODIE20</span> at checkout. Limited time offer!
-          </p>
-          <button className="bg-white text-red-600 hover:bg-gray-100 text-lg font-bold px-10 py-4 rounded-full shadow-lg transform hover:-translate-y-1 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2">
-            Claim Your Discount
-          </button>
-        </div>
-      </section>
-
-      {/* How It Works Section (Extra Section) */}
-      <section className="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-        <SectionTitle title="How It Works" subtitle="Your delicious meal is just a few steps away." />
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-          <div className="p-8 bg-white rounded-xl shadow-lg flex flex-col items-center">
-            <span className="text-blue-600 text-5xl font-bold mb-4">1</span>
-            <h3 className="text-2xl font-bold text-gray-900 mb-3">Explore Restaurants</h3>
-            <p className="text-gray-600">Browse a wide selection of restaurants by cuisine, rating, or price.</p>
-          </div>
-          <div className="p-8 bg-white rounded-xl shadow-lg flex flex-col items-center">
-            <span className="text-blue-600 text-5xl font-bold mb-4">2</span>
-            <h3 className="text-2xl font-bold text-gray-900 mb-3">Order Your Favorites</h3>
-            <p className="text-gray-600">Add dishes to your cart and customize your order with ease.</p>
-          </div>
-          <div className="p-8 bg-white rounded-xl shadow-lg flex flex-col items-center">
-            <span className="text-blue-600 text-5xl font-bold mb-4">3</span>
-            <h3 className="text-2xl font-bold text-gray-900 mb-3">Enjoy Delicious Food</h3>
-            <p className="text-gray-600">Sit back and relax while your meal is delivered right to your door.</p>
-          </div>
-        </div>
-      </section>
-
-      {/* Custom CSS for Animations (if not in your global CSS) */}
-      <style jsx>{`
-        @keyframes fadeInScaleUp {
-          from { opacity: 0; transform: translateY(20px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        .animate-fade-in-up {
-          animation: fadeInScaleUp 0.7s ease-out forwards;
-        }
-        .animation-delay-300 {
-          animation-delay: 0.3s;
-        }
-        .animation-delay-500 {
-          animation-delay: 0.5s;
-        }
-      `}</style>
+      {/* Filter Sidebar Component */}
+      <FilterSidebar
+        isOpen={isSidebarOpen}
+        onClose={() => setIsSidebarOpen(false)}
+        filters={filters}
+        onFilterChange={handleFilterChange}
+        sortBy={sortBy}
+        onSortChange={handleSortChange}
+        allCuisines={allCuisines}
+        onCuisineSelect={handleCuisineSelect}
+        selectedCuisines={filters.cuisines}
+      />
     </div>
   );
-};
+}

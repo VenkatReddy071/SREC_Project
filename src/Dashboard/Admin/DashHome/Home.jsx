@@ -1,23 +1,22 @@
-import React, { useState,useEffect } from "react";
-import { NavLink, Outlet } from "react-router-dom";
-import axios from "axios"
+import axios from "axios";
+import { useEffect, useState } from "react";
 import {
-  FaHospitalSymbol,
-  FaSchool,
-  FaMailBulk,
-  FaStore,
-  FaTachometerAlt,
-  FaSignOutAlt,
-  FaCog,
-  FaTags,
-  FaUsers,
-  FaShoppingCart,
-  FaQuestionCircle,
-  FaComments,
   FaBars,
   FaBell,
-  FaUserCircle,
+  FaCog,
+  FaComments,
+  FaHospitalSymbol,
+  FaMailBulk,
+  FaQuestionCircle,
+  FaSchool,
+  FaShoppingCart,
+  FaSignOutAlt,
+  FaStore,
+  FaTachometerAlt,
+  FaTags,
+  FaUsers
 } from "react-icons/fa";
+import { NavLink, Outlet } from "react-router-dom";
 
 const menuItems = [
   { name: "Dashboard", path: "/admin-dashboard", icon: <FaTachometerAlt /> },
@@ -57,12 +56,12 @@ export const DashHome = () => {
     <div className="flex h-screen overflow-hidden">
       {/* Sidebar */}
       <div
-        className={`bg-white text-black font-serif h-full overflow-y-auto transition-all duration-300 top-0 left-0 ${
+        className={`bg-white text-black font-serif h-full overflow-y-auto transition-all duration-300 top-0 left-0 flex flex-col ${
           isOpen ? "w-60" : "w-20"
         }`}
       >
         {/* Sidebar Header */}
-        <div className="flex items-center justify-between bg-black text-white p-4">
+        <div className="flex flex-grow items-center justify-between bg-black text-white p-4">
           {isOpen && <h1 className="text-xl font-bold">Admin Dashboard</h1>}
           <button onClick={toggleSidebar}>
             <FaBars className="w-6 h-6" />
@@ -91,6 +90,14 @@ export const DashHome = () => {
             </NavLink>
           ))}
         </nav>
+        <div className={`fixed bottom-0 bg-black text-gray-300 p-4 mt-auto border-t border-gray-700  ${isOpen ? "w-60" : "w-20 h-20"}`}>
+          <div className={`${isOpen ? "block " : "hidden "}`}>
+          <h2 className="font-semibold text-lg text-white">venkat</h2>
+          <p className="text-sm text-gray-400">Address: ff</p>
+          <p className="text-sm text-gray-400">Location:</p>
+          </div>
+    
+        </div>
       </div>
 
       {/* Main Content Area */}

@@ -449,7 +449,7 @@ const CheckoutPage = () => {
     }
 
 
-    const paymentMethods = ["Cash", "Card", "UPI"]; // Simplified list for demo
+    const paymentMethods = ["Cash", "Card", "UPI"];
 
     const cartItems = cart.items || [];
 
