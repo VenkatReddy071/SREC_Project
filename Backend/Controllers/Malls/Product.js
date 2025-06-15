@@ -14,13 +14,14 @@ const sendErrorResponse = (res, statusCode, message, error = null) => {
 
 exports.addProductByMallEmail = async (req, res) => {
     try {
-        const { mallEmail, ...productData } = req.body;
+        const {...productData } = req.body;
+        const {email}=req.user;
+        console.log(req.user,email);
+        // if (email || !/^\S+@\S+\.\S+$/.test(email)) {
+        //     return sendErrorResponse(res, 400, "Mall email is required and must be a valid email format.");
+        // }
 
-        if (!mallEmail || !/^\S+@\S+\.\S+$/.test(mallEmail)) {
-            return sendErrorResponse(res, 400, "Mall email is required and must be a valid email format.");
-        }
-
-        const mall = await Mall.findOne({ email: mallEmail.toLowerCase() });
+        const mall = await Mall.findOne({ email: email.toLowerCase() });
         if (!mall) {
             return sendErrorResponse(res, 404, "Mall not found with the provided email.");
         }
@@ -193,7 +194,7 @@ exports.updateProduct = async (req, res) => {
         const updatedProduct = await Product.findByIdAndUpdate(
             productId,
             req.body,
-            { new: true, runValidators: true } // Returns the updated document, runs schema validators
+            { new: true, runValidators: true }
         );
 
         if (!updatedProduct) {

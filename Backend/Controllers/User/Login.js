@@ -34,6 +34,7 @@ const Login = async (req, res) => {
 const Sign = async (req, res) => {
     try {
         const { username, password, email, type } = req.body;
+        console.log(req.body);
         const existUser = await User.findOne({ email });
         if (existUser) {
             return res.status(409).json({ message: "User with this email already exists. Please login." }); // 409 Conflict is more appropriate
@@ -107,7 +108,7 @@ const dashboard = async (req, res) => {
             case "school":
                 url = "school-dashboard";
                 break;
-            case "shopping":
+            case "fashion":
                 url = "fashion-dashboard";
                 break;
             case "hospital":

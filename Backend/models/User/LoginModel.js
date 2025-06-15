@@ -22,7 +22,7 @@ const userSchema = new mongoose.Schema(
         "admin",
         "marketing",
         "hospital",
-        "shopping",
+        "fashion",
         "schools",
         "college",
         "restaurant",

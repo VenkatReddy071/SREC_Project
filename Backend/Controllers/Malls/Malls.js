@@ -227,6 +227,29 @@ exports.getMallByEmailWithProducts = async (req, res) => {
     }
 };
 
+exports.getMallOutlet=async (req,res)=>{
+    try {
+        const { email } = req.user;
+
+        if (!email || !/^\S+@\S+\.\S+$/.test(email)) {
+            return sendErrorResponse(res, 400, "Invalid email format.");
+        }
+
+        const mall = await Mall.findOne({ email: email.toLowerCase() }).select("name email phoneNumber locationName address");
+
+        if (!mall) {
+            return sendErrorResponse(res, 404, "Mall not found with the provided email.");
+        }
+        res.status(200).json({
+            success: true,
+            message: "Mall fetched successfully!",
+            mall: mall,
+        });
+    } catch (error) {
+        sendErrorResponse(res, 500, "Failed to fetch mall and products by email.", error);
+    }
+}
+
 
 exports.getMallById = async (req, res) => {
     try {

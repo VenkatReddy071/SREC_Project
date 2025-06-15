@@ -1,86 +1,184 @@
-const mongoose = require("mongoose");
-const Product = require('../models/Malls/Products'); // Adjust path if your models are in a different folder
+// scripts/generateProducts.js
+const mongoose = require('mongoose');
+const Restaurant = require('../models/Dining/Restaurant'); // Adjust path
+const Product = require('../models/Dining/Menu');     // Adjust path
 
-// --- Configuration ---
-const MONGO_URI = "mongodb+srv://ndlinfo:ndlinfo@srec.nky2xvg.mongodb.net/SREC?retryWrites=true&w=majority&appName=SREC"; //  <-- IMPORTANT: Replace with your MongoDB URI   // Adjust path if your models are in a different folder
+// Helper functions - Moved to global scope
+const getRandomElement = (arr) => arr[Math.floor(Math.random() * arr.length)];
+const getRandomNumber = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+const getRandomBoolean = () => Math.random() < 0.5;
 
-// --- Array of Image URLs (your provided links) ---
-const imageUrls = [
-    "https://img.freepik.com/free-photo/shop-clothing-clothes-shop-hanger-modern-shop-boutique_1150-8886.jpg?ga=GA1.1.367584337.1719885901&semt=ais_hybrid&w=740",
-    "https://img.freepik.com/free-photo/side-view-man-looking-clothes-hanging-rail-shop_23-2148175643.jpg?ga=GA1.1.367584337.1719885901&semt=ais_hybrid&w=740",
-    "https://img.freepik.com/free-photo/fashion-clothing-hangers-show_1153-5492.jpg?ga=GA1.1.367584337.1719885901&semt=ais_hybrid&w=740",
-    "https://img.freepik.com/free-photo/two-young-beautiful-girlfriends-are-walking-style-loft-showroom-stylish-things-with-gift-bags-smiling-each-other_496169-2354.jpg?ga=GA1.1.367584337.1719885901&semt=ais_hybrid&w=740",
-    "https://img.freepik.com/free-photo/beautiful-second-hand-market_23-2149353670.jpg?ga=GA1.1.367584337.1719885901&semt=ais_hybrid&w=740",
-    "https://img.freepik.com/free-photo/interior-clothing-store-with-stylish-merchandise-racks-fashionable-brand-design-casual-wear-modern-boutique-empty-fashion-showroom-shopping-centre-with-elegant-merchandise_482257-65537.jpg?ga=GA1.1.367584337.1719885901&semt=ais_hybrid&w=740",
-    "https://img.freepik.com/free-photo/empty-boutique-shopping-centre_482257-78792.jpg?ga=GA1.1.367584337.1719885901&semt=ais_hybrid&w=740",
-    "https://img.freepik.com/free-photo/pretty-girls-choosing-clothes-shop_23-2147669923.jpg?ga=GA1.1.367584337.1719885901&semt=ais_hybrid&w=740",
-    "https://img.freepik.com/free-photo/blurred-clothing-store-shopping-mall_1258-5.jpg?ga=GA1.1.367584337.1719885901&semt=ais_hybrid&w=740",
-    "https://img.freepik.com/free-photo/clothing-store-with-blurred-effect_23-2148164738.jpg?ga=GA1.1.367584337.1719885901&semt=ais_hybrid&w=740",
-    "https://img.freepik.com/free-photo/beautiful-woman-buying-clothes-store-holding-shopping-bags-hand_23-2148101655.jpg?ga=GA1.1.367584337.1719885901&semt=ais_hybrid&w=740",
-    "https://img.freepik.com/free-photo/friends-shopping-second-hand-market_23-2149353695.jpg?ga=GA1.1.367584337.1719885901&semt=ais_hybrid&w=740",
-    "https://img.freepik.com/free-photo/rows-hangers-with-clothes_23-2147669916.jpg?ga=GA1.1.367584337.1719885901&semt=ais_hybrid&w=740",
-    "https://img.freepik.com/free-photo/full-shot-woman-looking-clothes_23-2150082870.jpg?ga=GA1.1.367584337.1719885901&semt=ais_hybrid&w=740",
-    "https://img.freepik.com/free-photo/woman-choosing-clothes-shop_23-2147669917.jpg?ga=GA1.1.367584337.1719885901&semt=ais_hybrid&w=740",
-    "https://img.freepik.com/free-photo/woman-paying-clothes-store_23-2148915620.jpg?ga=GA1.1.367584337.1719885901&semt=ais_hybrid&w=740",
-    "https://img.freepik.com/free-photo/pretty-woman-looking-new-dress_23-2147688392.jpg?ga=GA1.1.367584337.1719885901&semt=ais_hybrid&w=740",
-    "https://img.freepik.com/free-photo/pretty-consumer-posing-clothing-shop_23-2147669926.jpg?ga=GA1.1.367584337.1719885901&semt=ais_hybrid&w=740"
+// Food item image URLs
+const foodImageUrls = [
+  "https://img.freepik.com/free-photo/curry-with-chicken-onions-indian-food-asian-cuisine_2829-6270.jpg?ga=GA1.1.367584337.1719885901&semt=ais_hybrid&w=740",
+  "https://img.freepik.com/free-photo/pre-prepared-food-showcasing-ready-eat-delicious-meals-go_23-2151246071.jpg?ga=GA1.1.367584337.1719885901&semt=ais_hybrid&w=740",
+  "https://img.freepik.com/free-photo/chicken-skewers-with-slices-apples-chili-top-view_2829-19996.jpg?ga=GA1.1.367584337.1719885901&semt=ais_hybrid&w=740",
+  "https://img.freepik.com/free-photo/side-view-rice-garnish-with-grilled-chicken-cucumber-carrot-bell-pepper-spring-onion_141793-5070.jpg?ga=GA1.1.367584337.1719885901&semt=ais_hybrid&w=740",
+  "https://img.freepik.com/free-photo/side-view-rice-garnish-with-fried-onion-carrot-greens-chili-pepper-table_141793-5069.jpg?ga=GA1.1.367584337.1719885901&semt=ais_hybrid&w=740",
+  "https://img.freepik.com/free-photo/traditional-indian-soup-lentils-indian-dhal-spicy-curry-bowl-spices-herbs-rustic-black-wooden-table_2829-18717.jpg?ga=GA1.1.367584337.1719885901&semt=ais_hybrid&w=740",
+  "https://img.freepik.com/free-photo/top-view-meat-sauce-soup-with-potatoes-greens-dark-desk_140725-76777.jpg?ga=GA1.1.367584337.1719885901&semt=ais_hybrid&w=740",
+  "https://img.freepik.com/free-photo/restaurant-hall-with-lots-table_140725-6309.jpg?ga=GA1.1.367584337.1719885901&semt=ais_hybrid&w=740",
+  "https://img.freepik.com/free-photo/beyti-kebab-served-with-ayran-pickles_141793-1868.jpg?ga=GA1.1.367584337.1719885901&semt=ais_hybrid&w=740",
+  "https://img.freepik.com/free-photo/dinner-table-luxury-hotel_1150-10908.jpg?ga=GA1.1.367584337.1719885901&semt=ais_hybrid&w=740",
+  "https://img.freepik.com/free-photo/side-view-mix-meat-snacks-with-french-fries-grilled-vegetables-salad-sauces-board_141793-5021.jpg?ga=GA1.1.367584337.1719885901&semt=ais_hybrid&w=740",
+  "https://img.freepik.com/free-photo/street-restaurant-old-town-regensburg-germany_1127-3372.jpg?ga=GA1.1.367584337.1719885901&semt=ais_hybrid&w=740",
+  "https://img.freepik.com/free-photo/restaurant-with-tables-chairs-street_1127-2172.jpg?ga=GA1.1.367584337.1719885901&semt=ais_hybrid&w=740",
+  "https://img.freepik.com/free-photo/cute-stylish-family-summer-city_1157-19953.jpg?ga=GA1.1.367584337.1719885901&semt=ais_hybrid&w=740",
+  "https://img.freepik.com/free-photo/restaurant-with-tables-chairs-outside_1127-2018.jpg?ga=GA1.1.367584337.1719885901&semt=ais_hybrid&w=740",
+  "https://img.freepik.com/free-photo/friends-front-bar_23-2147680610.jpg?ga=GA1.1.367584337.1719885901&semt=ais_hybrid&w=740",
+  "https://img.freepik.com/free-photo/full-shot-woman-walking-by-bistro_23-2149366409.jpg?ga=GA1.1.367584337.1719885901&semt=ais_hybrid&w=740",
+  "https://img.freepik.com/free-photo/restaurant-tables_1162-181.jpg?ga=GA1.1.367584337.1719885901&semt=ais_hybrid&w=740",
+  "https://img.freepik.com/free-photo/plate-with-pakistani-food-high-angle_23-2148825157.jpg?ga=GA1.1.367584337.1719885901&semt=ais_hybrid&w=740",
+  "https://img.freepik.com/free-photo/mixed-pizza-with-sliced-lemon_140725-2808.jpg?ga=GA1.1.367584337.1719885901&semt=ais_hybrid&w=740"
 ];
 
-// Helper function to get a random element from an array
-const getRandomElement = (arr) => arr[Math.floor(Math.random() * arr.length)];
+const tiffinCategories = ["Breakfast Tiffins", "Lunch Tiffins", "Dinner Tiffins", "Snack Tiffins"];
+const tiffinItems = [
+    "Idli Sambar Tiffin", "Dosa with Chutney Tiffin", "Poori Sabzi Tiffin", "Upma Tiffin",
+    "Poha Tiffin", "Paratha & Curd Tiffin", "Roti Sabzi Dal Tiffin", "Rice & Curry Tiffin",
+    "Khichdi Tiffin", "Pongal Tiffin", "Medu Vada Tiffin", "Mini Meals Tiffin",
+    "South Indian Combo Tiffin", "North Indian Combo Tiffin"
+];
 
-// Helper function to get N unique random elements from an array
-const getUniqueRandomElements = (arr, n) => {
-    if (n > arr.length) {
-        console.warn(`Attempted to get ${n} unique elements from an array of size ${arr.length}. Returning all elements.`);
-        return [...arr];
+const indianDishes = [
+  "Butter Chicken", "Paneer Tikka Masala", "Biryani", "Dal Makhani", "Chole Bhature",
+  "Masala Dosa", "Vada Pav", "Samosa", "Gulab Jamun", "Jalebi", "Lassi", "Filter Coffee",
+  "Rogan Josh", "Malai Kofta", "Palak Paneer", "Naan", "Tandoori Chicken", "Fish Curry",
+  "Chicken Tikka", "Vegetable Korma", "Mutton Biryani", "Pani Puri", "Kulfi",
+  "Vegetable Pakora", "Chicken Tikka", "Mixed Pizza"
+];
+const descriptions = [
+  "A classic Indian delight.", "Rich and creamy, a must-try!", "Flavorful and aromatic.",
+  "Perfectly spiced and cooked.", "A refreshing treat.", "Authentic taste of India.",
+  "Prepared with fresh ingredients.", "A house special."
+];
+
+function generateUniqueProductData(restaurantId, restaurantType) {
+  let name;
+  let category;
+  let productType;
+  let isVegetarianFlag; // Use a different name to avoid conflict
+  let isVeganFlag;
+
+  // Determine product type and name based on restaurant type
+  if (restaurantType === 'tiffin_only') {
+    productType = 'tiffin_item';
+    name = getRandomElement(tiffinItems);
+    category = getRandomElement(tiffinCategories);
+  } else if (restaurantType === 'both') {
+    // For 'both', randomly choose between regular and tiffin items
+    if (getRandomBoolean()) { // 50% chance for tiffin item
+      productType = 'tiffin_item';
+      name = getRandomElement(tiffinItems);
+      category = getRandomElement(tiffinCategories);
+    } else {
+      productType = getRandomElement(['menu_item', 'mandi_item']);
+      name = getRandomElement(indianDishes);
+      category = getRandomElement(["Appetizers", "Main Course", "Desserts", "Beverages", "Soups", "Salads", "Breads", "Rice Dishes"]);
     }
-    const shuffled = [...arr].sort(() => 0.5 - Math.random());
-    return shuffled.slice(0, n);
-};
+  } else { // 'regular_only'
+    productType = getRandomElement(['menu_item', 'mandi_item']);
+    name = getRandomElement(indianDishes);
+    category = getRandomElement(["Appetizers", "Main Course", "Desserts", "Beverages", "Soups", "Salads", "Breads", "Rice Dishes"]);
+  }
 
-mongoose.connect(MONGO_URI)
-    .then(() => console.log("MongoDB connected successfully."))
-    .catch(err => console.error("MongoDB connection error:", err));
+  const description = getRandomElement(descriptions);
 
-// --- Function to Assign Images to Existing Mall Data ---
-const assignImagesToMalls = async () => {
-    try {
-        if (imageUrls.length === 0) {
-            console.warn("No image URLs provided. Cannot assign images to mall data.");
-            return;
-        }
+  // Logic for isVegetarian based on common ingredients (updated to include tiffin items)
+  isVegetarianFlag = name.toLowerCase().includes('paneer') || name.toLowerCase().includes('dal') ||
+                       name.toLowerCase().includes('palak') || name.toLowerCase().includes('vegetable') ||
+                       name.toLowerCase().includes('dosa') || name.toLowerCase().includes('vada') ||
+                       name.toLowerCase().includes('samosa') || name.toLowerCase().includes('gulab jamun') ||
+                       name.toLowerCase().includes('jalebi') || name.toLowerCase().includes('lassi') ||
+                       name.toLowerCase().includes('kulfi') || name.toLowerCase().includes('idli') ||
+                       name.toLowerCase().includes('poori') || name.toLowerCase().includes('upma') ||
+                       name.toLowerCase().includes('poha') || name.toLowerCase().includes('paratha') ||
+                       name.toLowerCase().includes('roti') || name.toLowerCase().includes('khichdi') ||
+                       name.toLowerCase().includes('pongal') || name.toLowerCase().includes('pizza');
 
-        console.log("Fetching all mall documents...");
-        const malls = await Product.find({});
-        console.log(`Found ${malls.length} mall(s) to update.`);
+  isVeganFlag = isVegetarianFlag && getRandomBoolean();
 
-        if (malls.length === 0) {
-            console.log("No malls found in the database. Please add some mall data first.");
-            return;
-        }
+  return {
+    restaurantId: restaurantId,
+    name: name,
+    description: description,
+    priceINR: getRandomNumber(50, 1500),
+    category: category,
+    productType: productType,
+    imageUrl: getRandomElement(foodImageUrls),
+    isVegetarian: isVegetarianFlag,
+    isVegan: isVeganFlag,
+    isAvailable: true,
+    isTopSeller: getRandomBoolean(),
+    isNewArrival: getRandomBoolean(),
+  };
+}
 
-        let updatedCount = 0;
-        for (const mall of malls) {
-            
-            const availableGalleryImages = imageUrls.filter(url => url !== mall.images[0]);
-            mall.images = getUniqueRandomElements(availableGalleryImages, 3);
+async function generateProductsForAllRestaurants(numProductsPerRestaurant = 120) {
+  const mongoURI = "mongodb+srv://ndlinfo:ndlinfo@srec.nky2xvg.mongodb.net/SREC?retryWrites=true&w=majority&appName=SREC";
 
-            await mall.save();
-            updatedCount++;
-            console.log(`Updated images for mall: ${mall.name} (ID: ${mall._id})`);
-        }
+  try {
+    await mongoose.connect(mongoURI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+    console.log('MongoDB connected successfully...');
 
-        console.log(`\nSuccessfully updated images for ${updatedCount} mall(s).`);
+    // Clear existing products (optional, but recommended for fresh runs)
+    console.log('Clearing existing products...');
+    await Product.deleteMany({});
+    console.log('Existing products cleared.');
 
-    } catch (error) {
-        console.error("Error assigning images to malls:", error);
-    } finally {
-        // Disconnect from MongoDB after the operation is complete
-        mongoose.disconnect();
-        console.log("MongoDB disconnected.");
+    console.log('Fetching restaurant IDs and their service types...');
+    const restaurants = await Restaurant.find({}, '_id servesTiffins isTiffinOnly').lean();
+    if (restaurants.length === 0) {
+      console.warn('No restaurants found in the database. Please run generateData.js first.');
+      mongoose.connection.close();
+      return;
     }
-};
+    console.log(`Found ${restaurants.length} restaurants.`);
 
-// --- Execute the function ---
-assignImagesToMalls();
+    const allProductsToInsert = [];
+    let productsCount = 0;
+
+    for (const restaurant of restaurants) {
+      let restaurantType;
+      if (restaurant.isTiffinOnly) {
+        restaurantType = 'tiffin_only';
+      } else if (restaurant.servesTiffins) { // servesTiffins is true but not tiffinOnly, so it's 'both'
+        restaurantType = 'both';
+      } else { // servesTiffins is false
+        restaurantType = 'regular_only';
+      }
+
+      for (let i = 0; i < numProductsPerRestaurant; i++) {
+        allProductsToInsert.push(generateUniqueProductData(restaurant._id, restaurantType));
+      }
+      productsCount += numProductsPerRestaurant;
+      if (productsCount % 5000 === 0) {
+        console.log(`Generated ${productsCount} products so far...`);
+      }
+    }
+
+    console.log(`Total products to insert: ${allProductsToInsert.length}`);
+
+    if (allProductsToInsert.length > 0) {
+      console.log('Starting bulk insertion of products...');
+      await Product.insertMany(allProductsToInsert);
+      console.log(`Successfully inserted ${allProductsToInsert.length} products!`);
+    } else {
+      console.log('No products to insert.');
+    }
+
+  } catch (error) {
+    console.error('Error during product generation and insertion:', error);
+  } finally {
+    if (mongoose.connection.readyState === 1) {
+        await mongoose.connection.close();
+        console.log('MongoDB connection closed.');
+    }
+  }
+}
+
+// Call the function to generate and insert products
+generateProductsForAllRestaurants(120);
