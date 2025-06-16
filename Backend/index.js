@@ -11,6 +11,7 @@ const app = express();
 
 // Connect DB
 connectDB();
+app.set('trust proxy', 1);
 
 // Middleware
 
@@ -26,6 +27,8 @@ const store = new MongoDBStore({
 store.on('error', (error) => {
   console.error("Session store error:", error);
 });
+const isProduction = process.env.NODE_ENV === 'production';
+
 
 app.use(session({
   name: "session-id",
@@ -36,8 +39,8 @@ app.use(session({
   cookie: {
     maxAge: 7 * 24 * 60 * 60 * 1000, // 1 week
     httpOnly: true,
-    sameSite: 'lax',
-    secure: false
+     sameSite: isProduction ? 'none' : 'lax',
+    secure: isProduction,
   }
 }));
 
@@ -48,6 +51,7 @@ app.use(session({
 app.use(cors({
   origin: "https://srecnandyalinfo.onrender.com",
   credentials: true,
+  exposedHeaders: ['Set-Cookie'],
 }));
 app.use(cookieParser());
 app.use(express.json());
