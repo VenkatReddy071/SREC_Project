@@ -14,7 +14,7 @@ const {authenticateToken}=require("../../Controllers/Authorization/auth")
 const router = express.Router();
 
 router.get('/', getAllProducts);
-router.post('/', createProduct); 
+router.post('/',authenticateToken, createProduct); 
 
 router.get('/restaurant/:restaurantId', getProductsByRestaurantId);
 router.get('/restaurant-by-email',authenticateToken, getProductsByRestaurantEmail);
