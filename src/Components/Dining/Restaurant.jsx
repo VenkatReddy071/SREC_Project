@@ -7,7 +7,7 @@ import { RestaurantSubTabs } from "./RestaurantSubTabs";
 import { RestaurantList } from './RestaurantList';
 import { FilterSidebar } from './RestaurantFiltersSidebar'; 
 import Food from "../../assets/food.avif";
-import Restaurant from "../../assets/resataurant.avif";
+import Restaurant from "../../assets/Restaurant.avif";
 import Tiffin from "../../assets/tiffin.avif";
 import Veg from "../../assets/veg.avif";
 import axios from 'axios';
