@@ -52,6 +52,10 @@ const ProductSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  rating:{
+    type:Number,
+    default: 3,
+  },
   isNewArrival: {
     type: Boolean,
     default: false,

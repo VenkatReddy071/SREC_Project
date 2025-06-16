@@ -167,7 +167,28 @@ exports.updateRestaurant = async (req, res) => {
     });
   }
 };
-
+exports.getRestaurantOutlet=async(req,res)=>{
+  try{
+    const {email}=req?.user;
+    if(!email){
+      return res.status(404).json({message:"UnAuthorization"});
+    }
+    const restaurant=await Restaurant.findOne({email}).select("name email   phone address seatingAvailability")
+    res.status(200).json({
+            success: true,
+            message: "Mall fetched successfully!",
+            mall: restaurant,
+    });
+  }
+  catch (error) {
+    console.error('Error fetching restaurant by ID:', error);
+    res.status(500).json({
+      status: 'error',
+      message: 'Failed to retrieve restaurant',
+      error: error.message,
+    });
+  }
+}
 exports.deleteRestaurant = async (req, res) => {
   try {
     const restaurant = await Restaurant.findByIdAndDelete(req.params.id);

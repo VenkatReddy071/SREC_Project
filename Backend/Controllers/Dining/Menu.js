@@ -86,9 +86,7 @@ exports.getProductsByRestaurantEmail = async (req, res) => {
     const baseQuery = { restaurantId };
     const features = new APIFeatures(Product.find(baseQuery), req.query)
       .filter()
-      .sort()
-      .limitFields()
-      .paginate();
+      .sort();
 
     const products = await features.query;
     const totalProducts = await Product.countDocuments({ ...baseQuery, ...features.filterQuery });
@@ -148,7 +146,53 @@ exports.getProductById = async (req, res) => {
 
 exports.createProduct = async (req, res) => {
   try {
-    const newProduct = await Product.create(req.body);
+    const { email } = req.user;
+
+    const restaurant = await Restaurant.findOne({ email });
+
+    if (!restaurant) {
+      return res.status(404).json({
+        status: 'fail',
+        message: 'Restaurant not found for the authenticated user.',
+      });
+    }
+    console.log(req.body);
+    const { 
+      name, 
+      description, 
+      priceINR, 
+      category, 
+      imageUrl,
+      rating,
+      productType,
+      isVegetarian,
+      isVegan,
+      isTopSeller,
+      isNewArrival,
+      isAvailable, } = req.body;
+
+    if (!name || !priceINR || !category) {
+      return res.status(400).json({
+        status: 'fail',
+        message: 'Missing required product fields: name, price, category.',
+      });
+    }
+
+    const newProduct = await Product.create({
+      name,
+      description,
+      priceINR,
+    category, 
+      imageUrl,
+      rating,
+      productType,
+      isVegetarian,
+      isVegan,
+      isTopSeller,
+      isNewArrival,
+      isAvailable,
+      restaurantId: restaurant._id,
+    });
 
     res.status(201).json({
       status: 'success',
@@ -158,20 +202,23 @@ exports.createProduct = async (req, res) => {
     });
   } catch (error) {
     console.error('Error creating product:', error);
+
     if (error.name === 'ValidationError') {
+      const errors = Object.values(error.errors).map(err => err.message);
       return res.status(400).json({
         status: 'fail',
-        message: error.message,
+        message: `Validation failed: ${errors.join(', ')}`,
         errors: error.errors,
       });
     }
     res.status(500).json({
       status: 'error',
-      message: 'Failed to create product',
+      message: 'An unexpected error occurred while creating the product.',
       error: error.message,
     });
   }
 };
+
 
 exports.updateProduct = async (req, res) => {
   try {

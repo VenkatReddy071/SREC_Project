@@ -112,7 +112,7 @@ exports.getProductsByMallId = async (req, res) => {
 
 exports.getProductsByMallEmail = async (req, res) => {
     try {
-        const { mallEmail } = req.params;
+        const { mallEmail } = req.user;
         const {
             page = 1,
             limit = 10,

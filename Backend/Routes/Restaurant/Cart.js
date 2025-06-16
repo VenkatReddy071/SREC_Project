@@ -16,8 +16,6 @@ const calculateCartTotals = async (cart) => {
         let currentItemDoc = null;
         let itemPrice = 0;
         let itemCategory = null;
-
-        // Only process if it's a Menu item
         if (cartItem.itemModelType === 'Menu') {
             currentItemDoc = await Menu.findById(cartItem.product);
             if (!currentItemDoc || !currentItemDoc.isAvailable) {
@@ -27,16 +25,12 @@ const calculateCartTotals = async (cart) => {
             itemPrice = currentItemDoc.priceINR;
             itemCategory = currentItemDoc.category;
         } else {
-            // Remove items that are not 'Menu' type
             itemsToRemove.push(i);
             continue;
         }
 
         subtotal += itemPrice * cartItem.quantity;
-
-        // Simplified tax calculation (adjust as per your needs for Menu categories)
-        // You might define specific tax rates for food categories if different
-        estimatedTaxes += (itemPrice * cartItem.quantity) * 0.05; // Example: 5% tax for all menu items
+        estimatedTaxes += (itemPrice * cartItem.quantity) * 0.05;
     }
 
     for (let i = itemsToRemove.length - 1; i >= 0; i--) {
@@ -87,7 +81,6 @@ router.get('/', async (req, res) => {
     }
 });
 
-// Route for adding Menu items
 router.post('/add-menu', async (req, res) => {
     const { menuId, quantity, sourceId } = req.body;
     const userId = req.session.user?.id;
@@ -147,7 +140,6 @@ router.post('/add-menu', async (req, res) => {
     }
 });
 
-// Route for updating Menu item quantity
 router.put('/update-menu-quantity', async (req, res) => {
     const { menuId, quantity } = req.body;
     const userId = req.session.user?.id;
@@ -200,7 +192,6 @@ router.put('/update-menu-quantity', async (req, res) => {
     }
 });
 
-// Route for removing Menu items
 router.delete('/remove-menu/:menuId', async (req, res) => {
     const { menuId } = req.params;
     const userId = req.session.user?.id;

@@ -60,6 +60,8 @@ const CartRouter=require("./Routes/Malls/Cart");
 const OrderRouter=require("./Routes/Malls/ORder/Order");
 const RestaurantRouter=require("./Routes/Restaurant/Restaurant");
 const MenuRouter=require("./Routes/Restaurant/Menu");
+const SchoolRouter=require("./Routes/Schools/School")
+const TeacherRouter=require("./Routes/Schools/Teacher");
 app.get("/", (req, res) => {
   res.send("Server is running");
 });
@@ -75,6 +77,8 @@ app.use("/api/cart",CartRouter);
 app.use("/api/order",OrderRouter);
 app.use("/api/restaurant",RestaurantRouter);
 app.use("/api/menu",MenuRouter);
+app.use("/api/school",SchoolRouter);
+app.use("/api/teacher",TeacherRouter);
 // Start Server
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {

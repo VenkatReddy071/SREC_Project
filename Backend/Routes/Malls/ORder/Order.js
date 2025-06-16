@@ -143,6 +143,7 @@ router.post('/', async (req, res) => {
             throw new Error(`Your cart does not contain any ${firstCartItemModelType === 'Menu' ? 'menu items' : 'products'} for this type of order.`);
         }
         if (filteredCartItems.length !== cart.items.length) {
+            res.status(401).json({ message:'User cart contains mixed item types,please make a Either one Category' });
             console.warn(`User cart contains mixed item types. Only ${firstCartItemModelType} items will be checked out.`);
         }
 
