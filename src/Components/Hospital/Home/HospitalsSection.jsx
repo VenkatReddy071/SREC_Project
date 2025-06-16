@@ -190,7 +190,7 @@ export const HospitalsSection = () => {
       case 0:
         return (
           <>
-            <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="mt-8 ml-2 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
               {isInitialLoading || isLoading ? (
                 Array.from({ length: 9 }).map((_, index) => <SkeletonCard key={index} />)
               ) : (
@@ -314,20 +314,21 @@ export const HospitalsSection = () => {
 
   return (
     <div className="bg-gray-50 py-10 font-inter">
-      <div className="container mx-auto px-4">
+      <div className="container md:mx-auto md:px-4">
         <h2 className="text-base font-semibold text-blue-500 text-center mb-2">View list of Hospitals</h2>
         <h1 className="font-bold text-4xl md:text-5xl lg:text-6xl text-center text-gray-900 mb-4">
           Explore Our Hospital Services
         </h1>
         <h2 className="text-lg text-gray-600 text-center mb-8">Stay updated with our expert health articles</h2>
 
-        <div className="sticky top-0  z-10 bg-white shadow-md rounded-md px-10">
-          <div className="flex  gap-4 py-3">
+        <div className="flex overflow-x-auto custom-scrollbar w-full pb-2 md:pb-0 md:flex-grow md:justify-between">
+          <div className="md:flex  gap-4 py-3">
             {list.map((item, index) => (
               <button
                 key={index}
-                className={`md:px-4 md:py-2 text-center cursor-pointer font-semibold text-gray-700 hover:text-blue-600 focus:outline-none ${
-                  activeIndex === index ? 'border-b-2 border-blue-500 text-blue-600' : ''
+                className={`flex-shrink-0 px-5 py-2 mt-2 mr-2 ml-1 md:mr-4 rounded-full text-base font-medium transition-colors duration-300 font-['Inter'] shadow-sm ${
+                  activeIndex === index ? 'bg-orange-500 text-white shadow-lg transform scale-105'
+                : 'bg-gray-100 text-gray-700 hover:bg-gray-200 hover:text-gray-900'
                 }`}
                 onClick={() => setActiveIndex(index)}
               >
@@ -352,7 +353,7 @@ export const HospitalsSection = () => {
         <div
           ref={scrollContainerRef}
           style={{
-            maxHeight: '900px',
+            maxHeight: '1200px',
             overflowY: 'auto',
             marginTop: '2rem',
             paddingRight: '15px',

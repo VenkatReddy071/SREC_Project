@@ -392,50 +392,63 @@ export const MallsSection = () => {
 
     return (
         <div className="bg-gray-50 py-10 font-inter">
-            <div className="container mx-auto px-4 mt-8">
-                <div className="sticky top-0 z-30 bg-white shadow-md rounded-md px-4 md:px-10">
-                    <div className="flex justify-between items-center py-3">
-                        <div className="flex gap-4 overflow-x-auto pb-2 custom-scrollbar">
-                            {list.map((item, index) => (
-                                <button
-                                    key={index}
-                                    className={`flex-shrink-0 px-4 py-2 text-center cursor-pointer font-semibold text-gray-700 hover:text-blue-600 focus:outline-none ${
-                                        activeIndex === index ? 'border-b-2 border-blue-500 text-blue-600' : ''
+<div className="container md:mx-auto md:px-4 mt-8">
+  <div className="sticky top-0 z-30 bg-white shadow-md rounded-md">
+    <div className="flex flex-col md:flex-row md:justify-between items-center py-3 px-2 md:px-10">
+      <div className="flex overflow-x-auto  custom-scrollbar w-full pb-2 md:pb-0 md:flex-grow md:justify-start">
+        {list.map((item, index) => (
+          <button
+            key={index}
+            className={`sticky top-0 flex-shrink-0 px-5 py-2 mt-2 mr-2 ml-1 md:mr-4 rounded-full text-base font-medium transition-colors duration-300 font-['Inter'] shadow-sm
+                                    ${
+                                      activeIndex === index
+                                        ? 'bg-orange-500 text-white shadow-lg transform scale-105'
+                                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200 hover:text-gray-900'
                                     }`}
-                                    onClick={() => setActiveIndex(index)}
-                                >
-                                    {item}
-                                </button>
-                            ))}
-                        </div>
-                        {activeIndex === 0 && (
-                            <button
-                                className="ml-auto flex items-center px-4 py-2 text-blue-600 font-semibold rounded-md hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
-                                onClick={() => setShowFilterSidebar(true)}
-                            >
-                                {/* Filter Icon SVG */}
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-5 h-5 mr-2">
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 3c2.757 0 5.257 1.116 7.071 2.929a8.974 8.974 0 010 12.126l-2.122 2.121-7.07-7.071-2.122-2.121a8.974 8.974 0 010-12.126C6.743 4.116 9.243 3 12 3zM12 7.5a1.5 1.5 0 100 3 1.5 1.5 0 000-3z" />
-                                </svg>
-                                Filter
-                            </button>
-                        )}
-                    </div>
-                </div>
+            onClick={() => setActiveIndex(index)}
+          >
+            {item}
+          </button>
+        ))}
+      </div>
+      {activeIndex === 0 && (
+        <button
+          className="w-full mt-3 md:mt-0 md:w-auto flex items-center justify-center px-4 py-2 text-blue-600 font-semibold rounded-md hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+          onClick={() => setShowFilterSidebar(true)}
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth="1.5"
+            stroke="currentColor"
+            className="w-5 h-5 mr-2"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M12 3c2.757 0 5.257 1.116 7.071 2.929a8.974 8.974 0 010 12.126l-2.122 2.121-7.07-7.071-2.122-2.121a8.974 8.974 0 010-12.126C6.743 4.116 9.243 3 12 3zM12 7.5a1.5 1.5 0 100 3 1.5 1.5 0 000-3z"
+            />
+          </svg>
+          Filter
+        </button>
+      )}
+    </div>
+  </div>
 
-                {/* Scrollable Content Area */}
-                <div
-                    ref={scrollContainerRef}
-                    style={{
-                        maxHeight: '800px', // Adjust max height based on header/sticky bar
-                        overflowY: 'auto',
-                        paddingRight: '15px', // For scrollbar visibility
-                    }}
-                    className="relative px-4 md:px-3" // Add horizontal padding for smaller screens
-                >
-                    {renderContent()}
-                </div>
-            </div>
+  {/* Scrollable Content Area */}
+  <div
+    ref={scrollContainerRef}
+    style={{
+      maxHeight: '1300px', 
+      overflowY: 'auto',
+      paddingRight: '15px',
+    }}
+    className="relative px-4 md:px-3 mt-4" 
+  >
+    {renderContent()}
+  </div>
+</div>
             {showFilterSidebar && activeIndex === 0 && (
                 <div className="fixed inset-0 bg-gray-600 bg-opacity-50 z-40 flex justify-end" onClick={() => setShowFilterSidebar(false)}>
                     <div

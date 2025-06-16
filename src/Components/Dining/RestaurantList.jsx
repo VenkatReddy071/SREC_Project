@@ -121,7 +121,7 @@ export const RestaurantList = ({ filters, activeRestaurantTab, sortBy }) => {
   }
 
   return (
-    <div className="mt-12">
+    <div className="mt-12 px-6 md:px-1">
       <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">Our Restaurants</h2>
       {restaurants.length === 0 && !loading && !error && (
         <p className="text-center text-gray-600">No restaurants found matching your criteria.</p>

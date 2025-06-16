@@ -37,7 +37,7 @@ export const Home = () => {
         </div>
         
       </div>
-      <div className="md:w-full md:h-96  w-full p-4   ">
+      <div className="md:w-full md:h-96  w-full md:p-4   ">
             <img
                 src={HeaderImg1}
                 alt="Background"

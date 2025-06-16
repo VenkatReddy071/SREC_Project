@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useLocation } from "react-router-dom";
 import axios from "axios";
 import { Showcase } from "../../../Pages/Showcase/Showcase";
+import { EducationalInstituteOverview} from "./Overview"
 export const School = () => {
   useEffect(() => {
       window.scrollTo(0, 0);
@@ -27,9 +28,21 @@ export const School = () => {
     { label: 'Overview', id: 'overview' },
     { label: 'Teachers', id: 'teachers' },
     { label: 'Reviews', id: 'reviews' },
-    { label: 'Book Slot', id: 'book' },
+    { label: 'Gallery', id: 'gallery' },
     { label: 'Contact Us', id: 'contact_us' },
   ];
+  const activityIconMap = {
+        "Debate Club": "https://placehold.co/50x50/ADD8E6/000000?text=🗣️",
+        "Science Fair": "https://placehold.co/50x50/90EE90/000000?text=🧪",
+        "Sports Team": "https://placehold.co/50x50/FF6347/FFFFFF?text=🏀",
+        "Music": "https://placehold.co/50x50/9370DB/FFFFFF?text=🎵",
+        "Art": "https://placehold.co/50x50/FFD700/000000?text=🎨",
+        "Coding Club": "https://placehold.co/50x50/007bff/FFFFFF?text=💻",
+        "Robotics Society": "https://placehold.co/50x50/8A2BE2/FFFFFF?text=🤖",
+        "Cultural Fest": "https://placehold.co/50x50/FF4500/FFFFFF?text=🎉",
+        "Drama Society": "https://placehold.co/50x50/DDA0DD/FFFFFF?text=🎭",
+        "default": "https://placehold.co/50x50/CCCCCC/666666?text=✨"
+    };
   useEffect(() => {
     if (schoolId) {
       const url = `${import.meta.env.VITE_SERVER_URL}/api/school/${schoolId}`;
@@ -49,22 +62,12 @@ export const School = () => {
     setActiveNavLink(service3);
   },[service3])
   const renderContent = () => {
-    // switch (activeNavLink) {
-    //   case 'Overview':
-    //     return <Overview hospital={hospital} />;
-    //   case 'Services':
-    //     return <ServicesPage hospital={hospital} />;
-    //   case 'Doctors':
-    //     return <DoctorsContent hospitalId={HospitalId} />;
-    //   case 'Reviews':
-    //     return <ReviewsContent />;
-    //   case 'Book Appointment':
-    //     return <BookTable />;
-    //   case 'Contact Us':
-    //     return <Contact />;
-    //   default:
-    //     return <Overview hospital={hospital} />;
-    // }
+    switch(activeNavLink){
+      case "Overview":
+        return <EducationalInstituteOverview institute={school} activityIconMap={activityIconMap}/>
+      default:
+        return <EducationalInstituteOverview  institute={school} activityIconMap={activityIconMap}/>
+    }
   };
 
   return (
