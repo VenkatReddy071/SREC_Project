@@ -463,7 +463,7 @@ const ViewProduct = ({ defaultProduct }) => {
         }
 
         const itemToAdd = {
-            productId: product._id,
+            itemId: product._id,
             name: product.name,
             price: product.price,
             currency: product.currency,
@@ -471,9 +471,12 @@ const ViewProduct = ({ defaultProduct }) => {
             selectedSize,
             selectedColor,
             image: product.images[0] || null,
-            mall: product.mall,
+            sourceId: product.mall,
+            itemModelType: 'Product',
+            sourceType: 'Mall',
             storeName: product.storeName,
         };
+        console.log(itemToAdd);
         await addToCart(itemToAdd);
     };
 

@@ -102,7 +102,9 @@ const ServicesPage = () => {
       setModalAction(null); // Ensure action is cleared
   };
 
-
+useEffect(() => {
+          window.scrollTo(0, 0);
+}, []);
   return (
     <div className="container mx-auto p-6 bg-gray-100 min-h-screen font-inter">
       <h1 className="text-3xl font-bold text-gray-800 mb-8">Hospital Services Management</h1>

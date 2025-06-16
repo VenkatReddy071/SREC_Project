@@ -24,7 +24,7 @@ export const RestaurantSubTabs = ({ activeTab, onTabChange,setIsSidebarOpen }) =
   return (
     <div
       ref={tabsRef}
-      className={`sticky top-0  z-10 bg-white shadow-md rounded-md px-10`}
+      className={`bg-white shadow-md p-4  sticky top-0 z-20`}
     >
       <style>{`
         @keyframes fade-in-down {

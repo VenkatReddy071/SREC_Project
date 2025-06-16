@@ -17,7 +17,7 @@ export const Fotter = () => {
           <Link to="/About-us"><li>About Us</li></Link>
           {/* <Link to="/Faq"><li>FAQs</li></Link>
           <Link to="/Support"><li>Support</li></Link> */}
-          <Link to="/About-us"><li>Services</li></Link>
+          <Link to="/services"><li>Services</li></Link>
             
           </ul>
         </div>

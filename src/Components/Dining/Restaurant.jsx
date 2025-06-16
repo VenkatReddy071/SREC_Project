@@ -433,7 +433,7 @@ export const RestaurantHomePage = () => {
       <ScrollbarHideCss />
 
       <GlobalHeader />
-      <main className="container mx-auto px-4 py-8">
+      <main className="container mx-auto px-2 py-8">
         <WebsiteContent />
         <FeatureSection
           title="Find Your Perfect Restaurant"

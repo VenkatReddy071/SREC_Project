@@ -6,13 +6,12 @@ const CartContent = ({ onClose }) => {
     const navigate=useNavigate();
     const handleQuantityChange = async (item, delta) => {
         const newQuantity = item.quantity + delta;
-        if (newQuantity < 1) return;
-
-        await updateCartQuantity(item.product._id, item.selectedSize || null, item.selectedColor || null, newQuantity);
+        if (newQuantity < 1) return;                                                                 
+        await updateCartQuantity({ itemId: item.product,quantity:newQuantity,itemModelType:item?.itemModelType,sourceType:item?.sourceType,sourceId:item?.sourceId,selectedSize:item.selectedSize || null,  selectedColor:item.selectedColor || null});
     };
 
     const handleRemoveItem = async (item) => {
-        await removeFromCart(item.product._id, item.selectedSize || null, item.selectedColor || null);
+        await removeFromCart({ itemId: item.product,itemModelType:item?.itemModelType,sourceType:item?.sourceType,sourceId:item?.sourceId,selectedSize:item.selectedSize || null,  selectedColor:item.selectedColor || null});
     };
 
     const handleClearCart = async () => {

@@ -216,7 +216,7 @@ export const MallsSection = () => {
             case 0:
                 return (
                     <>
-                        <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                        <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                             {isInitialLoading ? (
                                 Array.from({ length: 9 }).map((_, index) => <SkeletonMallCard key={index} />)
                             ) : (
@@ -393,7 +393,6 @@ export const MallsSection = () => {
     return (
         <div className="bg-gray-50 py-10 font-inter">
             <div className="container mx-auto px-4 mt-8">
-                {/* Sticky Tabs and Filter Bar */}
                 <div className="sticky top-0 z-30 bg-white shadow-md rounded-md px-4 md:px-10">
                     <div className="flex justify-between items-center py-3">
                         <div className="flex gap-4 overflow-x-auto pb-2 custom-scrollbar">
@@ -432,7 +431,7 @@ export const MallsSection = () => {
                         overflowY: 'auto',
                         paddingRight: '15px', // For scrollbar visibility
                     }}
-                    className="relative px-4 md:px-0" // Add horizontal padding for smaller screens
+                    className="relative px-4 md:px-3" // Add horizontal padding for smaller screens
                 >
                     {renderContent()}
                 </div>

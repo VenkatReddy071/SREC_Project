@@ -55,6 +55,7 @@ export const ProductsPage = () => {
         `${import.meta.env.VITE_SERVER_URL}/api/malls/email/${mallEmail}`,
         { headers: { Authorization: `Bearer ${token}` }, withCredentials: true }
       );
+      console.log(response.data);
       setProducts(response.data.products || response.data.mall?.products || []);
     } catch (err) {
       console.error("Error fetching products:", err);

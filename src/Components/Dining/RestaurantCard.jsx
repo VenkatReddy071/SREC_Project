@@ -18,10 +18,15 @@ export const RestaurantCard = ({ restaurant }) => {
 
   return (
     <Link to={`/showcase/page?type=restaurant/${restaurant?.name}/${restaurant?._id}/Overview`}>
-    <div className="bg-white rounded-lg shadow-md overflow-hidden transition-transform duration-300 hover:scale-105 hover:shadow-xl relative cursor-pointer flex-none w-72 md:w-80 lg:w-96">
+    <div className="bg-white rounded-lg shadow-md overflow-hidden transition-transform duration-300 hover:scale-[1.02] hover:shadow-xl relative cursor-pointer flex-none w-72 md:w-80 lg:w-96">
       {restaurant.isTopPick && (
         <span className="absolute top-2 left-2 bg-yellow-500 text-white text-xs font-bold px-2 py-1 rounded-full z-6 shadow-sm font-['Inter']">
           Top Pick
+        </span>
+      )}
+      {restaurant.closed && (
+        <span className="absolute top-2 left-2 bg-yellow-500 text-white text-xs font-bold px-2 py-1 rounded-full z-6 shadow-sm font-['Inter']">
+          Closed
         </span>
       )}
       <img

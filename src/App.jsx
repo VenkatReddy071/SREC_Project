@@ -10,7 +10,7 @@ import {AboutLayout} from "./Layouts/AboutSection/AboutLayout"
 import { Heading } from "./Components/MainPage/Heading";
 import { Home } from "./Components/Hospital/Home/Home";
 import { MailHome } from "./Components/Mails/Home";
-import { HomeScl } from "./Components/Schools";
+import { HomeScl } from "./Components/Schools/Schools";
 import LearnDepartment from "./Components/Hospital/Home/AboutDepartment"
 import  Meet from "./Components/Hospital/Home/Meet"
 import OurServicePage from "./Components/Hospital/Home/OurService"
@@ -52,6 +52,12 @@ import {FashionDashboard} from "./Dashboard/Fashion/Home"
 import {DashboardHome} from "./Dashboard/Fashion/DashboardHome"
 import {ProductsPage} from "./Dashboard/Fashion/Product"
 import {OrdersPage}from "./Dashboard/Fashion/OrdersPage"
+
+
+//restaurantdashboard
+import {RestaurantDashboard} from "./Dashboard/RestaurantDa/Home"
+import RestaurantMenu from "./Dashboard/RestaurantDa/MenuRestaurantDashboard"
+import {RestaurantOrdersPage} from "./Dashboard/RestaurantDa/OrderPage"
 //about Page
 
 import { About } from "./Components/Fotter/AboutSection/About";
@@ -129,6 +135,10 @@ function App() {
           <Route index element={<DashboardHome/>}/>
           <Route path='products' element={<ProductsPage/>}/>
           <Route path='orders'element={<OrdersPage/>}/>
+        </Route>
+        <Route path="/restaurant-dashboard" element={<RestaurantDashboard/>}>
+          <Route path="/restaurant-dashboard/menu" element={<RestaurantMenu/>}/>
+          <Route path="/restaurant-dashboard/orders" element={<RestaurantOrdersPage/>}/>
         </Route>
         <Route element={<AboutLayout/>}>
             <Route path="/About-us" element={<About/>}/>

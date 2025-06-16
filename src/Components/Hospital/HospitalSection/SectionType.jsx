@@ -3,10 +3,11 @@ import { useLocation } from 'react-router-dom';
 import { Hospital } from '../ShowCaseSection/Hospital';
 import MailHome from "../../Mails/MallType/MallType"
 import {Restaurant}from "../../Dining/Showcase/Home"
+import {School} from "../../Schools/Showcase/Home"
 const HospitalShowcase = () => <Hospital/>;
 const RestaurantShowcase = () =><Restaurant/>;
 const MallShowcase = () => <MailHome/>;
-const SchoolShowcase = () => <div>School Showcase</div>;
+const SchoolShowcase = () => <div><School/></div>;
 const CollegeShowcase = () => <div>College Showcase</div>;
 
 export const SectionType = () => {
@@ -26,11 +27,11 @@ export const SectionType = () => {
     case "mall":
       ComponentToRender = MallShowcase;
       break;
-    case "school":
+    case "School":
       ComponentToRender = SchoolShowcase;
       break;
-    case "college":
-      ComponentToRender = CollegeShowcase;
+    case "College":
+      ComponentToRender = SchoolShowcase;
       break;
     default:
       ComponentToRender = () => <div>Type not recognized</div>;
