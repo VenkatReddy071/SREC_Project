@@ -100,6 +100,7 @@ const app = express();
 const server=http.createServer(app);
 
 connectDB();
+app.set('trust proxy', 1);
 
 const io=new Server(server,{
     cors:{
@@ -118,6 +119,8 @@ const store = new MongoDBStore({
 store.on('error', (error) => {
     console.error("Session store error:", error);
 });
+const isProduction = process.env.NODE_ENV === 'production';
+
 
 if (process.env.NODE_ENV === 'production') {
     app.set('trust proxy', 1);
