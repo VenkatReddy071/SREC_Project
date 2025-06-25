@@ -1,7 +1,7 @@
 
 const Restaurant = require('../../models/Dining/Restaurant');
 const APIFeatures = require('../../Utilities/apiFeature');
-
+const MenuItem=require("../../models/Dining/Menu");
 exports.getAllRestaurants = async (req, res) => {
   try {
     const features = new APIFeatures(Restaurant.find(), req.query)
@@ -213,3 +213,155 @@ exports.deleteRestaurant = async (req, res) => {
     });
   }
 };
+
+exports.getRestaurantOffer=async(req,res)=>{
+  try {
+        const restaurant = await Restaurant.findOne({email:req.user.email});
+        console.log(restaurant);
+      return   res.status(200).json({ offers: restaurant.offer });
+    } catch (err) {
+      return   res.status(500).json({ message: err.message });
+    }
+}
+exports.getRestaurantOfferId=async(req,res)=>{
+  try {
+    const {id}=req.params
+        const restaurant = await Restaurant.findById(id);
+        console.log(restaurant);
+      return   res.status(200).json({ offers: restaurant.offer });
+    } catch (err) {
+      return   res.status(500).json({ message: err.message });
+    }
+}
+exports.addRestaurantOffer = async (req, res) => {
+    const { name, code, percentage, value, applicable, active, startDate, endDate } = req.body;
+
+    if (!name || !code || value === undefined || !startDate || !endDate) {
+        return res.status(400).json({ message: 'Missing required offer fields.' });
+    }
+    console.log(req.body);
+
+    try {
+        const restaurant = await Restaurant.findOne({ email: req.user.email });
+
+        if (!restaurant) {
+            return res.status(404).json({ message: 'Restaurant not found.' });
+        }
+
+        if (!restaurant.offer) {
+            restaurant.offer = [];
+        }
+
+        if (restaurant.offer.some(o => o.code === code)) {
+            return res.status(409).json({ message: 'An offer with this code already exists for your restaurant.' });
+        }
+
+        const newOffer = {
+            name,
+            code,
+            percentage,
+            value,
+            applicable,
+            active,
+            startDate: new Date(startDate),
+            endDate: new Date(endDate)
+        };
+
+        restaurant.offer.push(newOffer);
+
+        await restaurant.save();
+        console.log('saved');
+        const addedOffer = restaurant.offer[restaurant.offer.length - 1];
+        return res.status(201).json({ message: 'Offer added successfully!', offer: addedOffer });
+
+    } catch (err) {
+        console.error("Error adding restaurant offer:", err);
+        return res.status(500).json({ message: err.message });
+    }
+};
+
+exports.editRestaurantOffer=async(req,res)=>{
+  const { offerId } = req.params;
+    const { name, code, percentage, value, applicable, active, startDate, endDate } = req.body;
+
+    if (!name || !code || value === undefined || !startDate || !endDate) {
+        return res.status(400).json({ message: 'Missing required offer fields.' });
+    }
+
+    try {
+        const restaurant = await Restaurant.findOne({email:req.user.email});
+        const offerIndex = restaurant.offer.findIndex(o => o._id.toString() === offerId);
+
+        if (offerIndex === -1) {
+            return res.status(404).json({ message: 'Offer not found in your restaurant.' });
+        }
+
+        if (restaurant.offers.some((o, idx) => o.code === code && idx !== offerIndex)) {
+            return res.status(409).json({ message: 'An offer with this code already exists for your restaurant.' });
+        }
+
+        restaurant.offers[offerIndex] = {
+            _id: offerId,
+            name,
+            code,
+            percentage,
+            value,
+            applicable,
+            active,
+            startDate: new Date(startDate),
+            endDate: new Date(endDate)
+        };
+
+        await restaurant.save();
+    return     res.status(200).json({ message: 'Offer updated successfully!', offer: restaurant.offers[offerIndex] });
+    } catch (err) {
+      return   res.status(500).json({ message: err.message });
+    }
+}
+
+exports.toggleOfferStatus=async(req,res)=>{
+  const { offerId } = req.params;
+    const { active } = req.body;
+    console.log(active);
+    try {
+        const restaurant = await Restaurant.findOne({email:req.user.email});
+        const offer = restaurant.offer.filter((off)=>off._id.toString()===offerId);
+
+        if (!offer) {
+            return res.status(404).json({ message: 'Offer not found in your restaurant.' });
+        }
+        offer[0].active = active;
+        await restaurant.save();
+        
+      return   res.status(200).json({ message: 'Offer status toggled successfully', offer });
+    } catch (err) {
+      return   res.status(500).json({ message: err.message });
+    }
+}
+
+exports.deleteRestaurantOffer=async(req,res)=>{
+   const { offerId } = req.params;
+    try {
+        const restaurant = await Restaurant.findOne({email:req.user.email});
+
+        restaurant.offer = restaurant.offer.filter((offer)=>offer._id.toString()!==offerId);
+
+        await restaurant.save();
+      return   res.status(200).json({ message: 'Offer deleted successfully' });
+    } catch (err) {
+      return  res.status(500).json({ message: err.message });
+    }
+}
+
+exports.getMenubyRestaurant=async(req,res)=>{
+    const email=req.user.email;
+    try{
+    
+        const restaurant = await Restaurant.findOne({email:req.user.email});
+        const menuItems = await MenuItem.find({ restaurantId: restaurant._id }).select('name _id');
+        return res.status(200).json({ menuItems });
+    }catch (err) {
+        return res.status(500).json({ message: err.message });
+    }
+  
+  }

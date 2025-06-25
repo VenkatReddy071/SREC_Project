@@ -1,23 +1,37 @@
-const mongoose=require("mongoose");
-const Article=new mongoose({
-    name:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:"User",
-        required:true,
+const express = require('express');
+const mongoose = require('mongoose');
+const ArticleSchema = new mongoose.Schema({
+    name: {
+        type: String,
+        required: true,
+        trim: true
     },
-    hospital:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:"Hospital",
-        required:true,
-    },
-    info:{
-        type:String,
-        required:true,
-    },
-    publishedBy:{
-        type:String,
-    },
+    email: {
+        type: String,
+        required: true,
 
-},{timestamps:true})
+    },
+    image_url: {
+        type: String,
+        required: true,
+        trim: true
+    },
+    hospital: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Hospital",
+        required: true,
+    },
+    info: {
+        type: String,
+        required: true,
+        trim: true
+    },
+    publishedBy: {
+        type: String,
+        trim: true,
+        default: 'Admin'
+    },
+}, { timestamps: true });
 
-modules.export=mongoose.model("Article",Article);
+const Article = mongoose.model("Article", ArticleSchema);
+module.exports=Article;

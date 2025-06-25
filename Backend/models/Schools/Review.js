@@ -14,8 +14,13 @@ const reviewSchema = new mongoose.Schema({
   },
   educationalInstitute: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "EducationalInstitute",
+    refPath:'modelType',
     required: true,
+  },
+  modelType:{
+    type:String,
+    required:true,
+    eum:["EducationalInstitute","Hospital","Restaurant","Mall"]
   },
   comment: {
     type: String,
