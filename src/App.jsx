@@ -59,15 +59,15 @@ import {RestaurantDashboard} from "./Dashboard/RestaurantDa/Home"
 import RestaurantMenu from "./Dashboard/RestaurantDa/MenuRestaurantDashboard"
 import {RestaurantOrdersPage} from "./Dashboard/RestaurantDa/OrderPage"
 //about Page
-
+import {Login} from "./user/Login";
 import { About } from "./Components/Fotter/AboutSection/About";
 import DashboardLogin from "./user/DashboardLogin";
 import { Type } from "./Dashboard/DashboardType/Type";
 import { SectionType } from "./Components/Hospital/HospitalSection/SectionType";
 import Overview from "./Components/Hospital/ShowCaseSection/Overview/Overview";
 import CheckoutPage from "./Components/Mails/CheckoutPage";
-
-
+import ResOverview from "./Dashboard/RestaurantDa/OverviewPage"
+import RestaurantOffersDashboard from "./Dashboard/RestaurantDa/Offers"
 function App() {
   const [loading, setLoading] = useState(true);
 
@@ -84,9 +84,9 @@ function App() {
     <BrowserRouter>
       <Routes>
         {/* Customer Layout */}
-        
+        <Route path="/login" element={<Login/>}/>
         <Route element={<MainLayout />}>
-        
+
           <Route path="/" element={<Heading />} />
           <Route path="/hospitals" element={<Home />} />
           <Route path="/malls" element={<MailHome />} />
@@ -137,6 +137,8 @@ function App() {
           <Route path='orders'element={<OrdersPage/>}/>
         </Route>
         <Route path="/restaurant-dashboard" element={<RestaurantDashboard/>}>
+          <Route index element={<ResOverview/>}/>
+          <Route path='/restaurant-dashboard/offers' element={<RestaurantOffersDashboard/>}/>
           <Route path="/restaurant-dashboard/menu" element={<RestaurantMenu/>}/>
           <Route path="/restaurant-dashboard/orders" element={<RestaurantOrdersPage/>}/>
         </Route>

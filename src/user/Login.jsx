@@ -9,7 +9,7 @@ import Toast from "../Pages/Toast";
 import { toast } from "react-toastify";
 import ForgotPassword from "./ForgetPassword";
 
-export const Login = ({ setIsOpen }) => {
+export const Login = ({ }) => {
   const [activeTab, setActiveTab] = useState("login");
   const [forget, setForget] = useState(false);
   const [formData, setFormData] = useState({
@@ -75,12 +75,6 @@ export const Login = ({ setIsOpen }) => {
   return (
     <div className="fixed inset-0 w-full max-h-screen flex justify-center items-center bg-black bg-opacity-60 z-50">
       <div className="relative bg-white text-gray-800 p-6 rounded-xl shadow-lg w-full max-w-md">
-        <button
-          onClick={() => setIsOpen(false)}
-          className="absolute top-3 right-3 text-gray-500 hover:text-gray-700"
-        >
-          <MdClose className="h-5 w-5" />
-        </button>
 
         {!forget ? (
           <>

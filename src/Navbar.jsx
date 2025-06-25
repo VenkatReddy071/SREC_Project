@@ -17,10 +17,6 @@ export const Navbar = () => {
   const [name, setName] = useState('');
   const [showDropdown, setShowDropdown] = useState(false);
   const [dropdownOpen,setDropdownOpen]=useState(false)
-  const handleOpenLogin = () => {
-    setIsOpen(true);
-  };
-
   const handleLogout = () => {
     const url = `${import.meta.env.VITE_SERVER_URL}/api/logout`;
     axios.post(url, {}, { withCredentials: true })
@@ -94,12 +90,14 @@ export const Navbar = () => {
                 )}
               </div>
             ) : (
+              <Link to="/login">
               <div
                 className="button w-32 h-12 border-2 flex items-center justify-center bg-black text-white cursor-pointer"
-                onClick={handleOpenLogin}
+                
               >
                 <button>Login/Sign Up</button>
               </div>
+              </Link>
             )}
             {type==='/'?
             <Link to="/join/dashboard">
@@ -116,7 +114,6 @@ export const Navbar = () => {
             }
           </div>
         </div>
-        {isOpen && <Login setIsOpen={setIsOpen} />}
       </div>
       <div
   className={`fixed top-0 right-0 h-full bg-white shadow-lg p-4 transition-transform duration-300 ease-in-out ${
@@ -216,12 +213,13 @@ export const Navbar = () => {
       </div>
     ) : (
       <div className="flex flex-col items-center gap-4">
+        <Link to='/login'>
         <button
-          onClick={handleOpenLogin}
           className="w-32 py-2 bg-black text-white rounded-md shadow hover:bg-gray-800 transition-colors duration-200"
         >
           Login/Sign Up
         </button>
+        </Link>
         <Link to="/join/dashboard">
           <button
             onClick={() => setIsMenuOpen(false)}

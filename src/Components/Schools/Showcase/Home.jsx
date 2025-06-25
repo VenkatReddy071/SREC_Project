@@ -5,6 +5,8 @@ import { useParams, useLocation } from "react-router-dom";
 import axios from "axios";
 import { Showcase } from "../../../Pages/Showcase/Showcase";
 import { EducationalInstituteOverview} from "./Overview"
+import Teacher from "./Teachers"
+import {Contact} from "./Contact"
 export const School = () => {
   useEffect(() => {
       window.scrollTo(0, 0);
@@ -28,7 +30,6 @@ export const School = () => {
     { label: 'Overview', id: 'overview' },
     { label: 'Teachers', id: 'teachers' },
     { label: 'Reviews', id: 'reviews' },
-    { label: 'Gallery', id: 'gallery' },
     { label: 'Contact Us', id: 'contact_us' },
   ];
   const activityIconMap = {
@@ -65,6 +66,10 @@ export const School = () => {
     switch(activeNavLink){
       case "Overview":
         return <EducationalInstituteOverview institute={school} activityIconMap={activityIconMap}/>
+      case "Teachers":
+        return <Teacher school={school}/>
+      case "Contact Us":
+        return <Contact/>;
       default:
         return <EducationalInstituteOverview  institute={school} activityIconMap={activityIconMap}/>
     }

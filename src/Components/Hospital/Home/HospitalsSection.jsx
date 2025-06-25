@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
-
+import Articles from "./Articles"
 const HeaderImg = "https://placehold.co/600x400/add8e6/ffffff?text=Hospital+Image";
 
 
@@ -304,9 +304,9 @@ export const HospitalsSection = () => {
           </>
         );
       case 1:
-        return <div className="mt-8 text-center text-gray-600">Articles content will go here.</div>;
+        return <div className="mt-8 text-center text-gray-600 "><Articles/></div>;
       case 2:
-        return <div className="mt-8 text-center text-gray-600">Patient Stories content will go here.</div>;
+        return <div></div>;
       default:
         return null;
     }
@@ -321,12 +321,12 @@ export const HospitalsSection = () => {
         </h1>
         <h2 className="text-lg text-gray-600 text-center mb-8">Stay updated with our expert health articles</h2>
 
-        <div className="flex overflow-x-auto custom-scrollbar w-full pb-2 md:pb-0 md:flex-grow md:justify-between">
+        <div className=" sticky top-0 bg-white flex overflow-x-auto custom-scrollbar w-full pb-2 md:pb-0 md:flex-grow lg:justify-between z-20">
           <div className="md:flex  gap-4 py-3">
             {list.map((item, index) => (
               <button
                 key={index}
-                className={`flex-shrink-0 px-5 py-2 mt-2 mr-2 ml-1 md:mr-4 rounded-full text-base font-medium transition-colors duration-300 font-['Inter'] shadow-sm ${
+                className={`sticky top-0 flex-shrink-0 px-5 py-2 mt-2 mr-2 ml-1 md:mr-4 rounded-full text-base font-medium transition-colors duration-300 font-['Inter'] shadow-sm ${
                   activeIndex === index ? 'bg-orange-500 text-white shadow-lg transform scale-105'
                 : 'bg-gray-100 text-gray-700 hover:bg-gray-200 hover:text-gray-900'
                 }`}
@@ -340,7 +340,6 @@ export const HospitalsSection = () => {
                 className="hidden  md:ml-auto md:flex items-center md:px-4 py-2 text-blue-600 font-semibold rounded-md hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
                 onClick={() => setShowFilterSidebar(true)}
               >
-                {/* Filter Icon SVG */}
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-5 h-5 mr-2">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M12 3c2.757 0 5.257 1.116 7.071 2.929a8.974 8.974 0 010 12.126l-2.122 2.121-7.07-7.071-2.122-2.121a8.974 8.974 0 010-12.126C6.743 4.116 9.243 3 12 3zM12 7.5a1.5 1.5 0 100 3 1.5 1.5 0 000-3z" />
                 </svg>

@@ -24,7 +24,7 @@ const menuItems = [
   { name: "Reviews", path: "/restaurant-dashboard/reviews", icon: <FaUsers /> },
   { name: "Offers & Discounts", path: "/restaurant-dashboard/offers", icon: <FaTags /> },
   { name: "Customer Notifications", path: "/restaurant-dashboard/notifications", icon: <FaBell /> },
-  { name: "Analytics & Reports", path: "/restaurant-dashboard/analytics", icon: <FaChartLine /> },
+  { name: "OutLet Info", path: "/restaurant-dashboard/outlet", icon: <FaChartLine /> },
   { name: "Settings", path: "/restaurant-dashboard/settings", icon: <FaCog /> },
 ];
 

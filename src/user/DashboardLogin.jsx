@@ -136,6 +136,9 @@ const PartnerAuthModal = ({ onClose, setOpenForgotPassword }) => {
     if (email && password) {
       const url = `${import.meta.env.VITE_SERVER_URL}/api/dashboard`;
     const response = await Axios.post(url, { email, password }, { withCredentials: true });
+    if(response.data.token){
+      await localStorage.setItem('dashboard',response.data.token);
+    }
     navigate(`/dashboard/type?=${response.data.url}`)
     } else {
       console.error("Login failed: Please enter email and password.");

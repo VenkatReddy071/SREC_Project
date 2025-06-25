@@ -3,7 +3,7 @@ export const EducationalInstituteOverview = ({ institute, activityIconMap }) => 
     if (!institute) {
         return <div className="text-center text-gray-600 p-8">No institute data available.</div>;
     }
-
+    
     const {
         name,
         institutionType,
