@@ -92,14 +92,40 @@ router.get("/by-institute/:instituteId", async (req, res) => {
         if (!mongoose.Types.ObjectId.isValid(req.params.instituteId)) {
             return res.status(400).json({ message: "Invalid Educational Institute ID format" });
         }
-        const teachers = await Teacher.find({ educationalInstitute: req.params.instituteId }).populate("educationalInstitute", "name institutionType location");
-        if (teachers.length === 0) {
+
+        const instituteId = req.params.instituteId;
+
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 20;
+        const skip = (page - 1) * limit;
+
+        const teachers = await Teacher.find({ educationalInstitute: instituteId })
+                                    .skip(skip)
+                                    .limit(limit)
+                                    .populate("educationalInstitute", "name institutionType location")
+                                    .lean();
+
+        const totalTeachers = await Teacher.countDocuments({ educationalInstitute: instituteId });
+
+        if (teachers.length === 0 && page === 1) {
             return res.status(404).json({ message: "No teachers found for this educational institute" });
+        } else if (teachers.length === 0 && page > 1) {
+            return res.status(200).json({ teachers: [], hasMore: false, total: totalTeachers });
         }
-        res.status(200).json(teachers);
+
+        const hasMore = (page * limit) < totalTeachers;
+
+        res.status(200).json({
+            teachers: teachers,
+            hasMore: hasMore,
+            total: totalTeachers,
+            currentPage: page,
+            limit: limit
+        });
+
     } catch (error) {
         console.error("Error fetching teachers by institute ID:", error);
-        res.status(500).json({ message: error.message });
+        res.status(500).json({ message: "Internal Server Error", error: error.message });
     }
 });
 

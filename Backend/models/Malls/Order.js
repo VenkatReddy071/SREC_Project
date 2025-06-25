@@ -1,3 +1,5 @@
+
+
 // const mongoose = require("mongoose");
 
 // const OrderSchema = new mongoose.Schema({
@@ -27,32 +29,48 @@
 //         type: Date,
 //         default: Date.now,
 //     },
-//     mall: {
-//         type: mongoose.Schema.Types.ObjectId,
-//         ref: 'Mall',
-//         required: true,
-//     },
-//     storeName: {
+//     sourceType: {
 //         type: String,
+//         enum: ['Restaurant', 'Mall'],
 //         required: true,
-//         trim: true,
 //     },
-//     products: [
+//     sourceId: {
+//         type: mongoose.Schema.Types.ObjectId,
+//         required: true,
+//     },
+//     items: [
 //         {
 //             product: {
 //                 type: mongoose.Schema.Types.ObjectId,
-//                 ref: 'Product',
+//                 refPath: 'items.itemModelType',
 //                 required: true,
+//             },
+//             name: {
+//                 type: String,
+//                 required: true,
+//             },
+//             image: {
+//                 type: String,
+//             },
+//             price: {
+//                 type: Number,
+//                 required: true,
+//                 min: 0,
+//             },
+//             currency: {
+//                 type: String,
+//                 required: true,
+//                 default: "INR",
 //             },
 //             quantity: {
 //                 type: Number,
 //                 required: true,
 //                 min: 1,
 //             },
-//             priceAtOrder: {
-//                 type: Number,
+//             itemModelType: { // Specifies which model 'product' ObjectId refers to ('Menu' or 'Product')
+//                 type: String,
 //                 required: true,
-//                 min: 0,
+//                 enum: ['Menu', 'Product']
 //             },
 //             selectedSize: {
 //                 type: String,
@@ -62,6 +80,10 @@
 //                 type: String,
 //                 trim: true,
 //             },
+//             storeName: {
+//                 type: String,
+//                 trim: true,
+//             }
 //         },
 //     ],
 //     totalAmount: {
@@ -69,11 +91,10 @@
 //         required: true,
 //         min: 0,
 //     },
-//     currency: {
-//         type: String,
+//     Tax:{
+//         type: Number,
 //         required: true,
-//         trim: true,
-//         default: "INR",
+//         min: 0,
 //     },
 //     paymentMethod: {
 //         type: String,
@@ -82,7 +103,7 @@
 //     },
 //     orderStatus: {
 //         type: String,
-//         enum: ["pending", "completed", "cancelled", "refunded","processing","shipped","delivered"],
+//         enum: ["pending", "confirmed", "processing", "ready_for_pickup", "shipped", "delivered", "completed", "cancelled", "refunded"],
 //         default: "pending",
 //     },
 //     notes: {
@@ -90,10 +111,19 @@
 //         trim: true,
 //         default: ""
 //     },
+//     orderType: {
+//         type: String,
+//         enum: ['Takeaway', 'Dine-in'],
+//     },
+//     pickupTime: {
+//         type: Date,
+//     },
+//     estimatedCompletionTime: {
+//         type: Date,
+//     },
 // }, { timestamps: true });
 
 // module.exports = mongoose.model("Order", OrderSchema, "Orders");
-
 
 
 const mongoose = require("mongoose");
@@ -187,14 +217,14 @@ const OrderSchema = new mongoose.Schema({
         required: true,
         min: 0,
     },
-    Tax:{
+    Tax: {
         type: Number,
         required: true,
         min: 0,
     },
     paymentMethod: {
         type: String,
-        enum: ["Cash", "Card", "UPI", "Other"],
+        enum: ["Cash", "Card", "UPI", "Other",'Takeaway'],
         required: true,
     },
     orderStatus: {
@@ -211,12 +241,60 @@ const OrderSchema = new mongoose.Schema({
         type: String,
         enum: ['Takeaway', 'Dine-in'],
     },
+    // Conditionally added address fields
+    shippingAddress: {
+        street: {
+            type: String,
+            trim: true,
+            required: function() {
+                // Required only if any item in the order is of type 'Product'
+                return this.items.some(item => item.itemModelType === 'Product');
+            }
+        },
+        city: {
+            type: String,
+            trim: true,
+            required: function() {
+                return this.items.some(item => item.itemModelType === 'Product');
+            }
+        },
+        state: {
+            type: String,
+            trim: true,
+            required: function() {
+                return this.items.some(item => item.itemModelType === 'Product');
+            }
+        },
+        zipCode: {
+            type: String,
+            trim: true,
+            required: function() {
+                return this.items.some(item => item.itemModelType === 'Product');
+            }
+        },
+        country: {
+            type: String,
+            trim: true,
+            default: "India",
+            required: function() {
+                return this.items.some(item => item.itemModelType === 'Product');
+            }
+        },
+    },
     pickupTime: {
         type: Date,
     },
     estimatedCompletionTime: {
         type: Date,
     },
+    offerId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Offer',
+        default: null,
+    },
+    discountValue:{
+        type:Number,
+    }
 }, { timestamps: true });
 
 module.exports = mongoose.model("Order", OrderSchema, "Orders");

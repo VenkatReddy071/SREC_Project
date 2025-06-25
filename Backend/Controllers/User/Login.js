@@ -49,7 +49,7 @@ const Sign = async (req, res) => {
         await newUser.save();
 
         req.session.user = { username, id: newUser._id,email:email };
-        const token = generateAuthToken(newUser);
+        const token = await generateAuthToken(newUser);
         
         req.session.save(err => {
             if (err) {
@@ -88,7 +88,7 @@ const dashboard = async (req, res) => {
         if (!compare) {
             return res.status(401).json({ message: "Invalid credentials." }); // 401 Unauthorized
         }
-
+        const token =await generateAuthToken(findUser);
         const { type, username, _id } = findUser;
         let url;
         if (type === "user") {
@@ -118,7 +118,7 @@ const dashboard = async (req, res) => {
                 url = "marketing-dashboard";
         }
 
-        return res.status(200).json({ message: `Redirecting to ${url}`, url, type, username, id: _id });
+        return res.status(200).json({ message: `Redirecting to ${url}`, url, type, username, id: _id,token });
     } catch (error) {
         console.error("Error during dashboard redirection:", error);
         return res.status(500).json({ error: "An error occurred during dashboard access. Please try again." });

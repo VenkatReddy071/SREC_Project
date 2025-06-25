@@ -10,7 +10,7 @@ const User = require('../../../models/User/LoginModel');
 const Menu = require('../../../models/Dining/Menu');
 const orderController = require('../../../Controllers/Malls/Order');
 
-const calculateOrderTotalsAndValidate = async (cartItems) => {
+const calculateOrderTotalsAndValidate = async (cartItems,discountOfferValue) => {
     let subtotal = 0;
     let estimatedTaxes = 0;
     const orderItems = [];
@@ -98,7 +98,7 @@ const calculateOrderTotalsAndValidate = async (cartItems) => {
         });
     }
 
-    const totalAmount = parseFloat((subtotal + estimatedTaxes).toFixed(2));
+    const totalAmount = parseFloat((subtotal + estimatedTaxes).toFixed(2)-discountOfferValue);
 
     return {
         orderItems,
@@ -113,12 +113,12 @@ const calculateOrderTotalsAndValidate = async (cartItems) => {
 
 router.post('/', async (req, res) => {
     const userId = req.session.user?.id;
-    const { customerName, customerEmail, customerPhoneNumber, paymentMethod, orderType, pickupTime, notes } = req.body;
+    const { customerName, customerEmail, customerPhoneNumber, paymentMethod, orderType, pickupTime, notes,selectedOfferId,discountOfferValue } = req.body;
 
     if (!userId) {
         return res.status(401).json({ message: 'Authentication required. No user session.' });
     }
-    if (!customerName || !customerEmail || !paymentMethod) {
+    if (!customerName || !customerEmail) {
         return res.status(400).json({ message: 'Customer name, email, and payment method are required.' });
     }
 
@@ -148,7 +148,7 @@ router.post('/', async (req, res) => {
         }
 
 
-        const { orderItems, totalAmount, orderSourceType, orderSourceId, productStockUpdates, estimatedTaxes} = await calculateOrderTotalsAndValidate(filteredCartItems);
+        const { orderItems, totalAmount, orderSourceType, orderSourceId, productStockUpdates, estimatedTaxes} = await calculateOrderTotalsAndValidate(filteredCartItems,discountOfferValue);
         
         const user = await User.findById(userId).session(session);
         if (!user) {
@@ -172,6 +172,8 @@ router.post('/', async (req, res) => {
             pickupTime: (orderSourceType === 'Restaurant' && orderType === 'Takeaway') ? pickupTime : undefined,
             notes,
             Tax:estimatedTaxes,
+            offerId:selectedOfferId,
+            discountValue:discountOfferValue,
         });
 
         await newOrder.save({ session });
