@@ -1,5 +1,40 @@
 const mongoose = require("mongoose");
 
+
+const Offers = new mongoose.Schema({
+    name: {
+        type: String,
+        required: true,
+    },
+    code: {
+        type: String,
+        required: true,
+    },
+    percentage: {
+        type: Boolean,
+        default: false,
+    },
+    value: {
+        type: Number,
+        required: true,
+    },
+    applicable: {
+        type: String,
+    },
+    active: {
+        type: Boolean,
+        default: true,
+    },
+    startDate:{
+        type:Date,
+        required:true,
+    },
+    endDate:{
+        type:Date,
+        required:true,
+    }
+}, { timestamps: true });
+
 const MallSchema = new mongoose.Schema({
     name: {
         type: String,
@@ -153,6 +188,7 @@ const MallSchema = new mongoose.Schema({
         enum: ["pending", "active", "inactive"],
         default: "pending",
     },
+    offer:[Offers]
 }, { timestamps: true });
 
 module.exports = mongoose.model("Mall", MallSchema, "Malls");

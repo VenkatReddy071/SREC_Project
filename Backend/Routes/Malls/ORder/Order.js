@@ -76,12 +76,6 @@ const calculateOrderTotalsAndValidate = async (cartItems,discountOfferValue) => 
 
         subtotal += itemPrice * cartItem.quantity;
 
-        if (orderSourceType === 'Product' && itemCategory === 'Electronics') {
-            estimatedTaxes += (itemPrice * cartItem.quantity) * 0.18;
-        } else {
-            estimatedTaxes += (itemPrice * cartItem.quantity) * 0.05;
-        }
-
         orderItems.push({
             product: cartItem.product,
             name: cartItem.name,
@@ -97,13 +91,8 @@ const calculateOrderTotalsAndValidate = async (cartItems,discountOfferValue) => 
             storeName: cartItem.storeName || undefined
         });
     }
-
-    const totalAmount = parseFloat((subtotal + estimatedTaxes).toFixed(2)-discountOfferValue);
-
     return {
         orderItems,
-        totalAmount,
-        estimatedTaxes,
         orderSourceType,
         orderSourceId,
         productStockUpdates
@@ -113,7 +102,7 @@ const calculateOrderTotalsAndValidate = async (cartItems,discountOfferValue) => 
 
 router.post('/', async (req, res) => {
     const userId = req.session.user?.id;
-    const { customerName, customerEmail, customerPhoneNumber, paymentMethod, orderType, pickupTime, notes,selectedOfferId,discountOfferValue } = req.body;
+    const { customerName, customerEmail, customerPhoneNumber, paymentMethod, orderType, pickupTime, notes,selectedOfferId,discountOfferValue,cartTotals } = req.body;
 
     if (!userId) {
         return res.status(401).json({ message: 'Authentication required. No user session.' });
@@ -147,9 +136,12 @@ router.post('/', async (req, res) => {
             console.warn(`User cart contains mixed item types. Only ${firstCartItemModelType} items will be checked out.`);
         }
 
-
-        const { orderItems, totalAmount, orderSourceType, orderSourceId, productStockUpdates, estimatedTaxes} = await calculateOrderTotalsAndValidate(filteredCartItems,discountOfferValue);
-        
+        const discount=selectedOfferId?discountOfferValue:0;
+        const { orderItems, orderSourceType, orderSourceId, productStockUpdates} = await calculateOrderTotalsAndValidate(filteredCartItems,discount);
+        const totalAmount=cartTotals.grandTotal;
+        const estimatedTaxes=cartTotals.estimatedTaxes;
+        const appliedCharges=cartTotals.appliedCharges;
+        console.log(appliedCharges);
         const user = await User.findById(userId).session(session);
         if (!user) {
             throw new Error('User not found.');
@@ -171,9 +163,9 @@ router.post('/', async (req, res) => {
             orderType: orderSourceType === 'Restaurant' ? orderType : undefined,
             pickupTime: (orderSourceType === 'Restaurant' && orderType === 'Takeaway') ? pickupTime : undefined,
             notes,
-            Tax:estimatedTaxes,
             offerId:selectedOfferId,
             discountValue:discountOfferValue,
+            appliedTaxes:appliedCharges
         });
 
         await newOrder.save({ session });

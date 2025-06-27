@@ -168,6 +168,8 @@ const SchoolRouter = require("./Routes/Schools/School");
 const TeacherRouter = require("./Routes/Schools/Teacher");
 const ReviewRouter = require("./Routes/Review");
 const ArticleRouter=require("./Controllers/Hospitals/Articles");
+const dashboardRoutes=require("./Routes/Restaurant/DashboardOverview");
+const taxesAndCharges=require("./Routes/Restaurant/TaxesAndCarges");
 app.get("/", (req, res) => {
     res.send("Server is running");
 });
@@ -187,6 +189,8 @@ app.use("/api/menu", MenuRouter);
 app.use("/api/school", SchoolRouter);
 app.use("/api/teacher", TeacherRouter);
 app.use("/api/review", ReviewRouter);
+app.use('/api/dashboard', dashboardRoutes);
+app.use("/api/restaurants",taxesAndCharges);
 
 const PORT = process.env.PORT || 4000;
 io.on('connection',(socket)=>{
