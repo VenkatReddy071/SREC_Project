@@ -79,6 +79,7 @@ exports.getRestaurantById = async (req, res) => {
 };
 exports.getRestaurantByEmail = async (req, res) => {
   try {
+    console.log(req.user);
     const { email } = req.user;
     const restaurant = await Restaurant.findOne({ email: email });
 
@@ -214,25 +215,60 @@ exports.deleteRestaurant = async (req, res) => {
   }
 };
 
-exports.getRestaurantOffer=async(req,res)=>{
-  try {
-        const restaurant = await Restaurant.findOne({email:req.user.email});
-        console.log(restaurant);
-      return   res.status(200).json({ offers: restaurant.offer });
+exports.getRestaurantOffer = async (req, res) => {
+    try {
+        const restaurant = await Restaurant.findOne({ email: req.user.email });
+
+        if (!restaurant) {
+            return res.status(404).json({ message: 'Restaurant not found.' });
+        }
+
+        const now = new Date();
+        const updatedOffers = restaurant.offer.map(offer => {
+            const offerObj = offer.toObject ? offer.toObject() : { ...offer };
+
+            if (offerObj.endDate && new Date(offerObj.endDate) < now) {
+                offerObj.active = false;
+            }
+            return offerObj;
+        });
+
+        restaurant.offer = updatedOffers;
+        await restaurant.save();
+
+        return res.status(200).json({ offers: updatedOffers });
+
     } catch (err) {
-      return   res.status(500).json({ message: err.message });
+        console.error("Error in getRestaurantOffer:", err);
+        return res.status(500).json({ message: err.message || 'Server error' });
     }
-}
-exports.getRestaurantOfferId=async(req,res)=>{
-  try {
-    const {id}=req.params
+};
+
+exports.getRestaurantOfferId = async (req, res) => {
+    try {
+        const { id } = req.params;
         const restaurant = await Restaurant.findById(id);
-        console.log(restaurant);
-      return   res.status(200).json({ offers: restaurant.offer });
+
+        if (!restaurant) {
+            return res.status(404).json({ message: 'Restaurant not found.' });
+        }
+
+        const now = new Date();
+        const validOffers = restaurant.offer.filter(offer => {
+            const startDate = new Date(offer.startDate);
+            const endDate = new Date(offer.endDate);
+
+            return offer.active && startDate <= now && endDate >= now;
+        });
+        console.log(validOffers);
+
+        return res.status(200).json({ offers: validOffers });
+
     } catch (err) {
-      return   res.status(500).json({ message: err.message });
+        console.error("Error in getRestaurantOfferId:", err);
+        return res.status(500).json({ message: err.message || 'Server error' });
     }
-}
+};
 exports.addRestaurantOffer = async (req, res) => {
     const { name, code, percentage, value, applicable, active, startDate, endDate } = req.body;
 
@@ -292,15 +328,18 @@ exports.editRestaurantOffer=async(req,res)=>{
         const restaurant = await Restaurant.findOne({email:req.user.email});
         const offerIndex = restaurant.offer.findIndex(o => o._id.toString() === offerId);
 
+        if(!restaurant.offer){
+          restaurant.offer=[];
+        }
         if (offerIndex === -1) {
             return res.status(404).json({ message: 'Offer not found in your restaurant.' });
         }
 
-        if (restaurant.offers.some((o, idx) => o.code === code && idx !== offerIndex)) {
+        if (restaurant.offer?.some((o, idx) => o.code === code && idx !== offerIndex)) {
             return res.status(409).json({ message: 'An offer with this code already exists for your restaurant.' });
         }
 
-        restaurant.offers[offerIndex] = {
+        restaurant.offer[offerIndex] = {
             _id: offerId,
             name,
             code,
@@ -313,7 +352,7 @@ exports.editRestaurantOffer=async(req,res)=>{
         };
 
         await restaurant.save();
-    return     res.status(200).json({ message: 'Offer updated successfully!', offer: restaurant.offers[offerIndex] });
+    return     res.status(200).json({ message: 'Offer updated successfully!', offer: restaurant.offer[offerIndex] });
     } catch (err) {
       return   res.status(500).json({ message: err.message });
     }
