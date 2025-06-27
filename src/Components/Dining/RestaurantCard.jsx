@@ -5,7 +5,44 @@ export const RestaurantCard = ({ restaurant }) => {
   if (!restaurant) {
     return null;
   }
+  const getDayName = (date) => {
+    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    return days[date.getDay()];
+};
 
+const isCurrentlyOpen = (operatingHours, globalClosed) => {
+    if (globalClosed) {
+        return { status: 'Temporarily Closed', isOpen: false };
+    }
+
+    const now = new Date();
+    const currentDayName = getDayName(now);
+    const todayHours = operatingHours?.find(h => h.day === currentDayName);
+
+    if (!todayHours) {
+        return { status: 'Hours Not Available', isOpen: false };
+    }
+
+    if (todayHours.isClosed) {
+        return { status: 'Closed Today', isOpen: false };
+    }
+
+    const [openHour, openMinute] = todayHours.openTime.split(':').map(Number);
+    const [closeHour, closeMinute] = todayHours.closeTime.split(':').map(Number);
+
+    const openTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), openHour, openMinute, 0);
+    let closeTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), closeHour, closeMinute, 0);
+
+    if (closeTime < openTime) {
+        closeTime.setDate(closeTime.getDate() + 1);
+    }
+
+    if (now >= openTime && now < closeTime) {
+        return { status: 'Open Now', isOpen: true };
+    } else {
+        return { status: 'Closed Now', isOpen: false };
+    }
+};
   const defaultImage = "https://placehold.co/400x300/EEEEEE/555555?text=Restaurant";
   const imageUrl = restaurant?.imageUrls?.mainImage || defaultImage;
 
@@ -15,7 +52,12 @@ export const RestaurantCard = ({ restaurant }) => {
     : 'Address not available';
   const ratingDisplay = restaurant.rating ? `${restaurant.rating.toFixed(1)}` : 'N/A';
   const reviewsDisplay = restaurant.reviews ? `(${restaurant.reviews} Reviews)` : '(No Reviews)';
+  const offer= restaurant.offer?.length >0 ?true:false
 
+
+
+  const { status: currentOperationalStatus, isOpen: isRestaurantOpen } = isCurrentlyOpen(restaurant.operatingHours, restaurant.closed);
+  const currentDayName = getDayName(new Date());
   return (
     <Link to={`/showcase/page?type=restaurant/${restaurant?.name}/${restaurant?._id}/Overview`}>
     <div className="bg-white rounded-lg shadow-md overflow-hidden transition-transform duration-300 hover:scale-[1.02] hover:shadow-xl relative cursor-pointer flex-none w-72 md:w-80 lg:w-96">
@@ -24,11 +66,14 @@ export const RestaurantCard = ({ restaurant }) => {
           Top Pick
         </span>
       )}
-      {restaurant.closed && (
-        <span className="absolute top-2 left-2 bg-yellow-500 text-white text-xs font-bold px-2 py-1 rounded-full z-6 shadow-sm font-['Inter']">
-          Closed
+      {offer && (
+        <span className="absolute top-2 right-2 bg-green-500 text-white text-xs font-bold px-2 py-1 rounded-full z-6 shadow-sm font-['Inter']">
+          Offer Available
         </span>
       )}
+      <span className={`absolute top-10 right-2 text-xs font-semibold px-2.5 py-0.5 rounded-full ${isRestaurantOpen ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                            {currentOperationalStatus}
+      </span>
       <img
         src={imageUrl}
         alt={restaurant.name}

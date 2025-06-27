@@ -23,9 +23,8 @@ const menuItems = [
   { name: "Orders", path: "/restaurant-dashboard/orders", icon: <FaClipboardList /> },
   { name: "Reviews", path: "/restaurant-dashboard/reviews", icon: <FaUsers /> },
   { name: "Offers & Discounts", path: "/restaurant-dashboard/offers", icon: <FaTags /> },
-  { name: "Customer Notifications", path: "/restaurant-dashboard/notifications", icon: <FaBell /> },
+  {name:"Taxes & Charges", path:"/restaurant-dashboard/taxes",icon: <FaTags />},
   { name: "OutLet Info", path: "/restaurant-dashboard/outlet", icon: <FaChartLine /> },
-  { name: "Settings", path: "/restaurant-dashboard/settings", icon: <FaCog /> },
 ];
 
 export const RestaurantDashboard = () => {

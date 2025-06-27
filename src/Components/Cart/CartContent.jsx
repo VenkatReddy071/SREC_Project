@@ -3,6 +3,7 @@ import { useCart } from '../../Context/CartContext.jsx';
 import {useNavigate}from "react-router-dom"
 const CartContent = ({ onClose }) => {
     const { cartItems, cartTotals, loading, error, updateCartQuantity, removeFromCart, clearCart, showCartMessage } = useCart();
+    console.log(cartTotals);
     const navigate=useNavigate();
     const handleQuantityChange = async (item, delta) => {
         const newQuantity = item.quantity + delta;
@@ -132,10 +133,14 @@ const CartContent = ({ onClose }) => {
                     <span className="text-base">Subtotal:</span>
                     <span className="font-medium text-lg">{cartItems[0]?.currency || 'INR'} {cartTotals.subtotal?.toFixed(2)}</span>
                 </div>
-                <div className="flex justify-between text-gray-700 mb-4">
-                    <span className="text-base">Estimated Tax:</span>
-                    <span className="font-medium text-lg">{cartItems[0]?.currency || 'INR'} {cartTotals.estimatedTaxes?.toFixed(2)}</span>
-                </div>
+                {cartTotals?.appliedCharges && (
+                    cartTotals?.appliedCharges?.map((item,index)=>(
+                    <div className="flex justify-between text-gray-700 mb-4" key={index}>
+                    <span className="text-base">{item?.name}:</span>
+                    <span className="font-medium text-lg">{item?.amountApplied.toFixed(2)}</span>
+                    </div>
+                    ))
+                )}
                 <div className="flex justify-between font-bold text-xl text-gray-900 mb-6">
                     <span>Grand Total:</span>
                     <span>{cartItems[0]?.currency || 'INR'} {cartTotals.grandTotal?.toFixed(2)}</span>

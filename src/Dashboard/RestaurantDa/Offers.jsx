@@ -70,7 +70,7 @@ const RestaurantOffersDashboard = () => {
             code: '',
             percentage: false,
             value: '',
-            applicable: 'all',
+            applicable: '',
             active: true,
             startDate: '',
             endDate: ''

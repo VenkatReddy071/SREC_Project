@@ -68,6 +68,8 @@ import Overview from "./Components/Hospital/ShowCaseSection/Overview/Overview";
 import CheckoutPage from "./Components/Mails/CheckoutPage";
 import ResOverview from "./Dashboard/RestaurantDa/OverviewPage"
 import RestaurantOffersDashboard from "./Dashboard/RestaurantDa/Offers"
+import OutletInfoPage from "./Dashboard/RestaurantDa/Outlet"
+import TaxesAndCharges from "./Dashboard/RestaurantDa/TaxesAndCarges"
 function App() {
   const [loading, setLoading] = useState(true);
 
@@ -141,6 +143,8 @@ function App() {
           <Route path='/restaurant-dashboard/offers' element={<RestaurantOffersDashboard/>}/>
           <Route path="/restaurant-dashboard/menu" element={<RestaurantMenu/>}/>
           <Route path="/restaurant-dashboard/orders" element={<RestaurantOrdersPage/>}/>
+          <Route path="/restaurant-dashboard/outlet" element={<OutletInfoPage/>}/>
+          <Route path="/restaurant-dashboard/taxes" element={<TaxesAndCharges/>}/>
         </Route>
         <Route element={<AboutLayout/>}>
             <Route path="/About-us" element={<About/>}/>
