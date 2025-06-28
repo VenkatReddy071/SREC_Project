@@ -41,15 +41,17 @@ export const Navbar = () => {
 
   return (
     <div className="p-2 m-2 border-b-2">
-      {/* Navbar */}
+
       <div className="flex items-center justify-between h-14 w-full">
         <div className="flex items-center gap-4">
           <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="md:hidden absolute right-4 rounded-full bg-black p-1">
             {<IoMenu size={40} className='text-white' />}
           </button>
+          <Link to="/">
           <div className="w-32 h-auto rounded">
             <img src={Logo} alt="Logo" className="w-full h-full object-contain" />
           </div>
+          </Link>
         </div>
 
         <nav className="hidden md:flex md:items-center md:gap-10">

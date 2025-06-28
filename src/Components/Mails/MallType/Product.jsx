@@ -20,7 +20,7 @@ const ProductCardSkeleton = () => (
     </div>
 );
 
-const ProductListings = ({ mallId }) => {
+const ProductListings = ({ mallId,mall }) => {
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -147,7 +147,7 @@ const ProductListings = ({ mallId }) => {
                     ))
                 ) : (
                     products.map((product) => (
-                        <ProductDetails key={product._id} product={product} onAddToCart={handleAddToCart} />
+                        <ProductDetails key={product._id} product={product} onAddToCart={handleAddToCart} mall={mall}/>
                     ))
                 )}
             </div>

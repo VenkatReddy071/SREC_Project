@@ -40,10 +40,18 @@ export const OrderDetailsView = ({
           <p><strong>Customer:</strong> {selectedOrder.customerName}</p>
           <p><strong>Email:</strong> {selectedOrder.customerEmail}</p>
           <p><strong>Phone:</strong> {selectedOrder.customerPhoneNumber || 'N/A'}</p>
-          <p><strong>Store:</strong> {selectedOrder?.items[0]?.storeName}</p>
+          <p><strong>Offers Discount:</strong> {selectedOrder.discountValue}</p>
+          <p><strong>Offers Id:</strong> {selectedOrder.offerId}</p>
         </div>
         <div>
-          <p><strong>Tax && Charges:</strong> {selectedOrder?.Tax}</p>
+          <p><strong>Tax && Charges:</strong><div>{selectedOrder?.appliedTaxes?.map((item,index)=>(
+            <div className="flex gap-6" key={index}>
+              <p><b>{item?.name} :</b></p>
+              <p>{item?.amountApplied}</p>
+            </div>
+          ))}
+          </div>
+          </p>
           <p><strong>Total Amount:</strong> {formatPrice(selectedOrder.totalAmount, selectedOrder.currency)}</p>
           <p><strong>Payment Method:</strong> {selectedOrder.paymentMethod}</p>
           <p><strong>Order Status:</strong> <span className={`font-semibold ${selectedOrder.orderStatus === 'Completed' ? 'text-green-600' : selectedOrder.orderStatus === 'Cancelled' ? 'text-red-600' : 'text-yellow-600'}`}>

@@ -194,9 +194,11 @@ export const Heading = () => {
               Learn More
             </button>
             </Link>
+            <Link to="/login">
             <button className="flex gap-2 justify-center items-center bg-blue-600 text-white px-6 py-3 font-semibold rounded-full hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50">
               Sign Up <IoIosArrowForward />
             </button>
+            </Link>
           </div>
         </div>
       </div>

@@ -45,11 +45,13 @@ export const OrderDetailsView = ({
         </div>
         <div>
           <p><strong>Tax && Charges:</strong><div>{selectedOrder?.appliedTaxes?.map((item,index)=>(
-            <div className="flex gap-6">
+            <div className="flex gap-6" key={index}>
               <p><b>{item?.name} :</b></p>
               <p>{item?.amountApplied}</p>
             </div>
-          ))}</div></p>
+          ))}
+          </div>
+          </p>
           <p><strong>Total Amount:</strong> {formatPrice(selectedOrder.totalAmount, selectedOrder.currency)}</p>
           <p><strong>Payment Method:</strong> {selectedOrder.paymentMethod}</p>
           

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
-
+import {Link} from "react-router-dom";
 // Placeholder images for malls
 const defaultMallImage = "https://placehold.co/600x400/87CEEB/ffffff?text=Mall+Image";
 const heroMallImage = "https://placehold.co/1200x500/A2D2FF/000000?text=Explore+Malls";
@@ -27,8 +27,47 @@ const SkeletonMallCard = () => (
     </div>
 );
 
+  const getDayName = (date) => {
+    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    return days[date.getDay()];
+};
+
+const isCurrentlyOpen = (operatingHours, globalClosed) => {
+    if (globalClosed) {
+        return { status: 'Temporarily Closed', isOpen: false };
+    }
+
+    const now = new Date();
+    const currentDayName = getDayName(now);
+    const todayHours = operatingHours?.find(h => h.day === currentDayName);
+
+    if (!todayHours) {
+        return { status: 'Hours Not Available', isOpen: false };
+    }
+
+    if (todayHours.isClosed) {
+        return { status: 'Closed Today', isOpen: false };
+    }
+
+    const [openHour, openMinute] = todayHours.openTime.split(':').map(Number);
+    const [closeHour, closeMinute] = todayHours.closeTime.split(':').map(Number);
+
+    const openTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), openHour, openMinute, 0);
+    let closeTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), closeHour, closeMinute, 0);
+
+    if (closeTime < openTime) {
+        closeTime.setDate(closeTime.getDate() + 1);
+    }
+
+    if (now >= openTime && now < closeTime) {
+        return { status: 'Open Now', isOpen: true };
+    } else {
+        return { status: 'Closed Now', isOpen: false };
+    }
+};
+
 export const MallsSection = () => {
-    const list = ['Malls', 'Offers & Deals', 'Events', 'Partner With Us'];
+    const list = ['Malls', 'Partner With Us'];
     const [activeIndex, setActiveIndex] = useState(0);
 
     const [malls, setMalls] = useState([]);
@@ -52,9 +91,6 @@ export const MallsSection = () => {
     const [maxAreaFilter, setMaxAreaFilter] = useState(''); // totalAreaSqFt
     const [offersAvailableFilter, setOffersAvailableFilter] = useState(false); // offersAvailable
 
-
-    // --- MallSchema Enum Values for Filters ---
-    // IMPORTANT: These should match the exact enum values defined in your Mongoose Schema
     const allMallTypes = ["Shopping Complex", "Department Store", "Strip Mall", "High Street Plaza"];
     const allMallAmenities = ["Parking", "Valet Parking", "Restrooms", "Wheelchair Accessible", "Wi-Fi", "ATM", "Concierge", "Lost & Found", "Changing Rooms"];
 
@@ -86,11 +122,9 @@ export const MallsSection = () => {
         }
 
         const currentPage = reset ? 1 : page;
-
-        // --- Filter Parameters sent to backend ---
         const filterParams = {
             page: currentPage,
-            limit: 15, // Number of malls to fetch per page
+            limit: 15,
             ...(searchTerm && { searchTerm: searchTerm }), // Backend should handle searching across name, locationName, address
             ...(selectedMallTypes.size > 0 && { mallType: Array.from(selectedMallTypes).join(',') }),
             ...(selectedAmenities.size > 0 && { amenities: Array.from(selectedAmenities).join(',') }),
@@ -140,7 +174,7 @@ export const MallsSection = () => {
 
     useEffect(() => {
         if (activeIndex === 0) { // Fetch malls only when the 'Malls' tab is active
-            fetchMalls(true); // Always trigger a fresh fetch when activeIndex changes to Malls
+            fetchMalls(true);
         }
     }, [activeIndex]);
 
@@ -226,17 +260,31 @@ export const MallsSection = () => {
                                     // Combine mallType and amenities for display, show only first 2 when collapsed
                                     const featuresToDisplay = isExpanded
                                         ? (item.mallType || []).concat(item.amenities || [])
-                                        : (item.mallType || []).slice(0, 2); // Assuming mallType is an array in your DB
+                                        : (item.mallType || []).slice(0, 2);
                                     const hasMoreFeatures = ((item.mallType?.length || 0) + (item.amenities?.length || 0)) > 2;
-
-
+                                    const { status: currentOperationalStatus, isOpen: isRestaurantOpen } = isCurrentlyOpen(item.operatingHours, item?.closed);
+                                    
                                     return (
+                                        <div>
+                                            <Link to={`/showcase/page?type=mall/${item.name}/${mallId}/Overview`}>
                                         <div
                                             key={mallId}
-                                            className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden cursor-pointer"
-                                            // Example: navigate to a mall details page
-                                            onClick={() => window.open(`/showcase/page?type=mall/${item.name}/${mallId}/Overview`, '_blank')}
+                                            className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden cursor-pointer relative"
+                                            
                                         >
+                                            {item.hasWeddingShopping && (
+                                                    <span className="absolute top-2 left-2 bg-yellow-500 text-white text-xs font-bold px-2 py-1 rounded-full z-6 shadow-sm font-['Inter']">
+                                                    Has Wedding Shopping
+                                                    </span>
+                                                )}    
+                                            {item?.offer?.length > 0 && (
+                                                    <span className="absolute top-2 right-2 bg-green-500 text-white text-xs font-bold px-2 py-1 rounded-full z-6 shadow-sm font-['Inter']">
+                                                    Offer Available
+                                                    </span>
+                                                )}
+                                                <span className={`absolute top-10 right-2 text-xs font-semibold px-2.5 py-0.5 rounded-full ${isRestaurantOpen ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                                                {currentOperationalStatus}
+                                                </span>
                                             <img
                                                 src={item.image || defaultMallImage}
                                                 alt={item.name}
@@ -325,6 +373,9 @@ export const MallsSection = () => {
                                                 </div>
                                             </div>
                                         </div>
+                                        </Link>
+                                        </div>
+                                        
                                     );
                                 })
                             )}

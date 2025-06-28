@@ -27,10 +27,8 @@ const menuItems = [
   { name: "Orders", path: "/fashion-dashboard/orders", icon: <FaClipboardList /> },
   { name: "Reviews", path: "/fashion-dashboard/reviews", icon: <FaUsers /> },
   { name: "Offers & Discounts", path: "/fashion-dashboard/offers", icon: <FaTags /> },
-  { name: "Collections & Categories", path: "/fashion-dashboard/collections", icon: <FaStore /> },
-  { name: "Customer Notifications", path: "/fashion-dashboard/notifications", icon: <FaBell /> },
-  { name: "Analytics & Reports", path: "/fashion-dashboard/analytics", icon: <FaChartLine /> },
-  { name: "Settings", path: "/fashion-dashboard/settings", icon: <FaCog /> },
+  { name: "Taxes & Charges", path: "/fashion-dashboard/taxes", icon: <FaTags /> },
+  { name: "Outlet Info", path: "/fashion-dashboard/outlet", icon: <FaCog /> },
 ];
 
 export const FashionDashboard = () => {

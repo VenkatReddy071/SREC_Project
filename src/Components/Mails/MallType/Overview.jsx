@@ -15,7 +15,44 @@ L.Marker.prototype.options.icon = L.icon({
     popupAnchor: [1, -34],
     shadowSize: [41, 41]
 });
+const getDayName = (date) => {
+    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    return days[date.getDay()];
+};
 
+const isCurrentlyOpen = (operatingHours, globalClosed) => {
+    if (globalClosed) {
+        return { status: 'Temporarily Closed', isOpen: false };
+    }
+
+    const now = new Date();
+    const currentDayName = getDayName(now);
+    const todayHours = operatingHours?.find(h => h.day === currentDayName);
+
+    if (!todayHours) {
+        return { status: 'Hours Not Available', isOpen: false };
+    }
+
+    if (todayHours.isClosed) {
+        return { status: 'Closed Today', isOpen: false };
+    }
+
+    const [openHour, openMinute] = todayHours.openTime.split(':').map(Number);
+    const [closeHour, closeMinute] = todayHours.closeTime.split(':').map(Number);
+
+    const openTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), openHour, openMinute, 0);
+    let closeTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), closeHour, closeMinute, 0);
+
+    if (closeTime < openTime) {
+        closeTime.setDate(closeTime.getDate() + 1);
+    }
+
+    if (now >= openTime && now < closeTime) {
+        return { status: 'Open Now', isOpen: true };
+    } else {
+        return { status: 'Closed Now', isOpen: false };
+    }
+};
 
 export const MallOverviewContent = ({ hospital,product }) => {
     if (!hospital) {
@@ -25,6 +62,8 @@ export const MallOverviewContent = ({ hospital,product }) => {
             </div>
         );
     }
+    const { status: currentOperationalStatus, isOpen: isRestaurantOpen } = isCurrentlyOpen(hospital.operatingHours, hospital.closed);
+    const currentDayName = getDayName(new Date());
     const [productData,setProductData]=useState();
     useEffect(() => {
           window.scrollTo(0, '50');
@@ -40,6 +79,9 @@ export const MallOverviewContent = ({ hospital,product }) => {
             <section className="mb-8">
                 <h2 className="text-4xl font-extrabold text-blue-700 mb-2">{hospital.name}</h2>
                 <p className="text-xl text-blue-500 mb-4">{hospital.info}</p>
+                <span className={`ml-4 absolute -top-4 md:top-4 right-4  text-sm md:text-xl  font-semibold px-2.5 md:py-0.5 rounded-full ${isRestaurantOpen ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                            {currentOperationalStatus}
+                </span>
                 <div className="flex items-center text-lg text-gray-700">
                     <span className="text-yellow-500 text-2xl">{'★'.repeat(Math.floor(hospital.rating))}</span>
                     <span className="text-gray-300 text-2xl">{'★'.repeat(5 - Math.floor(hospital.rating))}</span>
@@ -64,10 +106,7 @@ export const MallOverviewContent = ({ hospital,product }) => {
                         <p className="text-gray-700 font-semibold mb-1">Mall Type:</p>
                         <p className="text-gray-600">{hospital.mallType.join(', ')}</p>
                     </div>
-                    <div>
-                        <p className="text-gray-700 font-semibold mb-1">Opening Hours:</p>
-                        <p className="text-gray-600">{hospital.openingHours}</p>
-                    </div>
+                    
                 </div>
 
                 <div className="mt-6 border-t border-blue-200 pt-4">
@@ -91,11 +130,31 @@ export const MallOverviewContent = ({ hospital,product }) => {
                     </ul>
                 </div>
             </section>
+
+            <div className="bg-gray-50 p-6 rounded-lg shadow-sm">
+                        <h2 className="text-xl font-semibold text-gray-800 mb-4">Operating Hours</h2>
+                        <ul className="list-none p-0 space-y-1">
+                            {hospital.operatingHours && hospital.operatingHours.length > 0 ? (
+                                hospital.operatingHours.map((dayHours, index) => (
+                                    <li key={index} className={`flex justify-between py-1 ${dayHours.day === currentDayName ? 'font-bold text-blue-700' : 'text-gray-700'}`}>
+                                        <span>{dayHours.day}:</span>
+                                        {dayHours.isClosed ? (
+                                            <span className="text-red-500">Closed</span>
+                                        ) : (
+                                            <span>{dayHours.openTime} - {dayHours.closeTime}</span>
+                                        )}
+                                    </li>
+                                ))
+                            ) : (
+                                <li className="text-gray-500">Operating hours not specified.</li>
+                            )}
+                        </ul>
+                    </div>
             <section className="mb-8 p-6 bg-white rounded-lg border border-blue-200">
                 <h3 className="text-2xl font-bold text-blue-700 mb-6">Popular Products & Stores</h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                     {productData?.map(product => (
-                        <PopularProductCard key={product._id} product={product} />
+                        <PopularProductCard key={product._id} product={product} mall={hospital}/>
                     ))}
                 </div>
             </section>

@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { FaUser, FaGoogle } from "react-icons/fa";
 import { MdClose } from "react-icons/md";
 import Axios from "axios";
+import {useNavigate} from "react-router-dom"
 Axios.defaults.withCredentials = true;
 import Toast from "../Pages/Toast";
 import { toast } from "react-toastify";
@@ -17,6 +18,7 @@ export const Login = ({ }) => {
     email: "",
     password: "",
   });
+  const navigate=useNavigate();
 
   const tabs = ["Login", "Sign Up"];
 
@@ -32,7 +34,7 @@ export const Login = ({ }) => {
       const response = await Axios.post(url, { email, password }, { withCredentials: true });
       toast.success(response.data.message || "Login successful");
       setIsOpen(false);
-      window.location.reload();
+      navigate("/");
     } catch (error) {
       toast.error(error.response?.data?.message || "Login failed");
     }
@@ -48,6 +50,7 @@ export const Login = ({ }) => {
         { withCredentials: true }
       );
       toast.success(response.data.message || "Sign up successful");
+      navigate("/")
       localStorage.setItem("dasboard",response.data?.token)
       setIsOpen(false);
       setActiveTab("login");

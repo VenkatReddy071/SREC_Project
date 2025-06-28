@@ -17,7 +17,7 @@ const CheckoutPage = () => {
             street: '',
             city: '',
             state: '',
-            zip: '',
+            zipCode: '',
             country: ''
         }
     });
@@ -88,7 +88,10 @@ const CheckoutPage = () => {
                     const restaurantOffersResponse = await axios.get(`${VITE_SERVER_URL}/api/restaurant/offer/${sourceId}`, { withCredentials: true });
                     allFetchedOffers = restaurantOffersResponse.data.offers || [];
                 } else if (isProductOnly && sourceId) {
-                    allFetchedOffers = [];
+                    const restaurantOffersResponse = await axios.get(`${VITE_SERVER_URL}/api/mall/offer/${sourceId}`, { withCredentials: true });
+                    
+                    allFetchedOffers = restaurantOffersResponse.data.offers || [];
+                    
                 }
 
                 const filteredOffers = allFetchedOffers.filter(offer => {
@@ -171,7 +174,7 @@ const CheckoutPage = () => {
             setIsProcessingOrder(false);
             return;
         }
-
+        console.log(customerInfo);
         if (!customerInfo.customerName || !customerInfo.customerEmail) {
             setCheckoutError('Please fill in your name and email.');
             setIsProcessingOrder(false);
@@ -179,7 +182,7 @@ const CheckoutPage = () => {
         }
 
         if (!isTakeawayOnly && (!customerInfo.shippingAddress.street || !customerInfo.shippingAddress.city ||
-            !customerInfo.shippingAddress.state || !customerInfo.shippingAddress.zip ||
+            !customerInfo.shippingAddress.state || !customerInfo.shippingAddress.zipCode ||
             !customerInfo.shippingAddress.country)) {
             setCheckoutError('Please fill in all required shipping information.');
             setIsProcessingOrder(false);
@@ -470,12 +473,12 @@ const CheckoutPage = () => {
                                     </div>
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                         <div>
-                                            <label htmlFor="shippingAddress.zip" className="block text-sm font-medium text-gray-700 mb-1">Zip Code</label>
+                                            <label htmlFor="shippingAddress.zipCode" className="block text-sm font-medium text-gray-700 mb-1">Zip Code</label>
                                             <input
                                                 type="text"
-                                                id="shippingAddress.zip"
-                                                name="shippingAddress.zip"
-                                                value={customerInfo.shippingAddress.zip}
+                                                id="shippingAddress.zipCode"
+                                                name="shippingAddress.zipCode"
+                                                value={customerInfo.shippingAddress.zipCode}
                                                 onChange={handleCustomerInfoChange}
                                                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                                                 required={!isTakeawayOnly}
@@ -513,7 +516,7 @@ const CheckoutPage = () => {
                             ) : (
                                 <>
                                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                                        {["CashOnDelivery", "Card", "UPI"].map(method => (
+                                        {["Cash", "Card", "UPI"].map(method => (
                                             <label key={method} className={`flex flex-col items-center p-4 border rounded-xl cursor-pointer transition-all duration-200 ${selectedPaymentMethod === method ? 'border-indigo-600 bg-indigo-50 ring-2 ring-indigo-500' : 'border-gray-300 hover:bg-gray-100'}`}>
                                                 <input
                                                     type="radio"

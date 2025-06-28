@@ -377,7 +377,7 @@ export const RestaurantOverview = ({ restaurant }) => {
                                 Top Pick
                             </span>
                         )}
-                        <span className={`ml-4 text-xs font-semibold px-2.5 py-0.5 rounded-full ${isRestaurantOpen ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                        <span className={`ml-4 absolute -top-4 md:top-4 right-4  text-sm md:text-xl   font-semibold px-2.5 py-0.5 rounded-full ${isRestaurantOpen ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
                             {currentOperationalStatus}
                         </span>
                     </div>

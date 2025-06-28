@@ -70,6 +70,10 @@ import ResOverview from "./Dashboard/RestaurantDa/OverviewPage"
 import RestaurantOffersDashboard from "./Dashboard/RestaurantDa/Offers"
 import OutletInfoPage from "./Dashboard/RestaurantDa/Outlet"
 import TaxesAndCharges from "./Dashboard/RestaurantDa/TaxesAndCarges"
+import FashionOutlet from "./Dashboard/Fashion/Outlet"
+import FashionOverview from "./Dashboard/Fashion/OverviewPage"
+import FashionOffers from "./Dashboard/Fashion/Offers"
+import FashionTaxes from "./Dashboard/Fashion/Taxes";
 function App() {
   const [loading, setLoading] = useState(true);
 
@@ -134,8 +138,11 @@ function App() {
           <Route path="services" element={<ServicePage/>}/>
         </Route>
         <Route path="/fashion-dashboard" element={<FashionDashboard/>}>
-          <Route index element={<DashboardHome/>}/>
+          <Route index element={<FashionOverview/>}/>
           <Route path='products' element={<ProductsPage/>}/>
+          <Route path="offers" element={<FashionOffers/>}/>
+          <Route path="taxes" element={<FashionTaxes/>}/>
+          <Route path='outlet' element={<FashionOutlet/>}/>
           <Route path='orders'element={<OrdersPage/>}/>
         </Route>
         <Route path="/restaurant-dashboard" element={<RestaurantDashboard/>}>
