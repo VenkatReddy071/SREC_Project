@@ -299,3 +299,14 @@ exports.deleteMall = async (req, res) => {
         sendErrorResponse(res, 500, "Failed to delete mall.", error);
     }
 };
+
+exports.getMallByEmail=async(req,res)=>{
+    try{
+        const email=req.user.email;
+        const mall=await Mall.findOne({email});
+        return res.status(200).json({mall});
+    }
+    catch(error){
+        return res.status(400).json(error);
+    }
+}

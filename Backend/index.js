@@ -170,11 +170,16 @@ const ReviewRouter = require("./Routes/Review");
 const ArticleRouter=require("./Controllers/Hospitals/Articles");
 const dashboardRoutes=require("./Routes/Restaurant/DashboardOverview");
 const taxesAndCharges=require("./Routes/Restaurant/TaxesAndCarges");
+const mallDashboardRoute=require("./Routes/Malls/OverView");
+const MallOfferRouter=require("./Routes/Malls/Offers");
+const MallTaxes=require("./Routes/Malls/Taxes");
+const Search=require("./Controllers/SearchFuncationality/Search");
 app.get("/", (req, res) => {
     res.send("Server is running");
 });
 
 app.use("/api", LoginRouter);
+app.use("/api",Search);
 app.use("/api/hospitals", HospitalRouter);
 app.use("/api", HistoryRouter);
 app.use("/api/doctor", DoctorRouter);
@@ -190,8 +195,10 @@ app.use("/api/school", SchoolRouter);
 app.use("/api/teacher", TeacherRouter);
 app.use("/api/review", ReviewRouter);
 app.use('/api/dashboard', dashboardRoutes);
+app.use("/api/mall",mallDashboardRoute);
 app.use("/api/restaurants",taxesAndCharges);
-
+app.use("/api/mall",MallTaxes);
+app.use("/api/mall",MallOfferRouter);
 const PORT = process.env.PORT || 4000;
 io.on('connection',(socket)=>{
     console.log("new user is connected",socket.id);

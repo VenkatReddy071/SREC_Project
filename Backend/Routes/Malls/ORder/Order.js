@@ -102,8 +102,8 @@ const calculateOrderTotalsAndValidate = async (cartItems,discountOfferValue) => 
 
 router.post('/', async (req, res) => {
     const userId = req.session.user?.id;
-    const { customerName, customerEmail, customerPhoneNumber, paymentMethod, orderType, pickupTime, notes,selectedOfferId,discountOfferValue,cartTotals } = req.body;
-
+    const { customerName, customerEmail, customerPhoneNumber, paymentMethod, orderType, pickupTime, notes,selectedOfferId,discountOfferValue,cartTotals,shippingAddress,finalTotalAmount } = req.body;
+    console.log(req.body);
     if (!userId) {
         return res.status(401).json({ message: 'Authentication required. No user session.' });
     }
@@ -138,8 +138,6 @@ router.post('/', async (req, res) => {
 
         const discount=selectedOfferId?discountOfferValue:0;
         const { orderItems, orderSourceType, orderSourceId, productStockUpdates} = await calculateOrderTotalsAndValidate(filteredCartItems,discount);
-        const totalAmount=cartTotals.grandTotal;
-        const estimatedTaxes=cartTotals.estimatedTaxes;
         const appliedCharges=cartTotals.appliedCharges;
         console.log(appliedCharges);
         const user = await User.findById(userId).session(session);
@@ -156,7 +154,7 @@ router.post('/', async (req, res) => {
             sourceType: orderSourceType,
             sourceId: orderSourceId,
             items: orderItems,
-            totalAmount,
+            totalAmount:finalTotalAmount,
             currency: 'INR',
             paymentMethod,
             orderStatus: 'pending',
@@ -165,7 +163,8 @@ router.post('/', async (req, res) => {
             notes,
             offerId:selectedOfferId,
             discountValue:discountOfferValue,
-            appliedTaxes:appliedCharges
+            appliedTaxes:appliedCharges,
+            shippingAddress
         });
 
         await newOrder.save({ session });

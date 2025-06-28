@@ -29,6 +29,7 @@ router.delete('/:id', deleteRestaurant);
 router.get("/restaurant/outlet/info",authenticateToken,getRestaurantOutlet);
 router.get("/restaurant/unique-cuisines",getUniqueCuisines)
 router.get("/email/email",authenticateToken, getRestaurantByEmail)
+
 router.post('/offers/my-restaurant',authenticateToken,addRestaurantOffer);
 router.get("/offers/my-restaurant",authenticateToken,getRestaurantOffer);
 router.put("/offers/my-restaurant/:offerId",authenticateToken,editRestaurantOffer);
