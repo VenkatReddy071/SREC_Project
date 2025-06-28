@@ -35,6 +35,51 @@ const Offers = new mongoose.Schema({
     }
 }, { timestamps: true });
 
+
+const OperatingHoursSchema = new mongoose.Schema({
+    day: {
+        type: String,
+        required: true,
+        enum: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+    },
+    openTime: {
+        type: String,
+        required: function() { return !this.isClosed; }, // Required only if not closed for the day
+        match: [/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/, 'Please use HH:MM format for open time.'],
+    },
+    closeTime: {
+        type: String,
+        required: function() { return !this.isClosed; }, // Required only if not closed for the day
+        match: [/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/, 'Please use HH:MM format for close time.'],
+    },
+    isClosed: {
+        type: Boolean,
+        default: false,
+    },
+});
+const taxChargeSchema = new mongoose.Schema({
+    name: {
+        type: String,
+        required: true,
+        trim: true,
+    },
+    type: {
+        type: String,
+        enum: ['percentage', 'fixed'],
+        required: true,
+    },
+    value: {
+        type: Number,
+        required: true,
+        min: 0,
+    },
+    isApplicable: {
+        type: Boolean,
+        default: true,
+    },
+}, {
+timestamps:true
+});
 const MallSchema = new mongoose.Schema({
     name: {
         type: String,
@@ -161,10 +206,9 @@ const MallSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
-    openingHours: {
-        type: String,
-        trim: true,
-        default: "10:00 AM - 10:00 PM"
+    closed: {
+        type: Boolean,
+        default: false,
     },
     totalStores: {
         type: Number,
@@ -188,7 +232,11 @@ const MallSchema = new mongoose.Schema({
         enum: ["pending", "active", "inactive"],
         default: "pending",
     },
-    offer:[Offers]
+    offer:[Offers],
+    taxesAndCharges: [taxChargeSchema],
+    operatingHours: {
+            type: [OperatingHoursSchema],
+    },
 }, { timestamps: true });
 
 module.exports = mongoose.model("Mall", MallSchema, "Malls");
