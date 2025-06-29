@@ -1,12 +1,9 @@
+
 import React, { useState, useEffect } from 'react';
-
-import {ConfirmationModal} from "./ConfirmationModal"
-import {DoctorsListSidebar} from "./DoctorsListSidebar";
-import {DoctorDetailsPanel} from "./DoctorDetailsPanel"
+import { ConfirmationModal } from "./ConfirmationModal";
+import { DoctorsListSidebar } from "./DoctorsListSidebar";
+import { DoctorDetailsPanel } from "./DoctorDetailsPanel";
 import Axios from "axios";
-
-const allSpecialties = ['Cardiology', 'Pediatrics', 'Neurology', 'Orthopedics', 'General Medicine', 'Dermatology', 'Oncology'];
-const allServices = ['Heart Check-up', 'ECG', 'Stress Test', 'Angiography', 'Child Vaccinations', 'Growth Monitoring', 'Fever Consultation', 'EEG', 'EMG', 'Stroke Rehabilitation', 'Fracture Treatment', 'Joint Replacement', 'Arthroscopy', 'Diabetes Management', 'Skin Biopsy', 'Chemotherapy'];
 
 const DoctorsSection = () => {
     const [doctors, setDoctors] = useState([]);
@@ -16,9 +13,34 @@ const DoctorsSection = () => {
     const [availabilityFilter, setAvailabilityFilter] = useState('all');
     const [specialtyFilter, setSpecialtyFilter] = useState('all');
     const [isAddingNewDoctor, setIsAddingNewDoctor] = useState(false);
-    const [specalization,setSpecalization]=useState([]);
+    const [hospitalSpecializations, setHospitalSpecializations] = useState([]);
+    const API_BASE_URL = import.meta.env.VITE_SERVER_URL;
+
     useEffect(() => {
-        let tempDoctors = doctors;
+        const fetchDoctorsAndHospital = async () => {
+            const token = localStorage.getItem("dashboard");
+            if (!token) {
+                console.error("No authentication token found.");
+                return;
+            }
+
+            try {
+                // Fetch hospital details including specializations
+                const hospitalResponse = await Axios.get(`${API_BASE_URL}/api/hospitals/hospital/email`, {
+                    headers: { 'Authorization': `Bearer ${token}` },
+                    withCredentials: true
+                });
+                setHospitalSpecializations(hospitalResponse.data.hospital.specialization || []);
+                setDoctors(hospitalResponse.data.doctors || []);
+            } catch (error) {
+                console.error("Error fetching data:", error);
+            }
+        };
+        fetchDoctorsAndHospital();
+    }, []);
+
+    useEffect(() => {
+        let tempDoctors = [...doctors];
 
         if (searchTerm) {
             tempDoctors = tempDoctors.filter(doctor =>
@@ -28,8 +50,13 @@ const DoctorsSection = () => {
         }
 
         if (availabilityFilter !== 'all') {
-            const isAvailableBool = availabilityFilter === 'Available';
-            tempDoctors = tempDoctors.filter(doctor => doctor.isAvaliable === isAvailableBool);
+            if (availabilityFilter === 'Available') {
+                tempDoctors = tempDoctors.filter(doctor => doctor.isAvaliable && !doctor.onleave);
+            } else if (availabilityFilter === 'On Leave') {
+                tempDoctors = tempDoctors.filter(doctor => doctor.onleave);
+            } else if (availabilityFilter === 'On Call') {
+                tempDoctors = tempDoctors.filter(doctor => !doctor.isAvaliable && !doctor.onleave);
+            }
         }
 
         if (specialtyFilter !== 'all') {
@@ -38,23 +65,7 @@ const DoctorsSection = () => {
 
         setFilteredDoctors(tempDoctors);
     }, [searchTerm, availabilityFilter, specialtyFilter, doctors]);
-    useEffect(()=>{
-        const fetchDoctors=()=>{
 
-            const token=localStorage.getItem("dashboard");
-            const url=`${import.meta.env.VITE_SERVER_URL}/api/hospitals/hospital/email`
-            Axios.get(url,{headers:{'Authorization': `Bearer ${token}`},withCredentials:true})
-            .then((response)=>{
-                console.log(response.data);
-                setDoctors(response.data.doctors);
-                setSpecalization(response.data.hospital);
-            })
-            .catch((error)=>{
-                console.log(error);
-            })
-        }
-        fetchDoctors();
-    },[])
     const handleSelectDoctor = (doctor) => {
         setSelectedDoctor(doctor);
         setIsAddingNewDoctor(false);
@@ -68,18 +79,18 @@ const DoctorsSection = () => {
 
     const handleEditDoctor = (updatedDoctor) => {
         const updatedDoctors = doctors.map(doc =>
-            doc._id === updatedDoctor?._id ? updatedDoctor : doc
+            doc._id === updatedDoctor._id ? updatedDoctor : doc
         );
         setDoctors(updatedDoctors);
-        if (selectedDoctor && selectedDoctor?._id === updatedDoctor?._id) {
+        if (selectedDoctor && selectedDoctor._id === updatedDoctor._id) {
             setSelectedDoctor(updatedDoctor);
         }
     };
 
     const handleDeleteDoctor = (doctorId) => {
-        const remainingDoctors = doctors.filter(doc => doc?._id !== doctorId);
+        const remainingDoctors = doctors.filter(doc => doc._id !== doctorId);
         setDoctors(remainingDoctors);
-        if (selectedDoctor && selectedDoctor?._id === doctorId) {
+        if (selectedDoctor && selectedDoctor._id === doctorId) {
             setSelectedDoctor(null);
         }
     };
@@ -98,33 +109,31 @@ const DoctorsSection = () => {
         <div className="flex h-screen bg-gray-50 font-inter">
             <div className="w-[35%]">
                 <DoctorsListSidebar
-                doctors={filteredDoctors}
-                searchTerm={searchTerm}
-                setSearchTerm={setSearchTerm}
-                availabilityFilter={availabilityFilter}
-                setAvailabilityFilter={setAvailabilityFilter}
-                specialtyFilter={specialtyFilter}
-                setSpecialtyFilter={setSpecialtyFilter}
-                onSelectDoctor={handleSelectDoctor}
-                selectedDoctorId={selectedDoctor ? selectedDoctor.id : null}
-                onAddNewDoctor={handleAddNewDoctor}
-                onDeleteDoctor={handleDeleteDoctor}
-                allSpecialties={allSpecialties}
-            />
+                    doctors={filteredDoctors}
+                    searchTerm={searchTerm}
+                    setSearchTerm={setSearchTerm}
+                    availabilityFilter={availabilityFilter}
+                    setAvailabilityFilter={setAvailabilityFilter}
+                    specialtyFilter={specialtyFilter}
+                    setSpecialtyFilter={setSpecialtyFilter}
+                    onSelectDoctor={handleSelectDoctor}
+                    selectedDoctorId={selectedDoctor ? selectedDoctor._id : null}
+                    onAddNewDoctor={handleAddNewDoctor}
+                    onDeleteDoctor={handleDeleteDoctor}
+                    allSpecialties={hospitalSpecializations}
+                />
             </div>
             <div className="w-full h-screen overflow-y-scroll">
                 <DoctorDetailsPanel
-                doctor={selectedDoctor}
-                isAddingNewDoctor={isAddingNewDoctor}
-                onEdit={handleEditDoctor}
-                onDelete={handleDeleteDoctor}
-                onCreate={handleCreateDoctor}
-                onCancel={handleCancelAddEdit}
-                allSpecialties={specalization}
-                allServices={allServices}
-            />
+                    doctor={selectedDoctor}
+                    isAddingNewDoctor={isAddingNewDoctor}
+                    onEdit={handleEditDoctor}
+                    onDelete={handleDeleteDoctor}
+                    onCreate={handleCreateDoctor}
+                    onCancel={handleCancelAddEdit}
+                    allSpecialties={hospitalSpecializations}
+                />
             </div>
-            
         </div>
     );
 };

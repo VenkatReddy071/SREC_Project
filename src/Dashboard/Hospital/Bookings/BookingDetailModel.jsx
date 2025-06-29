@@ -1,60 +1,164 @@
-// src/components/BookingDetailsModal.jsx
-import React from 'react';
 
-const BookingDetailsModal = ({ booking, onClose, doctors }) => {
-  if (!booking) return null;
+import { useState, useEffect } from 'react';
+import { ConfirmationModal } from './ConfirmationModel';
+import { FaUser, FaEnvelope, FaPhone, FaCalendarAlt, FaStethoscope, FaHospital, FaClock, FaClipboardList, FaInfoCircle, FaCalendarCheck, FaTimesCircle,FaCheckCircle } from 'react-icons/fa';
+import axios from 'axios';
 
-  const getDoctorName = (doctorId) => {
-    const doctor = doctors.find(doc => doc._id === doctorId);
-    return doctor ? doctor.name : 'Unknown Doctor';
-  };
+export const BookingDetailsPanel = ({ booking, onUpdateStatus, onCancel }) => {
+    const [editableBooking, setEditableBooking] = useState(null);
+    const [showConfirmModal, setShowConfirmModal] = useState(false);
+    const [actionType, setActionType] = useState('');
+    const API_BASE_URL = import.meta.env.VITE_SERVER_URL;
 
-  return (
-    <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full  flex justify-center items-center z-50">
-      <div className="bg-white p-8 rounded-lg shadow-xl ">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-2xl font-bold text-gray-800">Booking Details</h2>
-          <button onClick={onClose} className="text-gray-500 hover:text-gray-700 text-xl font-bold">
-            &times;
-          </button>
+    useEffect(() => {
+        setEditableBooking(booking);
+    }, [booking]);
+
+    if (!booking) {
+        return (
+            <div className="flex-grow flex items-center justify-center bg-gray-100 p-6 m-4 rounded-lg shadow-md h-[calc(100vh-2rem)]">
+                <p className="text-gray-500 text-xl font-medium">Select a booking to view details.</p>
+            </div>
+        );
+    }
+
+    const handleStatusChange = (newStatus) => {
+        setEditableBooking(prev => ({ ...prev, status: newStatus }));
+        handleSave(newStatus);
+    };
+
+    const handleSave = async (newStatus = editableBooking.status) => {
+        const token = localStorage.getItem('dashboard');
+        if (!token) {
+            console.error('No authentication token found.');
+            return;
+        }
+
+        try {
+            const config = {
+                headers: { 'Authorization': `Bearer ${token}` },
+                withCredentials: true
+            };
+            const updatePayload = { status: newStatus };
+            const response = await axios.put(`${API_BASE_URL}/api/booking/admin/${editableBooking._id}/status`, updatePayload, config);
+            onUpdateStatus(response.data);
+            setShowConfirmModal(false);
+        } catch (error) {
+            console.error('Error updating booking status:', error.response?.data || error.message);
+        }
+    };
+
+    const confirmAction = (type) => {
+        setActionType(type);
+        setShowConfirmModal(true);
+    };
+
+    const executeAction = () => {
+        if (actionType === 'approve') {
+            handleSave('Approved');
+        } else if (actionType === 'complete') {
+            handleSave('Completed');
+        } else if (actionType === 'cancel') {
+            handleSave('Cancelled');
+        }
+    };
+
+    const renderDetailField = (label, value, Icon = null) => (
+        <p className="mb-2 text-gray-700 flex items-center">
+            {Icon && <Icon size={18} className="mr-2 text-blue-600 flex-shrink-0" />}
+            <strong className="text-blue-700 min-w-[120px] inline-block">{label}:</strong>
+            <span>{value || 'N/A'}</span>
+        </p>
+    );
+
+    const getStatusColor = (status) => {
+        switch (status) {
+            case 'Pending': return 'bg-yellow-100 text-yellow-700';
+            case 'Approved': return 'bg-blue-100 text-blue-700';
+            case 'Completed': return 'bg-green-100 text-green-700';
+            case 'Cancelled': return 'bg-red-100 text-red-700';
+            default: return 'bg-gray-100 text-gray-700';
+        }
+    };
+
+    return (
+        <div className="flex-grow bg-white p-8 shadow-xl rounded-lg m-4 flex flex-col h-[calc(100vh-2rem)]">
+            <h3 className="text-3xl font-extrabold text-blue-800 mb-6 pb-4 border-b-2 border-blue-200 sticky top-0 bg-white z-10">
+                Booking Details - {booking.name}
+            </h3>
+
+            <div className="flex-grow overflow-y-auto pr-4 -mr-4 custom-scrollbar">
+                <div className="space-y-6">
+                    <div className="p-4 bg-blue-50 rounded-lg shadow-inner border border-blue-100">
+                        <h4 className="text-xl font-bold text-blue-800 mb-4">Patient Information</h4>
+                        {renderDetailField("Patient Name", booking.name, FaUser)}
+                        {renderDetailField("Email", booking.email, FaEnvelope)}
+                        {renderDetailField("Mobile", booking.mobilenumber, FaPhone)}
+                        {renderDetailField("Age", booking.age, FaUser)}
+                        {renderDetailField("Gender", booking.gender, FaUser)}
+                        {renderDetailField("Message", booking.message || 'No message provided.', FaInfoCircle)}
+                    </div>
+
+                    <div className="p-4 bg-green-50 rounded-lg shadow-inner border border-green-100">
+                        <h4 className="text-xl font-bold text-green-800 mb-4">Appointment Details</h4>
+                        {renderDetailField("Doctor", booking.Doctor?.name || 'N/A', FaStethoscope)}
+                        {renderDetailField("Specialization", booking.specialization?.join(', ') || 'N/A', FaStethoscope)}
+                        {renderDetailField("Date", new Date(booking.date).toLocaleDateString(), FaCalendarAlt)}
+                        {renderDetailField("Time Slot", booking.slot, FaClock)}
+                        {renderDetailField("Hospital", booking.Hospital?.name || 'N/A', FaHospital)} {/* Assuming Hospital is populated */}
+                        {booking.offer && renderDetailField("Offer", booking.offer?.name || 'N/A', FaClipboardList)} {/* Assuming Offer is populated */}
+                    </div>
+
+                    <div className="p-4 bg-yellow-50 rounded-lg shadow-inner border border-yellow-100 flex items-center justify-between">
+                        <span className="text-lg font-bold text-gray-800">Current Status:</span>
+                        <span className={`px-4 py-2 rounded-full text-lg font-bold ${getStatusColor(editableBooking?.status)}`}>
+                            {editableBooking?.status}
+                        </span>
+                    </div>
+
+                    <div className="mt-6 flex justify-end space-x-4">
+                        {editableBooking?.status === 'Pending' && (
+                            <>
+                                <button
+                                    onClick={() => confirmAction('approve')}
+                                    className="flex items-center px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 transition duration-300 transform hover:scale-105"
+                                >
+                                    <FaCalendarCheck size={20} className="mr-2" /> Approve
+                                </button>
+                                <button
+                                    onClick={() => confirmAction('cancel')}
+                                    className="flex items-center px-6 py-3 bg-red-600 text-white font-semibold rounded-lg shadow-md hover:bg-red-700 transition duration-300 transform hover:scale-105"
+                                >
+                                    <FaTimesCircle size={20} className="mr-2" /> Cancel
+                                </button>
+                            </>
+                        )}
+                        {editableBooking?.status === 'Approved' && (
+                            <>
+                                <button
+                                    onClick={() => confirmAction('complete')}
+                                    className="flex items-center px-6 py-3 bg-green-600 text-white font-semibold rounded-lg shadow-md hover:bg-green-700 transition duration-300 transform hover:scale-105"
+                                >
+                                    <FaCheckCircle size={20} className="mr-2" /> Mark as Completed
+                                </button>
+                                <button
+                                    onClick={() => confirmAction('cancel')}
+                                    className="flex items-center px-6 py-3 bg-red-600 text-white font-semibold rounded-lg shadow-md hover:bg-red-700 transition duration-300 transform hover:scale-105"
+                                >
+                                    <FaTimesCircle size={20} className="mr-2" /> Cancel
+                                </button>
+                            </>
+                        )}
+                    </div>
+                </div>
+            </div>
+
+            <ConfirmationModal
+                show={showConfirmModal}
+                message={`Are you sure you want to ${actionType} this booking?`}
+                onConfirm={executeAction}
+                onCancel={() => setShowConfirmModal(false)}
+            />
         </div>
-
-        <div className="space-y-3 text-gray-700">
-          <p><strong>Appointment ID:</strong> {booking._id}</p>
-          <p><strong>Patient Name:</strong> {booking.name}</p>
-          <p><strong>Patient Email:</strong> {booking.email}</p>
-          <p><strong>Mobile Number:</strong> {booking.mobilenumber}</p>
-          <p><strong>Doctor Name:</strong> {getDoctorName(booking.Doctor)}</p>
-          <p><strong>Date & Time:</strong> {new Date(booking.date).toLocaleString()}</p>
-          <p><strong>Service/Reason:</strong> {booking.specialization.join(', ')}</p>
-          <p><strong>Status:</strong> <span className={`font-semibold ${
-              booking.status === 'Confirmed' ? 'text-green-600' :
-              booking.status === 'Pending' ? 'text-yellow-600' :
-              booking.status === 'Completed' ? 'text-blue-600' :
-              booking.status === 'Cancelled' ? 'text-red-600' :
-              'text-gray-600'
-            }`}>
-            {booking.status}
-          </span></p>
-          <p><strong>Booking Source:</strong> {booking.bookingSource}</p>
-          <p><strong>Age:</strong> {booking.age}</p>
-          <p><strong>Gender:</strong> {booking.gender}</p>
-          <p><strong>Detailed Reason for Visit:</strong> {booking.message || 'N/A'}</p>
-          <p><strong>History of Previous Appointments:</strong> (Mock data for this is complex, but here you'd fetch and display past bookings for `booking.userId`)</p>
-          <p><strong>Internal Notes Field:</strong> (This would typically be an editable text area in a real app)</p>
-        </div>
-
-        <div className="mt-6 text-right">
-          <button
-            onClick={onClose}
-            className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400"
-          >
-            Close
-          </button>
-        </div>
-      </div>
-    </div>
-  );
+    );
 };
-
-export default BookingDetailsModal;

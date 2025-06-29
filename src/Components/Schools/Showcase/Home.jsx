@@ -69,7 +69,7 @@ export const School = () => {
       case "Teachers":
         return <Teacher school={school}/>
       case "Contact Us":
-        return <Contact/>;
+        return <Contact hospital={school}/>;
       default:
         return <EducationalInstituteOverview  institute={school} activityIconMap={activityIconMap}/>
     }

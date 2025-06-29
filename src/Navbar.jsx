@@ -84,7 +84,7 @@ export const Navbar = () => {
                 {showDropdown && (
                   <div className="absolute right-0 mt-2 w-48 bg-white shadow-md rounded-md z-20">
                     <ul className="flex flex-col text-black">
-                      <li className="p-2 hover:bg-gray-200 cursor-pointer">Profile</li>
+                      <Link to="/profile"><li className="p-2 hover:bg-gray-200 cursor-pointer">Profile</li></Link>
                       <li className="p-2 hover:bg-gray-200 cursor-pointer">Notifications</li>
                       <li className="p-2 hover:bg-gray-200 cursor-pointer" onClick={handleLogout}>Logout</li>
                     </ul>

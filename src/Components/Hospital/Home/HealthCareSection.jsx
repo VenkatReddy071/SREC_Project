@@ -5,11 +5,15 @@ import Ambulance from "../../../assets/Ambulance.jpg";
 import header3 from "../../../assets/header3.jpg"
 import header from "../../../assets/HospitalHeader.jpg"
 import {Link} from "react-router-dom"
-const HealthcareSection = () => {
+const HealthcareSection = ({setAmbulance,handleAmbulance}) => {
+  const handle=()=>{
+    setAmbulance(true);
+    handleAmbulance();
+  }
   return (
     <div className="bg-gray-50 py-12 md:py-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Top Section */}
+
         <div className="grid md:grid-cols-2 gap-8 mb-10">
           <div className="bg-white rounded-lg shadow-md overflow-hidden">
             <div className="p-6">
@@ -30,9 +34,11 @@ const HealthcareSection = () => {
                   Learn More
                 </button>
                 </Link>
+                <Link to="/signup">
                 <button className="bg-blue-500 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75">
                   Sign Up
                 </button>
+                </Link>
               </div>
             </div>
           </div>
@@ -54,7 +60,7 @@ const HealthcareSection = () => {
                   When you need immediate medical attention, our dedicated
                   emergency team is here for you around the clock.
                 </p>
-                <button className="bg-transparent hover:bg-red-500 text-red-500 font-semibold hover:text-white py-2 px-4 border border-red-500 rounded-full focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-opacity-75">
+                <button className="bg-transparent hover:bg-red-500 text-red-500 font-semibold hover:text-white py-2 px-4 border border-red-500 rounded-full focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-opacity-75" onClick={handle}>
                   Find Emergency Care
                 </button>
               </div>

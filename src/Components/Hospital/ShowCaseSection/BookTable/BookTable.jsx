@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from "react-router-dom";
 import axios from "axios";
-
+import {toast} from "react-toastify"
 const FormSkeletonLoader = () => (
   <div className="p-8 bg-gray-100 rounded-lg shadow-md animate-pulse space-y-6">
     <div className="h-8 bg-gray-200 rounded w-3/4 mb-4 mx-auto"></div>
@@ -22,6 +22,7 @@ const FormSkeletonLoader = () => (
 export const BookTable = () => {
   const location = useLocation();
   const [loading, setLoading] = useState(true);
+  const [contentLoading,setContentLoading]=useState(false);
   const [doctorsData, setDoctorsData] = useState([]);
   const [specializationsData, setSpecializationsData] = useState([]);
 
@@ -100,7 +101,7 @@ export const BookTable = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
+    setContentLoading(true);
     if (!userName || !userEmail || !userMobile || !userGender || !userAge || !appointmentDate || !appointmentTime || !selectedSpecialization || !selectedDoctorId) {
       alert('Please fill in all required fields.');
       return;
@@ -134,6 +135,7 @@ export const BookTable = () => {
     .then((response)=>{
       console.log(response.data);
     setBookingConfirmed(true);
+    toast.success("Booking Conformed !");
     setUserName('');
     setUserEmail('');
     setUserMobile('');
@@ -147,7 +149,11 @@ export const BookTable = () => {
     })
     .catch((error)=>{
         setBookingConfirmed(false);
+        toast.error("Booing Failed.!");
         console.log(error);
+    })
+    .finally(()=>{
+      setContentLoading(false);
     })
   };
 
@@ -337,7 +343,28 @@ export const BookTable = () => {
               type="submit"
               className="inline-flex items-center px-10 py-4 border border-transparent text-xl font-semibold rounded-full shadow-lg text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-4 focus:ring-green-300 transition duration-300 ease-in-out transform hover:-translate-y-1"
             >
-              Confirm Booking
+              {contentLoading ?<div className="flex items-center">
+                        <svg
+                          className="animate-spin h-5 w-5 mr-3 text-white"
+                          viewBox="0 0 24 24"
+                        >
+                          <circle
+                            className="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                          ></circle>
+                          <path
+                            className="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                          ></path>
+                        </svg>
+                        Booking...
+                      </div>:
+              "Confirm Booking"}
             </button>
           </div>
         </form>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import Loading from "./Pages/Loading";
 
 // Layouts
@@ -42,11 +43,11 @@ import {Logs} from "./Dashboard/Admin/HistoryLogs/Logs"
 import {DashHomeHospital}from "./Dashboard/Hospital/Home";
 import { DashboardHospital } from "./Dashboard/Hospital/DashboardHospital";
 import DoctorsSection from "./Dashboard/Hospital/DoctorSection"
-import BookingPage from "./Pages/BookingPage"
+import BookingPage from "./Dashboard/Hospital/Bookings/BookingPagesection"
 import OffersPage from "./Pages/OffersPage"
 import NotificationPage from "./Pages/NotificationPage"
 import ServicePage from "./Pages/ServicePage"
-
+import HospitalOutletInfoSection from "./Dashboard/Hospital/HospitalInfo/HospitalOutlet"
 //fashion dashboard
 import {FashionDashboard} from "./Dashboard/Fashion/Home"
 import {DashboardHome} from "./Dashboard/Fashion/DashboardHome"
@@ -74,23 +75,52 @@ import FashionOutlet from "./Dashboard/Fashion/Outlet"
 import FashionOverview from "./Dashboard/Fashion/OverviewPage"
 import FashionOffers from "./Dashboard/Fashion/Offers"
 import FashionTaxes from "./Dashboard/Fashion/Taxes";
+import HospitalOverview from "./Dashboard/Hospital/Overview";
+import HospitalContact from "./Dashboard/Hospital/Contact/ContactDashboard"
+
+import LoginPage from "./user/LoginPage";
+import SignUpPage from "./user/Signup";
+import EmailVerificationPage from "./user/EmailVerificationPage";
+import ForgotPasswordPage from "./user/ForgetPassword";
+
+//education
+import SchoolInfo from "./Dashboard/School/SchoolLayout/SchoolInfo"
+import {SchoolCollegeDashboard} from "./Dashboard/School/SchoolLayout/Home"
+import SchoolCollegeOverview from "./Dashboard/School/SchoolLayout/Overview"
+import SchoolTeacher from "./Dashboard/School/Teacher/TeacherDashboard"
+import SchoolContact from "./Dashboard/School/Contact/ContactDashboard"
+
+
+import UserProfile from "./Components/Profile/ProfileHome";
 function App() {
+
   const [loading, setLoading] = useState(true);
 
-  // useEffect(() => {
-  //   const timer = setTimeout(() => {
-  //     setLoading(false);
-  //   }, 1000);
-  //   return () => clearTimeout(timer);
-  // }, []);
-
-  // if (loading) return <Loading />;
 
   return (
+    <div>
+    <ToastContainer
+      position="top-right"
+      autoClose={5000}
+      hideProgressBar={false}
+      newestOnTop={false}
+      closeOnClick
+      rtl={false}
+      pauseOnFocusLoss
+      draggable
+      pauseOnHover
+      toastClassName={() => "relative flex p-1 min-h-16 rounded-md justify-between overflow-hidden cursor-pointer bg-white text-black p-4"}
+      bodyClassName={() => "flex text-sm font-black font-med block p-3 bg-white"}
+      style={{ zIndex: 9999 }}
+    />
     <BrowserRouter>
+
       <Routes>
-        {/* Customer Layout */}
-        <Route path="/login" element={<Login/>}/>
+        <Route path="/profile" element={<UserProfile/>}/>
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/signup" element={<SignUpPage />} />
+        <Route path="/verify-email" element={<EmailVerificationPage />} />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route element={<MainLayout />}>
 
           <Route path="/" element={<Heading />} />
@@ -127,15 +157,22 @@ function App() {
           <Route path="settings" element={<Settings />} />
           <Route path="logs" element={<Logs/>}/>
         </Route>
-
+        <Route path="/education-dashboard" element={<SchoolCollegeDashboard/>}>
+        <Route index element={<SchoolCollegeOverview/>}/>
+        <Route path='info' element={<SchoolInfo/>}/>
+        <Route path="teachers" element={<SchoolTeacher/>}/>
+        <Route path="contact" element={<SchoolContact/>}/>
+        </Route>
         <Route path="/hospital-dashboard" element={<DashHomeHospital/>}>
-          <Route index element={<DashboardHospital/>}/>
+          <Route index element={<HospitalOverview/>}/>
           <Route path="dashboard" element={<DashboardHospital/>}/>
           <Route path="doctors" element={<DoctorsSection/>}/>
           <Route path="bookings" element={<BookingPage/>}/>
           <Route path="offers" element={<OffersPage/>}/>
           <Route path="notifications" element={<NotificationPage/>}/>
           <Route path="services" element={<ServicePage/>}/>
+          <Route path="contact" element={< HospitalContact/>}/>
+          <Route path="outlet" element={<HospitalOutletInfoSection/>}/>
         </Route>
         <Route path="/fashion-dashboard" element={<FashionDashboard/>}>
           <Route index element={<FashionOverview/>}/>
@@ -158,6 +195,7 @@ function App() {
         </Route>
       </Routes>
     </BrowserRouter>
+    </div>
   );
 }
 

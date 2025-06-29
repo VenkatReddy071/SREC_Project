@@ -19,8 +19,8 @@ export const Type = () => {
         case "fashion-dashboard":
           naviagte("/fashion-dashboard")
           break;
-        case "school-dashboard":
-          naviagte("/school-Dashboard")
+        case "education-dashboard":
+          naviagte("/education-Dashboard")
       }
     },[])
   return (

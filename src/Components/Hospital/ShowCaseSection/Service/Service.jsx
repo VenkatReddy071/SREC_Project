@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-
+import {Link,useLocation}from "react-router-dom"
 const getServiceIcon = (serviceTitle) => {
     switch (serviceTitle.toLowerCase()) {
         case 'cardiology': return '❤️';
@@ -50,6 +50,12 @@ const SkeletonServiceCard = () => (
 );
 
 function ServicesPage({ hospital }) {
+    const location=useLocation();
+        const url=new URLSearchParams(location.search);
+        const type1=url.get('type');
+        const type=type1.split("/");
+        const service1=type[1];
+        const service2=type[2];
     const loading = !hospital;
     const servicesToDisplay = hospital?.services || [];
     const specializationsToDisplay = hospital?.specialization || [];
@@ -121,21 +127,14 @@ function ServicesPage({ hospital }) {
                     </p>
                     <div className="flex flex-col md:flex-row justify-center items-center space-y-4 md:space-y-0 md:space-x-6">
                         <a
-                            href="/book-appointment"
+                            href={`?type=hospital/${service1}/${service2}/Book Appointment`}
                             className="w-full md:w-auto px-8 py-4 bg-blue-600 text-white text-lg font-semibold rounded-full shadow-lg
                                        hover:bg-blue-700 transition duration-300 ease-in-out transform hover:-translate-y-1
                                        focus:outline-none focus:ring-4 focus:ring-blue-300 text-center"
                         >
                             Book an Appointment
                         </a>
-                        <a
-                            href="/contact"
-                            className="w-full md:w-auto px-8 py-4 bg-gray-100 text-blue-700 text-lg font-semibold rounded-full shadow-lg
-                                       hover:bg-gray-200 transition duration-300 ease-in-out transform hover:-translate-y-1
-                                       focus:outline-none focus:ring-4 focus:ring-gray-300 text-center"
-                        >
-                            Contact Us
-                        </a>
+                        
                     </div>
                 </div>
 

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-
+import axios from "axios"
+import {toast} from "react-toastify";
 const ContactFormSkeletonLoader = () => (
   <div className="bg-gray-100 p-8 rounded-lg shadow-md animate-pulse space-y-6">
     <div className="h-8 bg-gray-200 rounded w-3/4 mb-4 mx-auto"></div>
@@ -12,8 +13,10 @@ const ContactFormSkeletonLoader = () => (
   </div>
 );
 
-export const Contact = () => {
+export const Contact = ({hospitalId}) => {
+  console.log(hospitalId);
   const [loading, setLoading] = useState(true);
+  const [contentLoading,setContentLoading]=useState(false);
   const [userName, setUserName] = useState('');
   const [userEmail, setUserEmail] = useState('');
   const [userIssue, setUserIssue] = useState('');
@@ -27,25 +30,43 @@ export const Contact = () => {
     simulateLoad();
   }, []);
 
-  const handleSubmit = (e) => {
+  const handleSubmit =async (e) => {
     e.preventDefault();
-
+    setContentLoading(true);
     if (!userName || !userEmail || !userIssue) {
-      alert('Please fill in all required fields.'); 
+      toast.error('Please fill in all required fields.'); 
     }
 
     const contactDetails = {
-      userName,
-      userEmail,
-      userIssue,
-    };
+      name:userName,
+      email:userEmail,
+      message:userIssue,
+      typeContact:hospitalId?._id,
+      typeOf:"Hospital",
 
-    console.log('Contact Form Submission:', contactDetails);
-    setSubmissionConfirmed(true);
-  
+    };
+    console.log(contactDetails);
+    try{
+    const response=await axios.post(`${import.meta.env.VITE_SERVER_URL}/api/contact`,{contactDetails},{withCredentials:true});
+    if(response.status===200){
+      toast.success("Your message has been sent. We will get back to you shortly.");
+        setSubmissionConfirmed(true);
+    
     setUserName('');
     setUserEmail('');
     setUserIssue('');
+    }
+    else{
+      toast.error(response?.data?.message);
+    }
+    }
+    catch(error){
+      console.log(error);
+      toast.error("Some error is occure !")
+    }
+    finally{
+      setContentLoading(false);
+    }
   };
 
   return (
@@ -120,7 +141,28 @@ export const Contact = () => {
                     type="submit"
                     className="inline-flex items-center px-6 py-4 border border-transparent text-xl font-semibold rounded-full shadow-lg text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 transition duration-300 ease-in-out transform hover:-translate-y-1"
                   >
-                    Submit Message
+                    {contentLoading ?<div className="flex items-center">
+                        <svg
+                          className="animate-spin h-5 w-5 mr-3 text-white"
+                          viewBox="0 0 24 24"
+                        >
+                          <circle
+                            className="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                          ></circle>
+                          <path
+                            className="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                          ></path>
+                        </svg>
+                        Sending..
+                      </div>:
+              "Send Message"}
                   </button>
                 </div>
               </form>

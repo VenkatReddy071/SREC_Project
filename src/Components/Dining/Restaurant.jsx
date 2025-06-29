@@ -145,14 +145,16 @@ export const RestaurantHomePage = () => {
           onTabChange={setActiveRestaurantTab}
           setIsSidebarOpen={setIsSidebarOpen}
         />
+      <div className='h-full"'>
 
+      
         <RestaurantList
           filters={filters}
           activeRestaurantTab={activeRestaurantTab}
           sortBy={sortBy}
-          allCuisines={allCuisines} // Pass allCuisines to RestaurantList for filter logic
+          allCuisines={allCuisines}
         />
-
+        </div>
         <ServiceOverview />
       </main>
 

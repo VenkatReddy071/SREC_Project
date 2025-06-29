@@ -1,6 +1,46 @@
 
 import React, { useState, useEffect } from 'react';
 import {Link,useLocation}from "react-router-dom"
+
+
+const getDayName = (date) => {
+    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    return days[date.getDay()];
+};
+
+const isCurrentlyOpen = (operatingHours, globalClosed) => {
+    if (globalClosed) {
+        return { status: 'Temporarily Closed', isOpen: false };
+    }
+
+    const now = new Date();
+    const currentDayName = getDayName(now);
+    const todayHours = operatingHours?.find(h => h.day === currentDayName);
+
+    if (!todayHours) {
+        return { status: 'Hours Not Available', isOpen: false };
+    }
+
+    if (todayHours.isClosed) {
+        return { status: 'Closed Today', isOpen: false };
+    }
+
+    const [openHour, openMinute] = todayHours.openTime.split(':').map(Number);
+    const [closeHour, closeMinute] = todayHours.closeTime.split(':').map(Number);
+
+    const openTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), openHour, openMinute, 0);
+    let closeTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), closeHour, closeMinute, 0);
+
+    if (closeTime < openTime) {
+        closeTime.setDate(closeTime.getDate() + 1);
+    }
+
+    if (now >= openTime && now < closeTime) {
+        return { status: 'Open Now', isOpen: true };
+    } else {
+        return { status: 'Closed Now', isOpen: false };
+    }
+};
 function Overview({ hospital }) {
     const loading = !hospital;
     const location=useLocation();
@@ -81,6 +121,9 @@ function Overview({ hospital }) {
             </div>
         );
     }
+
+    const { status: currentOperationalStatus, isOpen: isRestaurantOpen } = isCurrentlyOpen(hospital.operatingHours,hospital.closed);
+    const currentDayName = getDayName(new Date());
     return (
         <div className="container md:mx-10 md:px-4 py-8 md:py-2 w-full md:w-4/5 xl:w-4/5 font-inter">
             <div className="bg-white rounded-xl p-6 md:p-8 lg:p-10 flex flex-col space-y-10 ">
@@ -95,11 +138,16 @@ function Overview({ hospital }) {
                             {hospital.name || "Hospital Name"}
                         </h1>
                     </div>
+                    <span className={`ml-4 absolute -top-4 md:top-4 right-4  text-sm md:text-xl   font-semibold px-2.5 py-0.5 rounded-full ${isRestaurantOpen ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                            {currentOperationalStatus}
+                    </span>
                     <div className="text-right text-sm md:text-base text-gray-600 ml-6">
                         <p className="font-semibold">Email: <a href={`mailto:${hospital.ownerEmail}`} className="text-blue-600 hover:underline">{hospital.ownerEmail || "N/A"}</a></p>
                         <p className="font-semibold">Helpline: <a href={`tel:${hospital.phoneNumber}`} className="text-blue-600 hover:underline">{hospital.phoneNumber || "N/A"}</a></p>
                     </div>
+                    
                 </div>
+                
                 <div className="text-center space-y-4">
                     <h2 className="text-3xl md:text-4xl font-bold text-blue-700">About {hospital.name || "Our Hospital"}</h2>
                     <p className="text-base md:text-lg text-gray-700 leading-relaxed max-w-3xl mx-auto">
@@ -124,6 +172,26 @@ function Overview({ hospital }) {
                 </div>
 
                 {/* Services Highlight Section */}
+
+                <div className="bg-gray-50 p-6 rounded-lg shadow-sm">
+                        <h2 className="text-xl font-semibold text-gray-800 mb-4">Operating Hours</h2>
+                        <ul className="list-none p-0 space-y-1">
+                            {hospital.operatingHours && hospital.operatingHours.length > 0 ? (
+                                hospital.operatingHours.map((dayHours, index) => (
+                                    <li key={index} className={`flex justify-between py-1 ${dayHours.day === currentDayName ? 'font-bold text-blue-700' : 'text-gray-700'}`}>
+                                        <span>{dayHours.day}:</span>
+                                        {dayHours.isClosed ? (
+                                            <span className="text-red-500">Closed</span>
+                                        ) : (
+                                            <span>{dayHours.openTime} - {dayHours.closeTime}</span>
+                                        )}
+                                    </li>
+                                ))
+                            ) : (
+                                <li className="text-gray-500">Operating hours not specified.</li>
+                            )}
+                        </ul>
+                    </div>
                 <div className="text-center space-y-6">
                     <h2 className="text-3xl md:text-4xl font-bold text-blue-700">Our Core Services</h2>
                     <p className="text-base md:text-lg text-gray-700 max-w-3xl mx-auto">
