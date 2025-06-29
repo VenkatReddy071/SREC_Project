@@ -170,7 +170,7 @@ router.put("/admin/:bookingId", async (req, res) => {
     }
 });
 
-router.get("/admin/hospital/",authenticateToken, async (req, res) => {
+router.get("/admin/hospital",authenticateToken, async (req, res) => {
     try {
         const {email}=req.user;
         const hospital = await Hospital.findOne({ownerEmail:email});

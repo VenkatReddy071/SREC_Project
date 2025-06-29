@@ -2,7 +2,9 @@ const express = require("express");
 const router = express.Router();
 const Teacher = require("../../models/Schools/Teacher");
 const mongoose = require("mongoose");
+const School=require("../../models/Schools/School");
 
+const {authenticateToken}=require("../../Controllers/Authorization/auth")
 router.get("/", async (req, res) => {
   try {
     const filter = {};
@@ -62,6 +64,58 @@ router.get("/", async (req, res) => {
   }
 });
 
+router.put('/teachers/:id', authenticateToken, async (req, res) => {
+    try {
+        if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+            return res.status(400).json({ msg: 'Invalid teacher ID.' });
+        }
+
+        const {
+            name, email, mobileNumber, gender, dateOfBirth, address, experienceYears,
+            specialization, subjectsTaught, educationalQualifications, certifications,
+            employeeId, dateOfJoining, profileImage
+        } = req.body;
+
+        let teacher = await Teacher.findOne({
+            _id: req.params.id,
+        });
+
+        if (!teacher) {
+            return res.status(404).json({ msg: 'Teacher not found or does not belong to your institute.' });
+        }
+        if (email && email !== teacher.email) {
+            const existing = await Teacher.findOne({ email, educationalInstitute: req.schoolId });
+            if (existing) {
+                return res.status(400).json({ msg: 'This email is already used by another teacher in your institute.' });
+            }
+        }
+        if (employeeId && employeeId !== teacher.employeeId) {
+            const existing = await Teacher.findOne({ employeeId, educationalInstitute: req.schoolId });
+            if (existing) {
+                return res.status(400).json({ msg: 'This employee ID is already used by another teacher in your institute.' });
+            }
+        }
+
+        // Update fields
+        Object.assign(teacher, {
+            name, email, mobileNumber, gender, dateOfBirth, address, experienceYears,
+            specialization, subjectsTaught, educationalQualifications, certifications,
+            employeeId, dateOfJoining, profileImage
+        });
+
+        // Handle nested address object to avoid overwriting completely if subfields are missing
+        if (address) {
+            Object.assign(teacher.address, address);
+        }
+
+        await teacher.save();
+        res.json(teacher);
+
+    } catch (err) {
+        console.error('Error updating teacher:', err.message);
+        res.status(500).send('Server Error');
+    }
+});
 router.get("/:id", async (req, res) => {
   try {
     const teacher = await Teacher.findById(req.params.id).populate("educationalInstitute", "name institutionType location");
@@ -149,8 +203,12 @@ router.get("/by-institute-and-email/:instituteId/:email", async (req, res) => {
 });
 
 
-router.post("/", async (req, res) => {
+router.post("/",authenticateToken, async (req, res) => {
+  console.log(req.body);
   try {
+
+    const school=await School.findOne({email:req.user.email});
+    console.log(school);
     const teacher = new Teacher({
       name: req.body.name,
       email: req.body.email,
@@ -167,10 +225,12 @@ router.post("/", async (req, res) => {
       dateOfJoining: req.body.dateOfJoining,
       profileImage: req.body.profileImage,
       educationalInstitute: req.body.educationalInstitute,
+      educationalInstitute:school._id,
     });
     const newTeacher = await teacher.save();
     res.status(201).json(newTeacher);
   } catch (error) {
+    console.log(error);
     res.status(400).json({ message: error.message });
   }
 });
@@ -206,4 +266,20 @@ router.delete("/:id", async (req, res) => {
   }
 });
 
+
+
+router.get("/email/teacher",authenticateToken, async (req, res) => {
+  try {
+
+    const school=await School.findOne({email:req.user.email});
+    const teacher = await Teacher.find({educationalInstitute:school?._id })
+    if (!teacher) {
+      return res.status(404).json({ message: "Teacher not found with this email" });
+    }
+    res.status(200).json(teacher);
+  } catch (error) {
+    console.error("Error fetching teacher by email:", error);
+    res.status(500).json({ message: error.message });
+  }
+});
 module.exports = router;

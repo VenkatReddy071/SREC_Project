@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const EducationalInstitute = require("../../models/Schools/School");
-
+const {authenticateToken}=require("../../Controllers/Authorization/auth");
 router.get("/", async (req, res) => {
   try {
     const filter = {};
@@ -67,14 +67,17 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-router.get("/by-email/", async (req, res) => {
+router.get("/by-email/profile",authenticateToken, async (req, res) => {
   try {
     const {email}=req.user;
     const institute = await EducationalInstitute.findOne({email:email });
     if (!institute) {
       return res.status(404).json({ message: "Educational Institute not found with this mobile number" });
     }
-    res.status(200).json(institute);
+    res.status(200).json({success: true,
+            message: "Mall fetched successfully!",
+            institution:institute
+          });
   } catch (error) {
     console.error("Error fetching educational institute by mobile number:", error);
     res.status(500).json({ message: error.message });
@@ -108,7 +111,7 @@ router.post("/", async (req, res) => {
 
 router.patch("/:id", async (req, res) => {
   try {
-    const institute = await EducationalInstitute.findById(req.params.id);
+    const institute = await School.findById(req.params.id);
     if (!institute) {
       return res.status(404).json({ message: "Educational Institute not found" });
     }
@@ -126,7 +129,7 @@ router.patch("/:id", async (req, res) => {
 
 router.delete("/:id", async (req, res) => {
   try {
-    const institute = await EducationalInstitute.findById(req.params.id);
+    const institute = await School.findById(req.params.id);
     if (!institute) {
       return res.status(404).json({ message: "Educational Institute not found" });
     }

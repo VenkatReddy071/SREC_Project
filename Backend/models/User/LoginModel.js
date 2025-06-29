@@ -23,7 +23,7 @@ const userSchema = new mongoose.Schema(
         "marketing",
         "hospital",
         "fashion",
-        "schools",
+        "school",
         "college",
         "restaurant",
       ],
@@ -31,10 +31,24 @@ const userSchema = new mongoose.Schema(
     },
     otp: {
       type: String,
+      default:null,
     },
-    verify: {
-      type: Boolean,
-      default: false,
+    otpExpires: {
+        type: Date,
+        default: null,
+    },
+    verified: {
+        type: Boolean,
+        default: false,
+    },
+    otpType: {
+        type: String,
+        enum: ['email_verify', 'password_reset', "forgot_password",null],
+        default: null,
+    },
+    subscribe:{
+      type:Boolean,
+      default:false,
     },
     isBlock: {
       type: Boolean,
