@@ -202,49 +202,6 @@ router.post(
     }
 );
 
-
-// router.get("/all", async (req, res) => {
-//     try {
-//         const page = parseInt(req.query.page) || 1;
-//         const limit = parseInt(req.query.limit) || 15;
-//         const skip = (page - 1) * limit;
-//         const hospitals = await Hospital.find({})
-//                                       .skip(skip)
-//                                       .limit(limit)
-//                                       .sort({ createdAt: -1 });
-//         const hasMore = hospitals.length === limit;
-
-//         if (!hospitals || hospitals.length === 0) {
-//             return res.status(200).json({ hospitals: [], message: "No more data found", hasMore: false });
-//         }
-//         try {
-//             await historyLogRecorder(
-//                 req,
-//                 "Hospital",
-//                 "READ",
-//                 "GET",
-//                 hospitals[0]?._id,
-//                 `User fetched hospital details (page ${page}, limit ${limit}).`
-//             );
-//         } catch (logError) {
-//             console.error("Error logging action:", logError);
-//         }
-//         return res.status(200).json({
-//             hospitals: hospitals,
-//             hasMore: hasMore,
-//             currentPage: page,
-//             limit: limit
-//         });
-//     } catch (error) {
-//         console.error("Error fetching hospitals:", error);
-//         return res.status(500).json({
-//             error: "An error occurred while fetching data.",
-//             details: process.env.NODE_ENV === "development" ? error.message : undefined,
-//             hasMore: false
-//         });
-//     }
-// });
-
 router.get("/all", async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 1;
@@ -357,39 +314,6 @@ router.get("/:id", async (req, res) => {
     }
 });
 
-// router.get("/book/:id",async(req,res)=>{
-//     try{
-//         const {id}=req.params;
-//         console.log(id)
-//         const {doctorId}=req.body;
-//         const hospital=await Hospital.findById(id).populte({
-//             select:`specialization`
-//         });
-//         let message='';
-//         if(!hospital){
-//             message="hospital not found";
-//         }
-//         const doctors=await Doctor.find({Hospital:id}).populate({
-//             select:"name _id specialization"
-//         })
-//         const selectedDoctor=doctors.filter((doctor)=>doctor?._id===doctorId);
-
-//         if(!selectedDoctor){
-//             message="doctor not found";
-//         }
-
-//         const result={
-//             hospital,
-//             doctors,
-//             selectedDoctor
-//         }
-//         return res.status(200).json({result,message});
-
-//     }
-//     catch(error){
-//         return res.status(400).json({message:"Server error",error})
-//     }
-// })
 
 
 router.get("/book/:id", async (req, res) => {
@@ -604,6 +528,98 @@ router.put('/services/:serviceName', authenticateToken, async (req, res) => {
             return res.status(400).json({ message: 'Invalid data format.' });
         }
         res.status(500).json({ message: 'Server error.', error: error.message });
+    }
+});
+
+router.get("/outlet/email",authenticateToken, async(req,res)=>{
+    try {
+        const { email } = req.user;
+        console.log(email);
+        if (!email || !/^\S+@\S+\.\S+$/.test(email)) {
+            return res.status(400).json({message: "Invalid email format."});
+        }
+
+        const mall = await Hospital.findOne({ ownerEmail: email.toLowerCase() }).select("name email phoneNumber locationName address");
+
+        if (!mall) {
+            return res.status(404).json({message:"Mall not found with the provided email."});
+        }
+        res.status(200).json({
+            success: true,
+            message: "Mall fetched successfully!",
+            mall: mall,
+        });
+    } catch (error) {
+        return res.status(400).json({message:"Failed to fetch mall and products by email.", error});
+    }
+})
+
+router.get("/profile/email",authenticateToken, async(req,res)=>{
+    try {
+        const { email } = req.user;
+        console.log(email);
+        if (!email || !/^\S+@\S+\.\S+$/.test(email)) {
+            return res.status(400).json({message: "Invalid email format."});
+        }
+
+        const mall = await Hospital.findOne({ ownerEmail: email.toLowerCase() })
+
+        if (!mall) {
+            return res.status(404).json({message:"Mall not found with the provided email."});
+        }
+        res.status(200).json({
+            success: true,
+            message: "Mall fetched successfully!",
+            mall: mall,
+        });
+    } catch (error) {
+        return res.status(400).json({message:"Failed to fetch mall and products by email.", error});
+    }
+})
+
+router.put('/profile',authenticateToken, async (req, res) => {
+    try {
+        const {
+            name, image, gallery, phoneNumber, patientSatisfaction, successRate,
+            ProceduresAnnually, glimpseInside, locationName, address, rating,
+            services, ambulance, info, specialization, foundation, coordinates,
+            nearByLocation, status, operatingHours, isOffer
+        } = req.body;
+        const email=req.user.email;
+        const hospital = await Hospital.findOne({ownerEmail:email});
+
+        if (!hospital) {
+            return res.status(404).json({ msg: 'Hospital profile not found.' });
+        }
+
+        hospital.name = name || hospital.name;
+        hospital.image = image || hospital.image;
+        hospital.gallery = gallery || hospital.gallery;
+        hospital.phoneNumber = phoneNumber || hospital.phoneNumber;
+        hospital.patientSatisfaction = patientSatisfaction !== undefined ? patientSatisfaction : hospital.patientSatisfaction;
+        hospital.successRate = successRate !== undefined ? successRate : hospital.successRate;
+        hospital.ProceduresAnnually = ProceduresAnnually !== undefined ? ProceduresAnnually : hospital.ProceduresAnnually;
+        hospital.glimpseInside = glimpseInside || hospital.glimpseInside;
+        hospital.locationName = locationName || hospital.locationName;
+        hospital.address = address || hospital.address;
+        hospital.rating = rating !== undefined ? rating : hospital.rating;
+        hospital.services = services || hospital.services;
+        hospital.ambulance = ambulance !== undefined ? ambulance : hospital.ambulance;
+        hospital.info = info || hospital.info;
+        hospital.specialization = specialization || hospital.specialization;
+        hospital.foundation = foundation || hospital.foundation;
+        hospital.coordinates = coordinates || hospital.coordinates;
+        hospital.nearByLocation = nearByLocation || hospital.nearByLocation;
+        hospital.status = status || hospital.status;
+        hospital.operatingHours = operatingHours || hospital.operatingHours;
+        hospital.isOffer = isOffer !== undefined ? isOffer : hospital.isOffer;
+
+        await hospital.save();
+        res.json(hospital);
+
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
     }
 });
 

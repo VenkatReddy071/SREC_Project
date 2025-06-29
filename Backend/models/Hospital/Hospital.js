@@ -1,5 +1,30 @@
 const mongoose = require("mongoose");
 
+
+
+const OperatingHoursSchema = new mongoose.Schema({
+    day: {
+        type: String,
+        required: true,
+        enum: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+    },
+    openTime: {
+        type: String,
+        required: function() { return !this.isClosed; }, // Required only if not closed for the day
+        match: [/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/, 'Please use HH:MM format for open time.'],
+    },
+    closeTime: {
+        type: String,
+        required: function() { return !this.isClosed; }, // Required only if not closed for the day
+        match: [/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/, 'Please use HH:MM format for close time.'],
+    },
+    isClosed: {
+        type: Boolean,
+        default: false,
+    },
+});
+
+
 const hospitalSchema = new mongoose.Schema({
     name: {
         type: String,
@@ -115,6 +140,13 @@ const hospitalSchema = new mongoose.Schema({
         enum: ["pending", "accept"],
         default: "pending",
     },
+    operatingHours:[OperatingHoursSchema],
+    isOffer:{
+        type:Boolean,
+        default:false,
+        enum:['24/7'],
+
+    }
 }, { timestamps: true });
 
 module.exports = mongoose.model("Hospital", hospitalSchema,"Hospitals");

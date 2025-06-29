@@ -6,6 +6,9 @@ const educationalInstituteSchema = new mongoose.Schema({
     required: true,
     trim: true,
   },
+  email:{
+    type:String,
+  },
   institutionType: {
     type: String,
     enum: ["School", "College"],

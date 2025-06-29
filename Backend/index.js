@@ -174,11 +174,16 @@ const mallDashboardRoute=require("./Routes/Malls/OverView");
 const MallOfferRouter=require("./Routes/Malls/Offers");
 const MallTaxes=require("./Routes/Malls/Taxes");
 const Search=require("./Controllers/SearchFuncationality/Search");
+const Contact=require("./Routes/Contact.js/Contact");
+const HospitalOverview=require("./Routes/Hospital/Overview");
+const SchoolOverview=require("./Routes/Schools/OVerview");
+const AdminOverview=require("./Routes/AdminDashboard/Overview")
 app.get("/", (req, res) => {
     res.send("Server is running");
 });
 
 app.use("/api", LoginRouter);
+app.use("/api",AdminOverview);
 app.use("/api",Search);
 app.use("/api/hospitals", HospitalRouter);
 app.use("/api", HistoryRouter);
@@ -199,6 +204,9 @@ app.use("/api/mall",mallDashboardRoute);
 app.use("/api/restaurants",taxesAndCharges);
 app.use("/api/mall",MallTaxes);
 app.use("/api/mall",MallOfferRouter);
+app.use("/api/hospital",HospitalOverview);
+app.use('/api/contact',Contact);
+app.use("/api/schools",SchoolOverview);
 const PORT = process.env.PORT || 4000;
 io.on('connection',(socket)=>{
     console.log("new user is connected",socket.id);
