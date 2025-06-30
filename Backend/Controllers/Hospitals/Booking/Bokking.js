@@ -41,7 +41,8 @@ router.post("/", async (req, res) => {
             slot,
             name,
             email,
-            date,
+            bookingDate:Date.now(),
+            ScheduleDate:date,
             specialization,
             Hospital: hospitalId,
             Doctor: doctorId,
@@ -66,30 +67,91 @@ router.post("/", async (req, res) => {
     }
 });
 
+// router.get("/my-bookings", async (req, res) => {
+//     try {
+//         const userId = req.session.user?.id;
+//         let bookings = await Booking.find({ userId })
+//             .populate({
+//                 path:"Hospital",
+//                 model:"Hospital",
+//                 select:'name address'
+//             })
+//             .populate('Doctor', 'name ')
+//             .sort({ date: -1, slot: -1 });
+
+//         for (let booking of bookings) {
+//             await updateBookingHistoryStatus(booking);
+//         }
+
+//         bookings = await Booking.find({ userId })
+//             .populate('Hospital', 'name address ownerEmail image')
+//             .populate('Doctor', 'name ')
+//             .sort({ date: -1, slot: -1 });
+
+//         res.json(bookings);
+//     } catch (err) {
+//         console.error(err.message);
+//         res.status(500).send("Server Error");
+//     }
+// });
+
 router.get("/my-bookings", async (req, res) => {
     try {
         const userId = req.session.user?.id;
-        let bookings = await Booking.find({ userId })
-            .populate('Hospital', 'name address email')
-            .populate('Doctor', 'name specialization')
-            .sort({ date: -1, slot: -1 });
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+        const skip = (page - 1) * limit;
 
-        for (let booking of bookings) {
+        let bookingsToUpdate = await Booking.find({ userId });
+        for (let booking of bookingsToUpdate) {
             await updateBookingHistoryStatus(booking);
         }
 
-        bookings = await Booking.find({ userId })
-            .populate('Hospital', 'name address email')
-            .populate('Doctor', 'name specialization')
-            .sort({ date: -1, slot: -1 });
+        const bookings = await Booking.find({ userId })
+            .populate('Hospital', 'name address ownerEmail image')
+            .populate('Doctor', 'name')
+            .sort({ date: -1, slot: -1 })
+            .skip(skip)
+            .limit(limit);
 
-        res.json(bookings);
+        const totalBookings = await Booking.countDocuments({ userId });
+        const hasMore = (page * limit) < totalBookings;
+
+        res.json({
+            bookings,
+            totalBookings,
+            page,
+            limit,
+            hasMore
+        });
     } catch (err) {
         console.error(err.message);
         res.status(500).send("Server Error");
     }
 });
+router.put("/my-bookings/fav/:id", async (req, res) => {
+    try {
+        const {id}=req.params;
+        const userId = req.session.user?.id;
+        const bookings=await Booking.findById(id);
 
+        if(!bookings){
+            return res.status(400).json({message:"Failed Up update"});
+        }
+        if(!bookings.favBooking){
+            bookings.favBooking=true;
+        }
+        else{
+            bookings.favBooking=!bookings.favBooking;
+        }
+        await bookings.save();
+        return res.status(200).json(bookings);
+    
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send("Server Error");
+    }
+});
 router.put("/:bookingId/cancel", async (req, res) => {
     const { reason } = req.body;
 
@@ -119,6 +181,10 @@ router.put("/:bookingId/cancel", async (req, res) => {
         }
 
         booking.status = 'Cancelled';
+         if (!booking.subStatus) {
+            booking.subStatus = [];
+        }
+        booking.subStatus.push({ date: new Date(), status: 'Cancelled' });
         if (reason) {
             booking.message = (booking.message ? booking.message + '\n' : '') + `Cancellation Reason: ${reason}`;
         }
@@ -182,7 +248,7 @@ router.get("/admin/hospital",authenticateToken, async (req, res) => {
             .populate('userId', 'name email')
             .populate('Hospital', 'name address email')
             .populate('Doctor', 'name specialization')
-            .sort({ date: -1, slot: -1 });
+            .sort({ bookingDate: -1, slot: -1 });
 
         for (let booking of bookings) {
             await updateBookingHistoryStatus(booking);
@@ -192,7 +258,7 @@ router.get("/admin/hospital",authenticateToken, async (req, res) => {
             .populate('userId', 'name email')
             .populate('Hospital', 'name address email')
             .populate('Doctor', 'name specialization')
-            .sort({ date: -1, slot: -1 });
+            .sort({ bookingDate: -1, slot: -1 });
 
         res.json(bookings);
     } catch (err) {
@@ -245,6 +311,10 @@ router.put("/admin/:bookingId/status", async (req, res) => {
         }
 
         booking.status = status;
+        if (!booking.subStatus) {
+            booking.subStatus = [];
+        }
+        booking.subStatus.push({ date: new Date(), status: status });
         await booking.save();
         res.json(booking);
     } catch (err) {

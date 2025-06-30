@@ -1,6 +1,14 @@
 
 const mongoose = require("mongoose");
-
+const subStatus=new mongoose.Schema({
+    date:{
+        type:Date,
+        default:Date.now(),
+    },
+    status:{
+        type:String,
+    }
+})
 const OrderSchema = new mongoose.Schema({
     user: {
         type: mongoose.Schema.Types.ObjectId,
@@ -172,7 +180,8 @@ const OrderSchema = new mongoose.Schema({
     },
     discountValue:{
         type:Number,
-    }
+    },
+    subStatus:[subStatus],
 }, { timestamps: true });
 
 module.exports = mongoose.model("Order", OrderSchema, "Orders");

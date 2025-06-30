@@ -87,7 +87,7 @@ router.get('/daily-booking-trend', async (req, res) => {
 
             const bookingsCount = await Booking.countDocuments({
                 Hospital: hospitalId,
-                date: { $gte: startOfDay, $lte: endOfDay }
+                bookingDate: { $gte: startOfDay, $lte: endOfDay }
             });
 
             const newPatientsOnDay = await Booking.aggregate([
@@ -104,6 +104,7 @@ router.get('/daily-booking-trend', async (req, res) => {
                 newPatients: newPatientsCount,
             });
         }
+        console.log(trendData)
         res.json(trendData);
     } catch (err) {
         console.error(err.message);
@@ -171,7 +172,7 @@ router.get('/time-summaries', async (req, res) => {
 
         const startOfToday = getStartOfDay(new Date(now));
         const endOfToday = getEndOfDay(new Date(now));
-        const dailyBookings = await Booking.countDocuments({ Hospital: hospitalId, date: { $gte: startOfToday, $lte: endOfToday } });
+        const dailyBookings = await Booking.countDocuments({ Hospital: hospitalId, bookingDate: { $gte: startOfToday, $lte: endOfToday } });
         const dailyNewPatientsResult = await Booking.aggregate([
             { $match: { Hospital: new mongoose.Types.ObjectId(hospitalId), createdAt: { $gte: startOfToday, $lte: endOfToday } } },
             { $group: { _id: "$userId" } },
@@ -181,7 +182,7 @@ router.get('/time-summaries', async (req, res) => {
 
         const startOfWeek = getStartOfWeek(new Date(now));
         const endOfWeek = getEndOfWeek(new Date(now));
-        const weeklyBookings = await Booking.countDocuments({ Hospital: hospitalId, date: { $gte: startOfWeek, $lte: endOfWeek } });
+        const weeklyBookings = await Booking.countDocuments({ Hospital: hospitalId, bookingDate: { $gte: startOfWeek, $lte: endOfWeek } });
         const weeklyNewPatientsResult = await Booking.aggregate([
             { $match: { Hospital: new mongoose.Types.ObjectId(hospitalId), createdAt: { $gte: startOfWeek, $lte: endOfWeek } } },
             { $group: { _id: "$userId" } },
@@ -191,7 +192,7 @@ router.get('/time-summaries', async (req, res) => {
 
         const startOfMonth = getStartOfMonth(new Date(now));
         const endOfMonth = getEndOfMonth(new Date(now));
-        const monthlyBookings = await Booking.countDocuments({ Hospital: hospitalId, date: { $gte: startOfMonth, $lte: endOfMonth } });
+        const monthlyBookings = await Booking.countDocuments({ Hospital: hospitalId, bookingDate: { $gte: startOfMonth, $lte: endOfMonth } });
         const monthlyNewPatientsResult = await Booking.aggregate([
             { $match: { Hospital: new mongoose.Types.ObjectId(hospitalId), createdAt: { $gte: startOfMonth, $lte: endOfMonth } } },
             { $group: { _id: "$userId" } },

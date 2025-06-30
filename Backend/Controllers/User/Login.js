@@ -204,4 +204,5 @@ const adminProfile=async(req,res)=>{
         userDataFromToken: req.user
     });
 }
+
 module.exports = { Login, Sign, details, dashboard,adminProfile };
