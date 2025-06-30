@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { IoMdArrowDropdown } from "react-icons/io";
 import { IoMenu, IoClose } from "react-icons/io5";
-import { Link } from 'react-router-dom';
 
+import { useNavigate, Link } from "react-router-dom";
 import Logo from "./assets/images.png";
 import { Login } from './user/Login';
 import axios from 'axios';
@@ -10,6 +10,8 @@ import { useLocation } from 'react-router-dom';
 import Cart from './Components/Cart/Cart';
 export const Navbar = () => {
   const location = useLocation();
+  const navigate = useNavigate();
+  
   const type=location.pathname;
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
@@ -23,6 +25,7 @@ export const Navbar = () => {
       .then(() => {
         setIsLogin(false);
         setName('');
+        navigate("/");
       })
       .catch(error => console.error(error));
   };
@@ -39,6 +42,10 @@ export const Navbar = () => {
       });
   }, []);
 
+  const handleNavigate=async(link)=>{
+  setShowDropdown(false);
+    navigate(link);
+  }
   return (
     <div className="p-2 m-2 border-b-2">
 
@@ -84,8 +91,8 @@ export const Navbar = () => {
                 {showDropdown && (
                   <div className="absolute right-0 mt-2 w-48 bg-white shadow-md rounded-md z-20">
                     <ul className="flex flex-col text-black">
-                      <Link to="/profile"><li className="p-2 hover:bg-gray-200 cursor-pointer">Profile</li></Link>
-                      <li className="p-2 hover:bg-gray-200 cursor-pointer">Notifications</li>
+                      <li className="p-2 hover:bg-gray-200 cursor-pointer"  onClick={() => handleNavigate("/user-profile")}>Profile</li>
+                      <li className="p-2 hover:bg-gray-200 cursor-pointer"  onClick={() => handleNavigate("/user-notification")}>Notifications</li>
                       <li className="p-2 hover:bg-gray-200 cursor-pointer" onClick={handleLogout}>Logout</li>
                     </ul>
                   </div>
@@ -179,16 +186,14 @@ export const Navbar = () => {
         {dropdownOpen && (
           <div className="absolute top-12 left-0 w-full bg-white shadow-md rounded-md">
             <ul className="flex flex-col">
-              <Link to={"/user-profile"} onClick={() => setDropdownOpen(false)}>
-                <li className="hover:text-blue-600 border-b-2 text-lg font-semibold">
+              
+                <li className="hover:text-blue-600 border-b-2 text-lg font-semibold"  onClick={() => handleNavigate("/user-profile")}>
                   Profile
                 </li>
-              </Link>
-              <Link to={"/user-notification"} onClick={() => setDropdownOpen(false)}>
-                <li className="hover:text-blue-600 border-b-2 text-lg font-semibold">
+            
+                <li className="hover:text-blue-600 border-b-2 text-lg font-semibold" onClick={() => handleNavigate("/user-notification")}>
                   Notifications
                 </li>
-              </Link>
               <li
                 className="hover:text-blue-600 border-b-2 text-lg font-semibold"
                 onClick={() => {

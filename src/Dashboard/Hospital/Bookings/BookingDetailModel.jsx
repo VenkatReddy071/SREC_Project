@@ -103,7 +103,8 @@ export const BookingDetailsPanel = ({ booking, onUpdateStatus, onCancel }) => {
                         <h4 className="text-xl font-bold text-green-800 mb-4">Appointment Details</h4>
                         {renderDetailField("Doctor", booking.Doctor?.name || 'N/A', FaStethoscope)}
                         {renderDetailField("Specialization", booking.specialization?.join(', ') || 'N/A', FaStethoscope)}
-                        {renderDetailField("Date", new Date(booking.date).toLocaleDateString(), FaCalendarAlt)}
+                        {renderDetailField("Booking Date", new Date(booking?.bookingDate).toLocaleDateString(), FaCalendarAlt)}
+                        {renderDetailField("Schedule Date", new Date(booking?.ScheduleDate).toLocaleDateString(), FaCalendarAlt)}
                         {renderDetailField("Time Slot", booking.slot, FaClock)}
                         {renderDetailField("Hospital", booking.Hospital?.name || 'N/A', FaHospital)} {/* Assuming Hospital is populated */}
                         {booking.offer && renderDetailField("Offer", booking.offer?.name || 'N/A', FaClipboardList)} {/* Assuming Offer is populated */}

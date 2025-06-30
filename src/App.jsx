@@ -90,8 +90,8 @@ import SchoolCollegeOverview from "./Dashboard/School/SchoolLayout/Overview"
 import SchoolTeacher from "./Dashboard/School/Teacher/TeacherDashboard"
 import SchoolContact from "./Dashboard/School/Contact/ContactDashboard"
 
-
-import UserProfile from "./Components/Profile/ProfileHome";
+import HospitalBookings from "./Components/Profile/HospitalBookins/BookingList"
+import {UserProfile} from "./Components/Profile/ProfileHome";
 function App() {
 
   const [loading, setLoading] = useState(true);
@@ -99,24 +99,23 @@ function App() {
 
   return (
     <div>
-    <ToastContainer
-      position="top-right"
-      autoClose={5000}
-      hideProgressBar={false}
-      newestOnTop={false}
-      closeOnClick
-      rtl={false}
-      pauseOnFocusLoss
-      draggable
-      pauseOnHover
-      toastClassName={() => "relative flex p-1 min-h-16 rounded-md justify-between overflow-hidden cursor-pointer bg-white text-black p-4"}
-      bodyClassName={() => "flex text-sm font-black font-med block p-3 bg-white"}
-      style={{ zIndex: 9999 }}
-    />
+     <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        toastClassName={() => "relative flex p-1 min-h-16 rounded-md justify-between overflow-hidden cursor-pointer bg-white text-black p-4 shadow-lg"}
+        bodyClassName={() => "flex text-sm font-black font-med block p-3 bg-white"}
+        style={{ zIndex:99999 }}
+      />
     <BrowserRouter>
 
       <Routes>
-        <Route path="/profile" element={<UserProfile/>}/>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignUpPage />} />
         <Route path="/verify-email" element={<EmailVerificationPage />} />
@@ -124,6 +123,8 @@ function App() {
         <Route element={<MainLayout />}>
 
           <Route path="/" element={<Heading />} />
+          <Route path="/user-profile" element={<UserProfile/>}/>
+          <Route path="/user-profile/bookings" element={<HospitalBookings/>}/>
           <Route path="/hospitals" element={<Home />} />
           <Route path="/malls" element={<MailHome />} />
           <Route path="/schools" element={<HomeScl />} />

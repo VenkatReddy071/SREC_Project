@@ -18,7 +18,20 @@ const SignUpPage = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
   const handleSignUp = async () => {
+
     setLoading(true);
+            if (formData.password.length < 8) {
+              toast.error("New password must be at least 8 characters long.");
+              return;
+            }
+            if (!/[A-Z]/.test(formData.password)) {
+              toast.error("New password must contain at least one capital letter.");
+              return;
+            }
+            if (!/[!@#$%^&*(),.?":{}|<>]/.test(formData.password)) {
+              toast.error("New password must contain at least one special character.");
+              return;
+            }
     try {
       const url = `${import.meta.env.VITE_SERVER_URL}/api/sign`;
       const { email, password, username } = formData;

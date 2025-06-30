@@ -108,7 +108,11 @@ export const BookingsListSidebar = ({
                                 </div>
                                 <p className="text-sm text-gray-600 mb-1 flex items-center">
                                     <FaCalendarDay size={12} className="mr-1 text-blue-500" />
-                                    <span className="font-medium">Date:</span> {new Date(booking.date).toLocaleDateString()}
+                                    <span className="font-medium"> Booking Date:</span> {new Date(booking?.bookingDate).toLocaleDateString()}
+                                </p>
+                                <p className="text-sm text-gray-600 mb-1 flex items-center">
+                                    <FaCalendarDay size={12} className="mr-1 text-blue-500" />
+                                    <span className="font-medium"> Schedule Date:</span> {new Date(booking?.ScheduleDate).toLocaleDateString()}
                                 </p>
                                 <p className="text-sm text-gray-600 flex items-center">
                                     <FaClock size={12} className="mr-1 text-blue-500" />

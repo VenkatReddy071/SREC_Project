@@ -95,6 +95,7 @@ const HospitalOverview = () => {
 
                 setIsLoadingBookingTrend(true);
                 const trendRes = await axios.get(`${API_BASE_URL}/daily-booking-trend`, config);
+                console.log(trendRes.data);
                 setBookingTrendData(trendRes.data);
                 setIsLoadingBookingTrend(false);
 
@@ -182,7 +183,7 @@ const HospitalOverview = () => {
                             data={bookingTrendData}
                             margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
                         >
-                            <XAxis dataKey="date" />
+                            <XAxis dataKey="name" />
                             <YAxis yAxisId="left" orientation="left" stroke="#0088FE" />
                             <YAxis yAxisId="right" orientation="right" stroke="#00C49F" />
                             <Tooltip
