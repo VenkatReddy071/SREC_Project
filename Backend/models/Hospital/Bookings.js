@@ -1,5 +1,15 @@
 const mongoose = require("mongoose");
 
+
+const subStatus=new mongoose.Schema({
+    date:{
+        type:Date,
+        default:Date.now(),
+    },
+    status:{
+        type:String,
+    }
+})
 const BookingSchema = new mongoose.Schema({
     userId: {
         type: mongoose.Schema.Types.ObjectId,
@@ -18,7 +28,12 @@ const BookingSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    date: {
+    bookingDate:{
+        type: Date,
+        default:Date.now,
+        required: true,
+    },
+    ScheduleDate: {
         type: Date,
         required: true,
     },
@@ -62,6 +77,11 @@ const BookingSchema = new mongoose.Schema({
         default: 'Pending',
         required: true,
     },
+    favBooking:{
+        type:Boolean,
+        default:false,
+    },
+    subStatus:[subStatus]
 }, { timestamps: true });
 
 module.exports = mongoose.model("Booking", BookingSchema);

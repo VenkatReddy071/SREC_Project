@@ -54,6 +54,15 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    gender:{
+      type:String,
+      enum:['male','female','other'],
+    },
+    age:{
+      type:Number,
+
+    },
+    
     isAdmin: {
       type: Boolean,
       default: false,
