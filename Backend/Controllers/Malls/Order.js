@@ -8,7 +8,7 @@ const Product = require("../../models/Malls/Products");
 const Menu = require("../../models/Dining/Menu");
 const Mall = require('../../models/Malls/Malls');
 const Restaurant = require('../../models/Dining/Restaurant');
-
+const createNotifications=require("../../Utilities/UserNotification");
 exports.getAllOrders = async (req, res) => {
     try {
         const { sourceType } = req.query; 
@@ -73,80 +73,12 @@ exports.getAllOrders = async (req, res) => {
     }
 };
 
-// exports.getUserOrders = async (req, res) => {
-//     try {
-//         const userId = req.session.user?.id;
-//         const { sourceType } = req.query;
 
-//         if (!userId) {
-//             return res.status(401).json({
-//                 message: "Unauthorized: Please login/Sign up."
-//             });
-//         }
-
-//         let query = { user: userId };
-//         let sourcePopulateOptions = {
-//             path: "sourceId",
-//             refPath: 'sourceType',
-//             select: "name email address phoneNumber image"
-//         };
-//         let itemPopulateOptions = {
-//             path: "items.product",
-//             refPath: 'items.itemModelType',
-//             select: "name description price priceINR currency category brand color gender imageUrl isAvailable images"
-//         };
-
-//         if (sourceType) {
-//             if (sourceType !== 'Restaurant' && sourceType !== 'Mall') {
-//                 return res.status(400).json({ message: "Invalid sourceType. Must be 'Restaurant' or 'Mall'." });
-//             }
-//             query.sourceType = sourceType;
-
-//             if (sourceType === 'Restaurant') {
-//                 sourcePopulateOptions.model = 'Restaurant';
-//                 sourcePopulateOptions.select = "name email address phoneNumber";
-//                 itemPopulateOptions.select = "name description priceINR category imageUrl isAvailable";
-//             } else if (sourceType === 'Mall') {
-//                 sourcePopulateOptions.model = 'Mall';
-//                 sourcePopulateOptions.select = "name email address phoneNumber image";
-//                 itemPopulateOptions.select = "name description price currency category brand color gender images";
-//             }
-//         }
-
-//         const userOrders = await Order.find(query)
-//             .populate({
-//                 path: "user",
-//                 model: "User",
-//                 select: "name email",
-//             })
-//             .populate(sourcePopulateOptions)
-//             .populate(itemPopulateOptions);
-
-//         if (!userOrders || userOrders.length === 0) {
-//             return res.status(404).json({
-//                 message: "No orders found for this user."
-//             });
-//         }
-
-//         return res.status(200).json({
-//             message: "Success",
-//             orders: userOrders
-//         });
-
-//     } catch (error) {
-//         console.error(error);
-//         return res.status(500).json({
-//             success: false,
-//             message: "Error fetching user orders.",
-//             error: error.message
-//         });
-//     }
-// }
 exports.getUserOrders = async (req, res) => {
     try {
         const userId = req.session.user?.id;
         const { sourceType, page = 1, limit = 10 } = req.query;
-
+        console.log(sourceType);
         if (!userId) {
             return res.status(401).json({
                 message: "Unauthorized: Please login/Sign up."
@@ -447,7 +379,7 @@ exports.updateOrderStatus = async (req, res) => {
 
         existingOrder.orderStatus = status;
         const updatedOrder = await existingOrder.save();
-
+        await createNotifications({userId:existingOrder.userId,type:"order_update",title:`Your Order Status Update: ${status}!`,message:`Great news! Your  Order  #${updatedOrder._id} Status is Updated please visit it.!`})
         return res.status(200).json({
             status: true,
             message: "Order status updated successfully.",

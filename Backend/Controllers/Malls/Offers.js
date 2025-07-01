@@ -1,7 +1,7 @@
 const Mall = require('../../models/Malls/Malls');
 const Product = require('../../models/Malls/Products');
-
-
+const createNotifications=require("../../Utilities/UserNotification")
+const User=require("../../models/User/LoginModel");
 
 exports.getMallOffer = async (req, res) => {
     try {
@@ -95,6 +95,10 @@ exports.addMallOffer = async (req, res) => {
 
         await restaurant.save();
         console.log('saved');
+        const users=await User.find({role:"user"});
+        for(const user of users){
+            await createNotifications({userId:user._id,type:"promotion",title:"Exclusive Offer Just For You!",message:`Don't miss out on our latest promotion! Get ${value} % off on ${applicable} for a Fashion mall Id is ${restaurant._id} for a limited time. Shop now!`})
+        }
         const addedOffer = restaurant.offer[restaurant.offer.length - 1];
         return res.status(201).json({ message: 'Offer added successfully!', offer: addedOffer });
 

@@ -2,6 +2,8 @@
 const Restaurant = require('../../models/Dining/Restaurant');
 const APIFeatures = require('../../Utilities/apiFeature');
 const MenuItem=require("../../models/Dining/Menu");
+const User=require("../../models/User/LoginModel");
+const createNotifications=require("../../Utilities/UserNotification")
 exports.getAllRestaurants = async (req, res) => {
   try {
     const features = new APIFeatures(Restaurant.find(), req.query)
@@ -306,6 +308,11 @@ exports.addRestaurantOffer = async (req, res) => {
         restaurant.offer.push(newOffer);
 
         await restaurant.save();
+        const users=await User.find({role:"user"});
+        for(const user of users){
+          await createNotifications({userId:user._id,type:"promotion",title: "Exclusive Offer Just For You!",message:`Don't miss out on our latest promotion! Get ${value}% off on ${applicable}   on Restaurant ${restaurant._id} for a limited time. Shop now!"`})
+        }
+        
         console.log('saved');
         const addedOffer = restaurant.offer[restaurant.offer.length - 1];
         return res.status(201).json({ message: 'Offer added successfully!', offer: addedOffer });

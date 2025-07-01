@@ -29,7 +29,7 @@ const notificationSchema = new mongoose.Schema({
     default: false,
   },
   link: {
-    type: String, // Optional URL or route related to the notification
+    type: String,
   },
 }, { timestamps: true });
 

@@ -5,11 +5,51 @@ const router = express.Router();
 const {authenticateToken}=require("../../Controllers/Authorization/auth")
 const Hospital=require("../../models/Hospital/Hospital");
 const School=require("../../models/Schools/School");
+const createNotifications=require("../../Utilities/UserNotification");
 router.get("/", async (req, res) => {
   try {
-    const contacts = await Contact.find().populate('typeContact');
-    res.status(200).json(contacts);
+    const { type, page = 1, limit = 15 } = req.query;
+    const skip = (parseInt(page) - 1) * parseInt(limit);
+
+    let query = {};
+    let populateOptions = {};
+    let totalContacts = 0;
+
+    if (type === 'Hospital') {
+      query = { typeOf: "Hospital" };
+      populateOptions = {
+        path: 'typeContact',
+        select: "name image phoneNumber locationName address ownerEmail"
+      };
+    } else if (type === 'EducationalInstitute') {
+      query = { typeOf: "EducationalInstitute" };
+      populateOptions = {
+        path: 'typeContact',
+        select: "name image institutionType mobileNumber location schoolDetails collegeDetails email foundationYear"
+      };
+    } else {
+      return res.status(400).json({ message: "Invalid or missing 'type' query parameter. Must be 'Hospital' or 'EducationalInstitute'." });
+    }
+
+    totalContacts = await Contact.countDocuments(query); // Get total count for pagination
+
+    const contacts = await Contact.find(query)
+      .populate(populateOptions)
+      .skip(skip)
+      .limit(parseInt(limit));
+
+    const hasMore = (skip + contacts.length) < totalContacts;
+
+    res.status(200).json({
+      contacts,
+      totalContacts,
+      currentPage: parseInt(page),
+      totalPages: Math.ceil(totalContacts / parseInt(limit)),
+      hasMore
+    });
+
   } catch (error) {
+    console.error("Error fetching contacts:", error);
     res.status(500).json({ message: "Error fetching contacts", error: error.message });
   }
 });
@@ -69,6 +109,7 @@ router.post("/", async (req, res) => {
     });
 
     await newContact.save();
+    await createNotifications({userId:userid,type:"contact_submission",title:`${typeOf}Contact Submission`,message:"Your Contact submission is successfull!,we are looking forword to you! "})
     res.status(200).json({ message: "Contact form submitted successfully", contact: newContact });
   } catch (error) {
     if (error.name === 'ValidationError') {
