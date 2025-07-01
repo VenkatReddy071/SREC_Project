@@ -110,25 +110,27 @@ const MyBookings = () => {
             return "N/A";
         }
         try {
-            if (timeStr.includes(':')) {
-                const [hours, minutes] = timeStr.split(':');
-                const date = new Date();
-                date.setHours(parseInt(hours, 10));
-                date.setMinutes(parseInt(minutes, 10));
-                date.setSeconds(0);
-                return date.toLocaleTimeString("en-GB", {
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    hour12: true
-                });
-            } else if (!isNaN(new Date(timeStr).getTime())) {
-                return new Date(timeStr).toLocaleTimeString("en-GB", {
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    hour12: true
-                });
+            const date = new Date(timeStr);
+            if (isNaN(date.getTime())) {
+                if (timeStr.includes(':')) {
+                    const [hours, minutes] = timeStr.split(':');
+                    const tempDate = new Date();
+                    tempDate.setHours(parseInt(hours, 10));
+                    tempDate.setMinutes(parseInt(minutes, 10));
+                    tempDate.setSeconds(0);
+                    return tempDate.toLocaleTimeString("en-GB", {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        hour12: true
+                    });
+                }
+                return "N/A";
             }
-            return "N/A";
+            return date.toLocaleTimeString("en-GB", {
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: true
+            });
         } catch (e) {
             console.error("Error formatting time:", e, "Input:", timeStr);
             return "N/A";
@@ -275,7 +277,7 @@ const MyBookings = () => {
                                     {selectedBooking.Hospital?.name || "N/A"}
                                 </p>
                                 <p className="ml-5">
-                                    <b>Address: </b>
+                                    <b>Address:</b>
                                     {selectedBooking.Hospital?.address || "N/A"}
                                 </p>
                             </div>
@@ -299,8 +301,8 @@ const MyBookings = () => {
                                     <FaCalendarAlt className="mr-2 text-green-500 w-4 h-4" /> Scheduled Appointment:
                                 </p>
                                 <p className="ml-5">
-                                    {selectedBooking.date
-                                        ? `${formatDate(selectedBooking.date)} at ${formatTime(selectedBooking.slot)}`
+                                    {selectedBooking.ScheduleDate
+                                        ? `${formatDate(selectedBooking.ScheduleDate)} at ${formatTime(selectedBooking.slot)}`
                                         : "N/A"}
                                 </p>
                             </div>

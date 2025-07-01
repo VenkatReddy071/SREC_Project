@@ -1,6 +1,11 @@
 import {useEffect} from "react"
 import axios from "axios"
 import HospitalBooking from "./HospitalBookins/BookingList"
+import RestaurantOrders from "./Restaurant/MyOrders"
+import FashionOrders from "./Restaurant/FashionOrders"
+import SchoolContact from "./Submission/School"
+import HospitalContact from "./Submission/Hospital"
+import Notifications from "./Submission/Notification";
 function ContentArea({ activeTab }) {
   const renderContent = () => {
     switch (activeTab) {
@@ -11,24 +16,24 @@ function ContentArea({ activeTab }) {
       case 'Hospital Bookings':
         return <div><HospitalBooking/></div>
       case 'Restaurant Orders':
-        return <div><h2 className="text-2xl font-semibold text-blue-700 mb-4">My Restaurant Orders</h2><p className="text-gray-700">No restaurant orders found.</p></div>;
+        return <div><RestaurantOrders/></div>;
       case 'Fashion Orders':
-        return <div><h2 className="text-2xl font-semibold text-blue-700 mb-4">My Fashion Orders</h2><p className="text-gray-700">No fashion orders found.</p></div>;
+        return <div><FashionOrders/></div>;
       case 'Hospital Contact Messages':
-        return <div><h2 className="text-2xl font-semibold text-blue-700 mb-4">Hospital Contact Messages</h2><p className="text-gray-700">No messages from hospitals.</p></div>;
+        return <div><HospitalContact/></div>;
       case 'School Contacts':
-        return <div><h2 className="text-2xl font-semibold text-blue-700 mb-4">School Contacts</h2><p className="text-gray-700">No school contacts added.</p></div>;
+        return <div><SchoolContact/></div>;
       case 'Edit Options':
         return <div><h2 className="text-2xl font-semibold text-blue-700 mb-4">Edit Profile & Settings</h2><p className="text-gray-700">Please click "Edit Profile" button on the banner to edit your profile.</p></div>;
       case 'Notifications':
-        return <div><h2 className="text-2xl font-semibold text-blue-700 mb-4">Notifications</h2><p className="text-gray-700">You have no new notifications.</p></div>;
+        return <div><Notifications/></div>;
       default:
         return <div><h2 className="text-2xl font-semibold text-blue-700 mb-4">Welcome to your Profile!</h2><p className="text-gray-700">Select a tab from the left to view your activity.</p></div>;
     }
   };
 
   return (
-    <div className="flex-1 bg-white rounded-lg shadow-md p-6">
+    <div className="flex-1 bg-white rounded-lg shadow-md md:p-6 h-screen overflow-y-scroll">
       {renderContent()}
       {activeTab === 'Reviews' && (
           <div className="mt-8 pt-8 border-t border-gray-200">

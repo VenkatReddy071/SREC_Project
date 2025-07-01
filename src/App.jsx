@@ -92,6 +92,9 @@ import SchoolContact from "./Dashboard/School/Contact/ContactDashboard"
 
 import HospitalBookings from "./Components/Profile/HospitalBookins/BookingList"
 import {UserProfile} from "./Components/Profile/ProfileHome";
+import RestaurantOrder from "./Components/Profile/Restaurant/MyOrders"
+import HospitalContactProfile from "./Components/Profile/Submission/Hospital"
+import SchoolContactProfile from "./Components/Profile/Submission/School"
 function App() {
 
   const [loading, setLoading] = useState(true);
@@ -125,6 +128,9 @@ function App() {
           <Route path="/" element={<Heading />} />
           <Route path="/user-profile" element={<UserProfile/>}/>
           <Route path="/user-profile/bookings" element={<HospitalBookings/>}/>
+          <Route path="/user-profile/orders" element={<RestaurantOrder/>}/>
+          <Route path="/user-profile/hospital" element={<HospitalContactProfile/>}/>
+          <Route path="/user-profile/education" element={<SchoolContactProfile/>}/>
           <Route path="/hospitals" element={<Home />} />
           <Route path="/malls" element={<MailHome />} />
           <Route path="/schools" element={<HomeScl />} />
@@ -144,6 +150,7 @@ function App() {
         <Route path="/Register" element={<HospitalForm/>}/>
         <Route path="/join/dashboard" element={<DashboardLogin/>}/>
         <Route path="/dashboard/type" element={<Type/>}/>
+
         <Route path="/admin-dashboard" element={<DashHome />}>
           <Route index element={<Dashboard />} />
           <Route path="dashboard" element={<Dashboard />} />

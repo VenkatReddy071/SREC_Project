@@ -106,7 +106,7 @@ export const DashHomeHospital = () => {
           }`}
         >
           <div className="flex items-center justify-between bg-blue-800 text-white p-4 h-16 shadow-md">
-            {isOpen && <h1 className="text-xl font-bold truncate">Fashion Shop Admin</h1>}
+            {isOpen && <h1 className="text-xl font-bold truncate">Hospital Admin</h1>}
             <button onClick={toggleSidebar} className="p-2 rounded-full hover:bg-blue-700 transition-colors">
               <FaBars className="w-6 h-6" />
             </button>

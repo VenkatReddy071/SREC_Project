@@ -113,7 +113,7 @@ function Header1() {
   ];
 
   return (
-    <div className="App ">
+    <div className=" -mr-4">
       {/* Header Section */}
       <Header
         imageUrl={heroImage}

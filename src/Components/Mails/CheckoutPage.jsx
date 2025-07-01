@@ -59,26 +59,6 @@ const CheckoutPage = () => {
     }, [selectedOffer, cartTotals.grandTotal]);
 
     useEffect(() => {
-        const fetchUserProfile = async () => {
-            try {
-                const response = await axios.get(`${VITE_SERVER_URL}/api/user/profile`, { withCredentials: true });
-                const userProfile = response.data.user;
-                setCustomerInfo({
-                    customerName: userProfile.name || '',
-                    customerEmail: userProfile.email || '',
-                    customerPhoneNumber: userProfile.phoneNumber || '',
-                    shippingAddress: {
-                        street: userProfile.address?.street || '',
-                        city: userProfile.address?.city || '',
-                        state: userProfile.address?.state || '',
-                        zip: userProfile.address?.zip || '',
-                        country: userProfile.address?.country || ''
-                    }
-                });
-            } catch (err) {
-                console.error("Failed to fetch user profile for checkout:", err);
-            }
-        };
 
         const fetchOffers = async () => {
             try {
@@ -127,7 +107,6 @@ const CheckoutPage = () => {
             }
         };
 
-        fetchUserProfile();
         if (cart?.items?.length > 0 && sourceId) {
             fetchOffers();
         } else {

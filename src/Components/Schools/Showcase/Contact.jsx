@@ -41,7 +41,7 @@ export const Contact = ({hospital}) => {
       email:userEmail,
       message:userIssue,
       typeContact:hospital?._id,
-      typeOf:"School",
+      typeOf:"EducationalInstitute",
 
     };
     console.log(contactDetails);

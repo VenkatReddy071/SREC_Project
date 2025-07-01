@@ -1,22 +1,42 @@
-import React from "react";
+import React,{useEffect,useState} from "react";
+import axios from "axios"
 import { FaFacebookF, FaInstagram, FaTwitter, FaLinkedinIn } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import {toast} from "react-toastify"
 export const Fotter = () => {
+
+  const [email,setEmail]=useState('');
+    const [loading,setLoading]=useState(false);
+    const handleSubscribe=async()=>{
+      try{
+          setLoading(true);
+          const response=await axios.post(`${import.meta.env.VITE_SERVER_URL}/api/subscribe`,{email},{withCredentials:true});
+          if(response.status===200){
+            toast.success(response.data?.message || "Thanks for Subscribing!")
+            setEmail('');
+          }
+          else{
+            toast.error("Failed to subscribe !");
+          }
+      }
+      catch(error){
+        toast.error(error?.message || "Server Error");
+      }
+      finally{
+        setLoading(false);
+      }
+    }
   return (
     <footer className="bg-white border-t border-gray-200 py-10 px-8">
       <div className="container mx-auto grid grid-cols-1 md:grid-cols-5 gap-8 text-gray-700">
-        {/* Logo Section */}
         <div>
           <h1 className="text-2xl font-bold">Logo</h1>
         </div>
 
-        {/* Quick Links */}
         <div>
           <h2 className="text-lg font-semibold mb-4">Quick Links</h2>
           <ul className="space-y-2">
           <Link to="/About-us"><li>About Us</li></Link>
-          {/* <Link to="/Faq"><li>FAQs</li></Link>
-          <Link to="/Support"><li>Support</li></Link> */}
           <Link to="/services"><li>Services</li></Link>
             
           </ul>
@@ -38,10 +58,7 @@ export const Fotter = () => {
         <div>
           <h2 className="text-lg font-semibold mb-4">Newsletter</h2>
           <ul className="space-y-2">
-            <li>Sign Up</li>
-            {/* <li>Latest News</li>
-            <li>Events</li> */}
-            
+            <Link to="/signup"><li>Sign Up</li></Link>
           </ul>
         </div>
 
@@ -51,13 +68,19 @@ export const Fotter = () => {
           <p className="text-sm mb-4">
             Join our newsletter to stay informed on updates and promotions.
           </p>
-          <div className="flex md:gap-1 gap-8 items-center border border-gray-400 rounded">
+          <div className="w-56 md:w-auto flex md:gap-1 items-center border border-gray-400 rounded ">
             <input
               type="email"
+                value={email}
+                onChange={(e)=>setEmail(e.target.value)}
               placeholder="Enter your email"
               className="md:w-36 p-2 text-sm focus:outline-none"
             />
-            <button className="bg-black text-white px-2 py-2">Subscribe</button>
+            <button className="bg-black text-white px-8 py-2" onClick={handleSubscribe}>
+              {loading ?<div className="flex items-center">
+                        
+                      Sending...
+                      </div>:"Subscribe"}</button>
           </div>
         </div>
       </div>

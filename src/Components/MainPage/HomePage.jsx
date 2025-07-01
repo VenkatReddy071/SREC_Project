@@ -88,7 +88,13 @@ const HomePage = () => {
   }, [searchContainerRef]);
 
   const renderItem = (item, type,link) => {
+    console.log(item);
     let addressDisplay = '';
+    let renderType=item?._doc?.institutionType;
+    if(type==='School/College'){
+      link=link+renderType;
+    }
+    console.log(link);
     const name=item?.name || item?._doc?.name;
     const id=item?._id || item?._doc?._id;
     switch(type) {
@@ -102,7 +108,7 @@ const HomePage = () => {
         addressDisplay = `${item.address || item?._doc?.address}${item.locationName ? ', ' + item.locationName : ',' + item?._doc?.locationName}`;
         break;
       case 'School/College':
-        addressDisplay = item.location || '';
+        addressDisplay = item?._doc?.location || '';
         break;
       default:
         addressDisplay = '';
@@ -110,12 +116,12 @@ const HomePage = () => {
 
     return (
       <Link to={`${link}/${name}/${id}/Overview`}>
-      <div key={item.id} className="bg-white p-4 rounded-lg shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-200 flex items-center gap-4">
-        {(item.image || (item?.imageUrls && item?.imageUrls?.mainImage)) ? (
+      <div key={item.id} className="bg-white md:p-4 rounded-lg shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-200 flex items-center gap-2 md:gap-4">
+        {(item.image || (item?.imageUrls && item?.imageUrls?.mainImage) || item?._doc?.image) ? (
           <img
-            src={item?.image || item.imageUrls?.mainImage }
+            src={item?.image || item.imageUrls?.mainImage ||item?._doc?.image }
             alt={item.name}
-            className="w-24 h-24 object-cover rounded-md shadow-sm shadow-black/40 flex-shrink-0"
+            className=" w-12 h-12 md:w-24 md:h-24 object-cover rounded-md shadow-sm shadow-black/40 flex-shrink-0"
             onError={(e) => { e.target.onerror = null; e.target.src = getPlaceholderImage(96, 96); }}
           />
         ) : (
@@ -124,13 +130,13 @@ const HomePage = () => {
         
         <div className="flex-grow flex items-center justify-between">
           <div>
-            <h4 className="text-lg font-semibold text-black">{item.name? item.name : item?._doc?.name}</h4>
+            <h4 className="text-base md:text-lg font-semibold text-black">{item.name? item.name : item?._doc?.name}</h4>
             <p className="text-xs text-blue-600 mb-1">{type}</p>
             <p className="text-gray-700 text-sm">{addressDisplay}</p>
           </div>
 
           <div className="flex-shrink-0 text-right">
-            <p className="text-lg font-bold text-blue-700">{item.rating ? item.rating :item?._doc?.rating} / 5</p>
+            <p className="text-sm md:text-lg font-bold text-blue-700">{item.rating ? item.rating :item?._doc?.rating} / 5</p>
             <span className="text-yellow-500">★</span>
           </div>
         </div>
@@ -152,7 +158,7 @@ const HomePage = () => {
             NANDYAL INFO
           </h1>
 
-          <form onSubmit={handleSearchSubmit} className="relative w-full max-w-2xl mb-12 px-4" ref={searchContainerRef}>
+          <form onSubmit={handleSearchSubmit} className="relative w-full max-w-4xl md:max-w-2xl mb-12 px-4" ref={searchContainerRef}>
             <input
               type="text"
               placeholder="Search for restaurants, schools, hospitals, malls..."
@@ -217,7 +223,7 @@ const HomePage = () => {
                       <div className="p-4 last:border-b-0">
                         <h3 className="text-xl font-bold text-blue-700 mb-3 border-b-2 border-blue-100 pb-2">Schools & Colleges ({searchResults.schools.length})</h3>
                         <div className="grid grid-cols-1 gap-4">
-                          {searchResults.schools.map(item => renderItem(item, 'School/College','/showcase/page?type=school'))}
+                          {searchResults.schools.map(item => renderItem(item, 'School/College','/showcase/page?type='))}
                         </div>
                       </div>
                     )}

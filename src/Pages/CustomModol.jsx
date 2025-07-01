@@ -1,5 +1,5 @@
 import React from 'react';
-
+document.getElementById('modal-root')
 const CustomModal = ({ isOpen, onClose, children }) => {
   if (!isOpen) return null;
 
