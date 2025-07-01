@@ -3,7 +3,7 @@ const router = express.Router();
 const Booking = require("../../../models/Hospital/Bookings");
 const Hospital = require("../../../models/Hospital/Hospital");
 const {authenticateToken } = require("../../Authorization/auth");
-
+const  createNotifications=require("../../../Utilities/UserNotification");
 const updateBookingHistoryStatus = async (booking) => {
     if (booking.history === true) {
         return false;
@@ -56,6 +56,7 @@ router.post("/", async (req, res) => {
         });
 
         const booking = await newBooking.save();
+        await createNotifications({userId:req.session.user.id,type:"new_order",title:"Appointment Confirmed!",message:"Your appointment for [Service/Reason] on [Date] at [Time] has been successfully booked. We look forward to seeing you!"});
         res.status(201).json(booking);
     } catch (err) {
         console.error(err.message);
@@ -110,7 +111,7 @@ router.get("/my-bookings", async (req, res) => {
         const bookings = await Booking.find({ userId })
             .populate('Hospital', 'name address ownerEmail image')
             .populate('Doctor', 'name')
-            .sort({ date: -1, slot: -1 })
+            .sort({ bookingDate: -1})
             .skip(skip)
             .limit(limit);
 
@@ -315,6 +316,7 @@ router.put("/admin/:bookingId/status", async (req, res) => {
             booking.subStatus = [];
         }
         booking.subStatus.push({ date: new Date(), status: status });
+        await createNotifications({userId:booking.userId,type:"appointment_update",title:"Your Appointment Status!",message:`Your appointment Status is updated by the admin.!${status}`});
         await booking.save();
         res.json(booking);
     } catch (err) {

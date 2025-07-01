@@ -1,4 +1,4 @@
-const Hospital =require("../models/Hospital/Hospital")
+const Contact =require("../models/Hospital/ContactUs");
 const Article=require("../models/Hospital/Articles");
 const mongoose=require("mongoose");
 const MONGODB_URI ="mongodb+srv://ndlinfo:ndlinfo@srec.nky2xvg.mongodb.net/SREC?retryWrites=true&w=majority&appName=SREC"; // REPLACE WITH YOUR MONGODB URI
@@ -8,9 +8,7 @@ async function createTeachersForAllInstitutes() {
         await mongoose.connect(MONGODB_URI);
         console.log("Connected to MongoDB");
         
-        const user=await School.findById('684fbdaf52855f347901d8f4');
-        user.email="venkatreddy548@gmail.com";
-        await user.save();
+        const user=await Contact.deleteMany();
         console.log(user);
     }
     catch(error){

@@ -177,7 +177,8 @@ const Search=require("./Controllers/SearchFuncationality/Search");
 const Contact=require("./Routes/Contact.js/Contact");
 const HospitalOverview=require("./Routes/Hospital/Overview");
 const SchoolOverview=require("./Routes/Schools/OVerview");
-const AdminOverview=require("./Routes/AdminDashboard/Overview")
+const AdminOverview=require("./Routes/AdminDashboard/Overview");
+const UserNotifications=require("./Routes/Notification");
 app.get("/", (req, res) => {
     res.send("Server is running");
 });
@@ -207,6 +208,7 @@ app.use("/api/mall",MallOfferRouter);
 app.use("/api/hospital",HospitalOverview);
 app.use('/api/contact',Contact);
 app.use("/api/schools",SchoolOverview);
+app.use("/api/notifications",UserNotifications);
 const PORT = process.env.PORT || 4000;
 io.on('connection',(socket)=>{
     console.log("new user is connected",socket.id);

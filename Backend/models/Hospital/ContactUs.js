@@ -26,7 +26,7 @@ const ContactFormSchema = new mongoose.Schema({
     typeOf: {
         type: String,
         required: true,
-        enum: ["Hospital", "School"],
+        enum: ["Hospital", "EducationalInstitute"],
     },
 }, { timestamps: true });
 

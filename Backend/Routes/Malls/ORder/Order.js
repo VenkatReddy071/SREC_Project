@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
 const {authenticateToken}=require("../../../Controllers/Authorization/auth")
-
+const createNotifications=require("../../../Utilities/UserNotification");
 const Order = require('../../../models/Malls/Order');
 const Cart = require('../../../models/Malls/Cart');
 const Product = require('../../../models/Malls/Products');
@@ -188,10 +188,9 @@ router.post('/', async (req, res) => {
             cart.totalPrice = 0;
         }
         await cart.save({ session });
-
-        await session.commitTransaction();
+        await createNotifications({userId:userId,type:"new_order",title:`Your ${orderSourceType} Order placed successfully!`,message:`our order ${newOrder._id} has been successfully placed! We're processing your order!"`})
+        await session.commitTransaction();  
         session.endSession();
-
         res.status(201).json({ message: `${orderSourceType} Order placed successfully!`, order: newOrder });
 
     } catch (err) {
