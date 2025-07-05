@@ -71,6 +71,22 @@ const userSchema = new mongoose.Schema(
       type: Date,
       default: Date.now,
     },
+    recentlyView:[
+      {
+        view:{
+          type:mongoose.Schema.Types.ObjectId,
+          refPath:"modelView",
+        },
+        modelView:{
+          type:String,
+          enum:["Hospital","Education","Mall","Restaurant"],
+        },
+        viewedAt: {
+          type: Date,
+          default: Date.now,
+        },
+      }
+    ]
   },
   { timestamps: true }
 );

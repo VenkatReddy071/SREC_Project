@@ -268,7 +268,7 @@ router.get("/admin/hospital",authenticateToken, async (req, res) => {
     }
 });
 
-router.get("/admin/all",authenticateToken, async (req, res) => {
+router.get("/admin/all",async (req, res) => {
     try {
         let bookings = await Booking.find()
             .populate('userId', 'name email')
@@ -325,4 +325,58 @@ router.put("/admin/:bookingId/status", async (req, res) => {
     }
 });
 
+
+
+router.put('/cancel/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { reason } = req.body;
+        const userId = req.session.user.id;
+        console.log(userId, req.session.user);
+        if(!userId){
+            return res.status(404).json({success:false,message:"Authorization Required,Login !"})
+        }
+        if (!reason || reason.trim() === "") {
+            return res.status(400).json({ success: false, message: "Cancellation reason is required." });
+        }
+
+        const booking = await Booking.findById(id);
+
+        if (!booking) {
+            return res.status(404).json({ success: false, message: "Booking not found." });
+        }
+        console.log(booking,userId);
+        if (booking.userId.toString() !== userId.toString()) {
+            return res.status(403).json({ success: false, message: "Not authorized to cancel this booking." });
+        }
+        if (booking.status === 'Pending' || booking.status === 'Approved') {
+            booking.status = 'user_cancel';
+            booking.reasion = reason.trim();
+            
+            booking.subStatus.push({
+                status: 'user_cancel',
+                date: new Date(),
+            });
+
+            await booking.save();
+
+            return res.status(200).json({
+                success: true,
+                message: "Booking cancelled successfully.",
+                booking: {
+                    _id: booking._id,
+                    status: booking.status,
+                    reasion: booking.reasion,
+                    subStatus: booking.subStatus
+                }
+            });
+        } else {
+            return res.status(400).json({ success: false, message: `Booking cannot be cancelled as its status is '${booking.status}'.` });
+        }
+
+    } catch (error) {
+        console.error("Error canceling booking:", error);
+        res.status(500).json({ success: false, message: "Server error." });
+    }
+});
 module.exports = router;

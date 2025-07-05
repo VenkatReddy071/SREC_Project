@@ -11,6 +11,7 @@ const User = require('../../models/User/LoginModel');
 const Menu=require("../../models/Dining/Menu");
 const Restaurant=require("../../models/Dining/Restaurant");
 const Mall=require("../../models/Malls/Malls");
+const TaxesAdmin=require("../../models/PlatformTaxes");
 const calculateCartTotals = async (cart) => {
     let subtotal = 0;
     let estimatedTaxesAndCharges = 0;
@@ -32,6 +33,7 @@ const calculateCartTotals = async (cart) => {
             }
         }
     }
+    
 
     for (let i = 0; i < cart.items.length; i++) {
         const cartItem = cart.items[i];
@@ -68,6 +70,27 @@ const calculateCartTotals = async (cart) => {
         cart.items.splice(itemsToRemove[i], 1);
     }
 
+    const Taxes=await TaxesAdmin.find({});
+
+    if(Taxes){
+        for(const tax of Taxes){
+            if(tax.isActive){
+                let price=0;
+                if(tax.type==='percentage'){
+                    price=(subtotal*tax.value)/100;
+                }
+                else{
+                    price=tax.value;
+                }
+                appliedChargesDetails.push({
+                        name: tax.name,
+                        type: tax.type,
+                        value: tax.value,
+                        amountApplied: parseFloat(price.toFixed(2))
+                });
+            }
+        }
+    }
     if (cart.items.length > 0) {
         if (cart.items[0].itemModelType === 'Product' && sourceMall && sourceMall.taxesAndCharges) {
             for (const charge of sourceMall.taxesAndCharges) {
