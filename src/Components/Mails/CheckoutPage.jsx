@@ -61,50 +61,63 @@ const CheckoutPage = () => {
     useEffect(() => {
 
         const fetchOffers = async () => {
-            try {
-                let allFetchedOffers = [];
+              try {
+        let allFetchedOffers = [];
+        const SERVER_URL=`${import.meta.env.VITE_SERVER_URL}`
+        const adminOffersResponse = await axios.get(`${SERVER_URL}/api/offers`, { withCredentials: true });
+        if (adminOffersResponse.status === 200 && Array.isArray(adminOffersResponse.data)) {
+            allFetchedOffers = adminOffersResponse.data;
+        }
 
-                if (isTakeawayOnly && sourceId) {
-                    const restaurantOffersResponse = await axios.get(`${VITE_SERVER_URL}/api/restaurant/offer/${sourceId}`, { withCredentials: true });
-                    allFetchedOffers = restaurantOffersResponse.data.offers || [];
-                } else if (isProductOnly && sourceId) {
-                    const restaurantOffersResponse = await axios.get(`${VITE_SERVER_URL}/api/mall/offer/${sourceId}`, { withCredentials: true });
-                    
-                    allFetchedOffers = restaurantOffersResponse.data.offers || [];
-                    
-                }
-
-                const filteredOffers = allFetchedOffers.filter(offer => {
-                    if (!offer.active) {
-                        return false;
-                    }
-
-                    const offerStartDate = new Date(offer.startDate);
-                    const offerEndDate = new Date(offer.endDate);
-                    const now = new Date();
-
-                    if (now < offerStartDate || now > offerEndDate) {
-                        return false;
-                    }
-
-                    if (offer.applicable === 'all') {
-                        return true;
-                    }
-
-                    if (typeof offer.applicable === 'string' && offer.applicable !== 'all') {
-                        return cart.items.some(cartItem => cartItem.product === offer.applicable);
-                    }
-
-                    return false;
-                });
-
-                setAvailableOffers(filteredOffers);
-
-            } catch (err) {
-                console.error("Failed to fetch offers:", err);
-                toast.error("Failed to load offers.");
-                setAvailableOffers([]);
+        if (isTakeawayOnly && sourceId) {
+            const restaurantOffersResponse = await axios.get(`${SERVER_URL}/api/restaurant/offer/${sourceId}`, { withCredentials: true });
+            if (restaurantOffersResponse.status === 200 && Array.isArray(restaurantOffersResponse.data.offers)) {
+                allFetchedOffers = [...allFetchedOffers, ...restaurantOffersResponse.data.offers];
             }
+        }
+
+        if (isProductOnly && sourceId) {
+            const mallOffersResponse = await axios.get(`${SERVER_URL}/api/mall/offer/${sourceId}`, { withCredentials: true });
+            if (mallOffersResponse.status === 200 && Array.isArray(mallOffersResponse.data.offers)) {
+                allFetchedOffers = [...allFetchedOffers, ...mallOffersResponse.data.offers];
+            }
+        }
+
+        const filteredOffers = allFetchedOffers.filter(offer => {
+            if (!offer.isActive) {
+                return false;
+            }
+
+            const offerStartDate = new Date(offer.startDate);
+            const offerEndDate = new Date(offer.endDate);
+            const now = new Date();
+
+            if (now < offerStartDate || now > offerEndDate) {
+                return false;
+            }
+
+            if (offer.applicableTo === 'all') {
+                console.log("a;");
+                return true;
+            }
+
+            if (offer.applicableTo === 'restaurant' && isTakeawayOnly) {
+                return true;
+            }
+
+            if (offer.applicableTo === 'fashion' && isProductOnly) {
+                return true;
+            }
+
+            return false;
+        });
+        console.log(filteredOffers);
+        setAvailableOffers(filteredOffers);
+        
+    } catch (err) {
+        console.error("Failed to fetch offers:", err);
+        return [];
+    }
         };
 
         if (cart?.items?.length > 0 && sourceId) {

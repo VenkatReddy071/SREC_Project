@@ -116,7 +116,7 @@ const HomePage = () => {
 
     return (
       <Link to={`${link}/${name}/${id}/Overview`}>
-      <div key={item.id} className="bg-white md:p-4 rounded-lg shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-200 flex items-center gap-2 md:gap-4">
+      <div key={item.id} className="bg-white md:p-2 rounded-lg shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-200 flex items-center gap-2 md:gap-4 lg:p-4">
         {(item.image || (item?.imageUrls && item?.imageUrls?.mainImage) || item?._doc?.image) ? (
           <img
             src={item?.image || item.imageUrls?.mainImage ||item?._doc?.image }

@@ -75,7 +75,7 @@ const [loading,setLoading]=useState(false);
       <HealthcareSection setAmbulance={setAmbulance} handleAmbulance={handleAmbulance} />
 
       <div className="md:flex md:gap-10 p-4 md:m-0 -mt-8">
-        <div className="md:w-1/2 w-full md:p-10 md:m-6">
+        <div className="md:w-1/2 w-full lg:p-10 md:m-6">
           <h1 className="p-2 font-bold text-3xl">Join our Healthcare Community Today</h1>
           <p className="p-2 text-sm">Discover a top doctors and book appointments easily for all your healthcare needs</p>
           <div className="flex gap-1 items-center border border-gray-400 rounded">
@@ -109,7 +109,7 @@ const [loading,setLoading]=useState(false);
           <p className="p-2 text-sm">By clicking Get started,you agree to our Terms and Conditions</p>
         </div>
         <div className="md:w-1/2 w-full md:p-2 m-1">
-          <img src={Family} alt="" className="w-full h-80" />
+          <img src={Family} alt="" className="w-full sm:h-80 md:h-full" />
         </div>
         <div></div>
       </div>

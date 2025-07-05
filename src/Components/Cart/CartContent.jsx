@@ -62,8 +62,8 @@ const CartContent = ({ onClose }) => {
     }
 
     return (
-        <div className="flex flex-col h-full bg-white rounded-lg shadow-xl overflow-hidden">
-            <div className="h-64 overflow-y-auto px-6 py-4 ">
+        <div className="flex flex-col  bg-white rounded-lg shadow-xl h-screen ">
+            <div className="h-52 overflow-y-auto px-6 py-4 ">
                 {cartItems.map((item) => (
                     <div
                         key={item.product._id + (item.selectedSize || '') + (item.selectedColor || '')}

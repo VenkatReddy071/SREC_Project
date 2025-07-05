@@ -8,7 +8,7 @@ export const MailHome = () => {
       <Header/>
       <MallsSection/>
       {/* Partner With Us Section */}
-            <section className="py-16 bg-blue-600 -mr-4 text-white" id="partner-with-us">
+            <section className="py-16 bg-blue-600 -mr-1 text-white" id="partner-with-us">
               <div className="max-w-6xl mx-auto px-4 md:px-8">
                 <div className="flex flex-col md:flex-row items-center justify-between gap-12">
                   <div className="md:w-1/2 text-center md:text-left">

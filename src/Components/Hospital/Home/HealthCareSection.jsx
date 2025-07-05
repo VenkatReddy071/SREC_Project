@@ -12,7 +12,7 @@ const HealthcareSection = ({setAmbulance,handleAmbulance}) => {
   }
   return (
     <div className="bg-gray-50 py-12 md:py-20">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="w-full mx-auto px-4 sm:px-6 lg:px-8">
 
         <div className="grid md:grid-cols-2 gap-8 mb-10">
           <div className="bg-white rounded-lg shadow-md overflow-hidden">
@@ -42,11 +42,11 @@ const HealthcareSection = ({setAmbulance,handleAmbulance}) => {
               </div>
             </div>
           </div>
-          <div className="grid md:grid-cols-2 gap-4">
+          <div className="grid lg:grid-cols-2 gap-4">
             <img
               src={Ambulance}
               alt="Emergency Room"
-              className="w-full h-64 object-cover rounded-lg shadow-md"
+              className="w-full h-full object-cover rounded-lg shadow-md"
             />
             <div className="bg-white rounded-lg shadow-md overflow-hidden">
               <div className="p-6">
@@ -107,7 +107,7 @@ const HealthcareSection = ({setAmbulance,handleAmbulance}) => {
         </div>
 
         {/* Bottom Section */}
-        <div className="grid md:grid-cols-2 gap-8">
+        <div className="grid lg:grid-cols-2 gap-8">
           <div className="grid md:grid-cols-2 gap-4">
             <div className="bg-white rounded-lg shadow-md overflow-hidden">
               <div className="p-6 flex flex-col justify-between h-full">
@@ -145,11 +145,11 @@ const HealthcareSection = ({setAmbulance,handleAmbulance}) => {
               </div>
             </div>
           </div>
-          <div className="rounded-lg shadow-md overflow-hidden">
+          <div className=" overflow-hidden">
             <img
               src={header}
               alt="Modern Hospital Interior"
-              className="w-full h-72 object-cover rounded-lg"
+              className="w-full  md:h-80 lg:h-full object-cover rounded-lg"
             />
           </div>
         </div>

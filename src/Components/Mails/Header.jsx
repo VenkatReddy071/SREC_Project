@@ -113,7 +113,7 @@ function Header1() {
   ];
 
   return (
-    <div className=" -mr-4">
+    <div className=" -mr-2 overflow-hidden">
       {/* Header Section */}
       <Header
         imageUrl={heroImage}

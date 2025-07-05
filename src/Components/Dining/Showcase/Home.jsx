@@ -4,6 +4,7 @@ import { useParams, useLocation } from "react-router-dom";
 import axios from "axios";
 import {RestaurantOverview} from "./Overview"
 import {MenuItems} from "./MenuItems"
+import {toast} from "react-toastify"
 export const Restaurant = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -49,6 +50,24 @@ export const Restaurant = () => {
     }
   }, [restaurantId]);
 
+
+  useEffect(()=>{
+    const addView=async()=>{
+      try{
+      const response=await axios.post(`${import.meta.env.VITE_SERVER_URL}/api/add/view`,{view:restaurantId,modelView:"Restaurant"},{withCredentials:true});
+      if(response.status===200){
+      }
+      else{
+        toast.error(response.data?.message);
+      }
+    }
+    catch(error){
+      console.log(error);
+    } 
+    }
+
+    addView();
+  },[restaurantId])
   useEffect(() => {
     if (restaurant) {
       setNavLinks(prevLinks => {

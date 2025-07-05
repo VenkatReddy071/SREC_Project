@@ -28,8 +28,6 @@ const menuItems = [
   { name: "Offers", path: "/admin-dashboard/offers", icon: <FaTags /> },
   { name: "Users", path: "/admin-dashboard/users", icon: <FaUsers /> },
   { name: "FAQs", path: "/admin-dashboard/faqs", icon: <FaQuestionCircle /> },
-  { name: "Live Chat", path: "/admin-dashboard/chat", icon: <FaComments /> },
-  { name: "Settings", path: "/admin-dashboard/settings", icon: <FaCog /> },
   { name: "HistoryLogs", path: "/admin-dashboard/logs", icon: <FaSignOutAlt /> },
 ];
 
@@ -90,14 +88,7 @@ export const DashHome = () => {
             </NavLink>
           ))}
         </nav>
-        <div className={`fixed bottom-0 bg-black text-gray-300 p-4 mt-auto border-t border-gray-700  ${isOpen ? "w-60" : "w-20 h-20"}`}>
-          <div className={`${isOpen ? "block " : "hidden "}`}>
-          <h2 className="font-semibold text-lg text-white">venkat</h2>
-          <p className="text-sm text-gray-400">Address: ff</p>
-          <p className="text-sm text-gray-400">Location:</p>
-          </div>
-    
-        </div>
+        
       </div>
 
       {/* Main Content Area */}

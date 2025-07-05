@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import Axios from "axios";
-import { FaRegClock, FaCheckCircle, FaHeart, FaRegHeart, FaInfoCircle, FaTimesCircle, FaCalendarAlt, FaHospital, FaUserMd } from 'react-icons/fa'; // Combined React Icons
+import { FaRegClock, FaCheckCircle, FaHeart, FaRegHeart, FaInfoCircle, FaTimesCircle, FaCalendarAlt, FaHospital, FaUserMd, FaBan } from 'react-icons/fa';
 import CustomModal from "../../../Pages/CustomModol";
 
-const ITEMS_PER_LOAD = 15; 
+const ITEMS_PER_LOAD = 15;
 
 const MyBookings = () => {
     const navigate = useNavigate();
@@ -15,6 +15,9 @@ const MyBookings = () => {
     const [initialLoad, setInitialLoad] = useState(true);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedBooking, setSelectedBooking] = useState(null);
+    const [showCancelReasonModal, setShowCancelReasonModal] = useState(false);
+    const [cancelReason, setCancelReason] = useState("");
+    const [cancellationError, setCancellationError] = useState("");
 
     const SERVER_URL = `${import.meta.env.VITE_SERVER_URL}`;
 
@@ -43,8 +46,8 @@ const MyBookings = () => {
                 }
             );
 
-            const { bookings: fetchedBookings, totalBookings, page: fetchedCurrentPage, hasMore: fetchedHasMore } = response.data;
-            
+            const { bookings: fetchedBookings, page: fetchedCurrentPage, hasMore: fetchedHasMore } = response.data;
+
             if (page === 1) {
                 setBookings(fetchedBookings);
             } else {
@@ -76,7 +79,7 @@ const MyBookings = () => {
 
         Axios.put(
             `${SERVER_URL}/api/booking/my-bookings/Fav/${bookingId}`,
-            
+            {},
             {
                 withCredentials: true,
             }
@@ -88,7 +91,7 @@ const MyBookings = () => {
                 console.error("Error toggling favorite:", error);
                 setBookings((prevBookings) =>
                     prevBookings.map((booking) =>
-                        booking._id === bookingId ? { ...booking, fav: !booking.fav } : booking
+                        booking._id === bookingId ? { ...booking, favBooking: !booking.favBooking } : booking
                     )
                 );
             });
@@ -144,6 +147,7 @@ const MyBookings = () => {
             case "completed":
                 return "bg-green-100 text-green-800 border-green-200";
             case "rejected":
+            case "user_cancel":
                 return "bg-red-100 text-red-800 border-red-200";
             case "pending":
             case "accept":
@@ -160,6 +164,55 @@ const MyBookings = () => {
     const closeModal = () => {
         setIsModalOpen(false);
         setSelectedBooking(null);
+        setCancelReason("");
+        setCancellationError("");
+        setShowCancelReasonModal(false);
+    };
+
+    const handleCancelClick = () => {
+        setShowCancelReasonModal(true);
+        setCancellationError("");
+    };
+
+    const confirmCancelBooking = async () => {
+        if (!cancelReason.trim()) {
+            setCancellationError("Cancellation reason cannot be empty.");
+            return;
+        }
+
+        if (!selectedBooking || !selectedBooking._id) {
+            setCancellationError("No booking selected for cancellation.");
+            return;
+        }
+
+        try {
+            setIsLoading(true);
+            const response = await Axios.put(
+                `${SERVER_URL}/api/booking/cancel/${selectedBooking._id}`,
+                { reason: cancelReason },
+                { withCredentials: true }
+            );
+
+            if (response.data.success) {
+                
+                setBookings(prevBookings =>
+                    prevBookings.map(booking =>
+                        booking._id === selectedBooking._id
+                            ? { ...booking, status: 'user_cancel', reasion: cancelReason, subStatus: response.data.booking.subStatus }
+                            : booking
+                    )
+                );
+                setSelectedBooking(prev => ({ ...prev, status: 'user_cancel', reasion: cancelReason, subStatus: response.data.booking.subStatus }));
+                closeModal();
+            } else {
+                setCancellationError(response.data.message || "Failed to cancel booking.");
+            }
+        } catch (error) {
+            console.error("Error canceling booking:", error);
+            setCancellationError(error.response?.data?.message || "An error occurred while canceling the booking.");
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return (
@@ -198,10 +251,12 @@ const MyBookings = () => {
                                             >
                                                 {booking.status?.toLowerCase() === "approved" || booking.status?.toLowerCase() === "completed" ? (
                                                     <FaCheckCircle className="inline mr-1 w-3 h-3" />
+                                                ) : booking.status?.toLowerCase() === "rejected" || booking.status?.toLowerCase() === "user_cancel" ? (
+                                                    <FaTimesCircle className="inline mr-1 w-3 h-3" />
                                                 ) : (
                                                     <FaRegClock className="inline mr-1 w-3 h-3" />
                                                 )}
-                                                {booking.status}
+                                                {booking.status === "user_cancel" ? "Cancelled" : booking.status}
                                             </span>
                                             <span className="absolute top-2 right-2 text-xs font-medium text-gray-500 bg-white bg-opacity-80 rounded-full px-2 py-1 shadow-sm">
                                                 #{booking._id.slice(-6)}
@@ -314,6 +369,14 @@ const MyBookings = () => {
                                     <p className="italic ml-5">{selectedBooking.message}</p>
                                 </div>
                             )}
+                            {selectedBooking.status === "user_cancel" && selectedBooking.reasion && (
+                                <div className="col-span-full bg-red-50 p-3 rounded-md border border-red-200">
+                                    <p className="font-semibold text-gray-600 flex items-center">
+                                        <FaBan className="mr-2 text-red-500 w-4 h-4" /> Cancellation Reason:
+                                    </p>
+                                    <p className="italic ml-5">{selectedBooking.reasion}</p>
+                                </div>
+                            )}
                         </div>
 
                         <div className="mb-6 border-t pt-4">
@@ -342,12 +405,14 @@ const MyBookings = () => {
                                                 <span className="absolute flex items-center justify-center w-6 h-6 bg-blue-100 rounded-full -left-3 ring-8 ring-white">
                                                     {statusEntry.status?.toLowerCase() === "approved" || statusEntry.status?.toLowerCase() === "completed" ? (
                                                         <FaCheckCircle className="w-3 h-3 text-green-500" />
+                                                    ) : statusEntry.status?.toLowerCase() === "rejected" || statusEntry.status?.toLowerCase() === "user_cancel" ? (
+                                                        <FaTimesCircle className="w-3 h-3 text-red-500" />
                                                     ) : (
                                                         <FaRegClock className="w-3 h-3 text-yellow-500" />
                                                     )}
                                                 </span>
                                                 <h3 className="flex items-center mb-1 text-md font-semibold text-gray-900 capitalize">
-                                                    {statusEntry.status}
+                                                    {statusEntry.status === "user_cancel" ? "Cancelled by User" : statusEntry.status}
                                                     {idx === selectedBooking.subStatus.length - 1 && (
                                                         <span className="bg-blue-100 text-blue-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded ml-3">Latest</span>
                                                     )}
@@ -360,8 +425,61 @@ const MyBookings = () => {
                                 </ol>
                             </div>
                         )}
+                        {selectedBooking.status?.toLowerCase() === "pending" || selectedBooking.status?.toLowerCase() === "approved" ? (
+                            <div className="flex justify-end mt-6 pt-4 border-t border-gray-100">
+                                <button
+                                    onClick={handleCancelClick}
+                                    className="px-6 py-2 bg-red-600 text-white rounded-lg text-base font-semibold hover:bg-red-700 transition-colors duration-200 shadow-md flex items-center"
+                                    disabled={isLoading}
+                                >
+                                    <FaBan className="mr-2" />
+                                    {isLoading ? "Canceling..." : "Cancel Appointment"}
+                                </button>
+                            </div>
+                        ) : null}
                     </div>
                 )}
+            </CustomModal>
+
+            <CustomModal
+                isOpen={showCancelReasonModal}
+                onClose={() => { setShowCancelReasonModal(false); setCancelReason(""); setCancellationError(""); }}
+            >
+                <div className="p-6 bg-white rounded-lg relative max-w-lg w-full max-h-[90vh] overflow-y-auto">
+                    <button
+                        onClick={() => { setShowCancelReasonModal(false); setCancelReason(""); setCancellationError(""); }}
+                        className="absolute top-2 right-2 text-gray-400 hover:text-gray-700 text-3xl transition-colors duration-200"
+                        title="Close"
+                    >
+                        <FaTimesCircle className="w-8 h-8" />
+                    </button>
+                    <h2 className="text-2xl font-extrabold text-gray-900 mb-4 border-b pb-3">Cancel Appointment</h2>
+                    <p className="text-gray-700 mb-4">Please provide a reason for cancelling your appointment:</p>
+                    <textarea
+                        className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-500 focus:border-transparent resize-y min-h-[100px]"
+                        placeholder="e.g., Doctor is unavailable, Rescheduling, Personal reasons..."
+                        value={cancelReason}
+                        onChange={(e) => { setCancelReason(e.target.value); setCancellationError(""); }}
+                    ></textarea>
+                    {cancellationError && (
+                        <p className="text-red-500 text-sm mt-2">{cancellationError}</p>
+                    )}
+                    <div className="flex justify-end gap-3 mt-6">
+                        <button
+                            onClick={() => { setShowCancelReasonModal(false); setCancelReason(""); setCancellationError(""); }}
+                            className="px-4 py-2 bg-gray-300 text-gray-800 rounded-lg hover:bg-gray-400 transition-colors duration-200"
+                        >
+                            Back
+                        </button>
+                        <button
+                            onClick={confirmCancelBooking}
+                            className="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200"
+                            disabled={isLoading}
+                        >
+                            {isLoading ? "Submitting..." : "Confirm Cancellation"}
+                        </button>
+                    </div>
+                </div>
             </CustomModal>
         </div>
     );

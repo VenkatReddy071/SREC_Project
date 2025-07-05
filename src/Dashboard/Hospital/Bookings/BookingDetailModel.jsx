@@ -115,7 +115,18 @@ export const BookingDetailsPanel = ({ booking, onUpdateStatus, onCancel }) => {
                         <span className={`px-4 py-2 rounded-full text-lg font-bold ${getStatusColor(editableBooking?.status)}`}>
                             {editableBooking?.status}
                         </span>
+                        
                     </div>
+                    {editableBooking?.reasion &&(
+                    <div className="p-4 bg-yellow-50 rounded-lg shadow-inner border border-yellow-100 flex items-center justify-between">
+                        
+                            <span className={`px-4 py-2 rounded-full text-lg `}>
+                            <b>Reasion:</b> {editableBooking?.reasion}
+                        </span>
+                        </div>
+                    )}
+                    
+                    
 
                     <div className="mt-6 flex justify-end space-x-4">
                         {editableBooking?.status === 'Pending' && (

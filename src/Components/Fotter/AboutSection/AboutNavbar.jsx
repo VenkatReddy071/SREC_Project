@@ -1,58 +1,62 @@
 import React, { useState } from "react";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
-import Header from "../../../assets/images.png";
+import Header from "../../../assets/images.png"; // Assuming this is your logo
 
 export const AboutNavbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeMenu, setActiveMenu] = useState(null);
 
   const menus = [
-    { name: "About" },
+    { name: "About", link: "#" },
     {
       name: "Development Team",
       heading: "Team Members",
       subItems: [
-        "Sai Prasad",
-        "Jonnagiri Venkat Reddy",
-        "Praveen Elaheed",
-        "Gangadhara Sai",
+        { name: "Sai Prasad", link: "#developers" },
+        { name: "Jonnagiri Venkat Reddy", link: "#developers" },
+        { name: "Praveen Elaheed", link: "#developers" },
+        { name: "Gangadhara Sai", link: "#developers" },
       ],
     },
     {
       name: "Partner Us",
       heading: "Join Us As",
-      subItems: ["Restaurant", "Hospital", "Fashion"],
+      subItems: [
+        { name: "Restaurant", link: "#partner-restaurant" },
+        { name: "Hospital", link: "#partner-hospital" },
+        { name: "Fashion", link: "#partner-fashion" }
+      ],
     },
-    { name: "What We Do" },
+    { name: "What We Do", link: "#what-we-do" }, // Add link for What We Do
     {
       name: "Follow Us",
       heading: "Connect With Us",
-      subItems: ["Twitter", "Instagram", "LinkedIn"],
+      subItems: [
+        { name: "Twitter", link: "https://twitter.com" },
+        { name: "Instagram", link: "https://instagram.com" },
+        { name: "LinkedIn", link: "https://linkedin.com" }
+      ],
     },
   ];
 
   const dropdownMenus = ["Development Team", "Partner Us", "Follow Us"];
 
   return (
-    <div className="bg-white text-black font-sans sticky top-0 shadow-md p-4 z-50">
-      {/* Navbar container */}
+    <div className="bg-white text-gray-800 font-sans sticky top-0 shadow-lg p-4 z-50">
       <div className="flex justify-between items-center max-w-7xl mx-auto px-4">
-        {/* Logo */}
-        <img src={Header} alt="Logo" className="w-36 h-auto" />
+        <img src={Header} alt="NANDYAL INFO Logo" className="h-10 md:h-12 w-auto" />
 
-        {/* Hamburger Icon (Mobile) */}
         <button
-          className="lg:hidden block text-gray-600 hover:text-gray-800 transition"
+          className="lg:hidden block text-gray-700 hover:text-blue-600 transition-colors"
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           aria-label="Toggle menu"
         >
-          <GiHamburgerMenu size={28} />
+          <GiHamburgerMenu size={30} />
         </button>
 
-        {/* Desktop Navigation */}
         <nav className="hidden lg:flex">
-          <ul className="flex gap-10 text-lg font-semibold mr-10">
+          <ul className="flex gap-8 text-lg font-medium">
             {menus.map((menu, index) => (
               <li
                 key={index}
@@ -62,36 +66,38 @@ export const AboutNavbar = () => {
                 }
                 onMouseLeave={() => setActiveMenu(null)}
               >
-                <div className="flex items-center space-x-1 cursor-pointer hover:text-indigo-600 transition">
-                  <span>{menu.name}</span>
-                  {/* Show down arrow if dropdown exists */}
-                  {dropdownMenus.includes(menu.name) && (
-                    <FaChevronDown size={12} className="mt-0.5 text-indigo-600" />
-                  )}
-                </div>
+                {menu.link ? (
+                  <a href={menu.link} className="flex items-center space-x-1 cursor-pointer text-gray-800 hover:text-blue-600 transition-colors py-2">
+                    <span>{menu.name}</span>
+                  </a>
+                ) : (
+                  <div className="flex items-center space-x-1 cursor-pointer text-gray-800 hover:text-blue-600 transition-colors py-2">
+                    <span>{menu.name}</span>
+                    {dropdownMenus.includes(menu.name) && (
+                      <FaChevronDown size={12} className="mt-0.5 text-blue-600" />
+                    )}
+                  </div>
+                )}
 
-                {/* Dropdown Menu - only for specific menus */}
                 {activeMenu === index && dropdownMenus.includes(menu.name) && (
                   <div
-                    className={`absolute top-full mt-2 bg-white border rounded-lg shadow-xl p-5 min-w-[250px] transition duration-300 ease-in-out
-                      ${
-                        menu.name === "Follow Us"
-                          ? "right-0 text-right" // align Follow Us to right
-                          : "left-0 text-left"  // others align left
-                      }
+                    className={`absolute top-full mt-2 bg-white border border-gray-200 rounded-lg shadow-xl p-4 min-w-[200px] transition-all duration-300 ease-in-out transform opacity-100 scale-100 group-hover:opacity-100 group-hover:scale-100
+                      ${menu.name === "Follow Us" ? "right-0 text-right" : "left-0 text-left"}
                     `}
                     style={{ zIndex: 100 }}
                   >
-                    <h3 className="font-semibold text-sm mb-3 border-b border-indigo-300 pb-2">
+                    <h3 className="font-semibold text-sm mb-3 border-b border-blue-300 pb-2 text-gray-900">
                       {menu.heading}
                     </h3>
                     <ul>
                       {menu.subItems.map((item, subIndex) => (
                         <li
                           key={subIndex}
-                          className="px-4 py-2 rounded hover:bg-indigo-50 cursor-pointer transition"
+                          className="px-3 py-2 rounded-md text-gray-700 hover:bg-blue-50 hover:text-blue-700 cursor-pointer transition-colors"
                         >
-                          {item}
+                          <a href={item.link || '#'} target={item.link && item.link.startsWith('http') ? '_blank' : '_self'} rel={item.link && item.link.startsWith('http') ? 'noopener noreferrer' : ''}>
+                            {item.name}
+                          </a>
                         </li>
                       ))}
                     </ul>
@@ -103,44 +109,50 @@ export const AboutNavbar = () => {
         </nav>
       </div>
 
-      {/* Mobile Menu */}
       {isMobileMenuOpen && (
-        <nav className="lg:hidden mt-4 border-t border-gray-200">
-          <ul className="flex flex-col gap-4 text-base font-medium max-w-md mx-auto">
+        <nav className="lg:hidden mt-4 border-t border-gray-200 py-4">
+          <ul className="flex flex-col gap-2 text-base font-medium px-4">
             {menus.map((menu, index) => (
               <li key={index} className="relative">
-                <div
-                  className="flex justify-between items-center px-3 py-3 hover:text-indigo-600 cursor-pointer transition rounded-md"
-                  onClick={() =>
-                    dropdownMenus.includes(menu.name)
-                      ? setActiveMenu(activeMenu === index ? null : index)
-                      : null
-                  }
-                >
-                  <span>{menu.name}</span>
-                  {/* Show dropdown icon only if dropdown exists */}
-                  {dropdownMenus.includes(menu.name) && (
-                    activeMenu === index ? (
-                      <FaChevronUp size={16} />
-                    ) : (
-                      <FaChevronDown size={16} />
-                    )
-                  )}
-                </div>
+                {menu.link ? (
+                  <a href={menu.link} className="flex justify-between items-center px-3 py-3 text-gray-700 hover:text-blue-600 cursor-pointer transition-colors rounded-md">
+                    <span>{menu.name}</span>
+                  </a>
+                ) : (
+                  <div
+                    className="flex justify-between items-center px-3 py-3 text-gray-700 hover:text-blue-600 cursor-pointer transition-colors rounded-md"
+                    onClick={() =>
+                      dropdownMenus.includes(menu.name)
+                        ? setActiveMenu(activeMenu === index ? null : index)
+                        : null
+                    }
+                  >
+                    <span>{menu.name}</span>
+                    {dropdownMenus.includes(menu.name) && (
+                      activeMenu === index ? (
+                        <FaChevronUp size={16} className="text-blue-600" />
+                      ) : (
+                        <FaChevronDown size={16} className="text-blue-600" />
+                      )
+                    )}
+                  </div>
+                )}
 
-                {/* Dropdown Menu (Mobile) */}
+
                 {activeMenu === index && dropdownMenus.includes(menu.name) && (
-                  <div className="bg-white border border-gray-300 rounded-lg shadow-lg px-4 py-4 w-full max-w-xl mx-auto transition duration-300 ease-in-out">
-                    <h3 className="font-semibold text-sm mb-3 border-b border-indigo-300 pb-2">
+                  <div className="bg-gray-50 border border-gray-200 rounded-lg shadow-inner px-4 py-3 mt-2 w-full transition-all duration-300 ease-in-out transform opacity-100 scale-100">
+                    <h3 className="font-semibold text-sm mb-3 border-b border-blue-200 pb-2 text-gray-900">
                       {menu.heading}
                     </h3>
                     <ul>
                       {menu.subItems.map((item, subIndex) => (
                         <li
                           key={subIndex}
-                          className="py-2 px-2 hover:bg-indigo-50 rounded cursor-pointer transition"
+                          className="py-2 px-2 text-gray-700 hover:bg-blue-100 hover:text-blue-800 rounded-md cursor-pointer transition-colors"
                         >
-                          {item}
+                          <a href={item.link || '#'} target={item.link && item.link.startsWith('http') ? '_blank' : '_self'} rel={item.link && item.link.startsWith('http') ? 'noopener noreferrer' : ''}>
+                            {item.name}
+                          </a>
                         </li>
                       ))}
                     </ul>

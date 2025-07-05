@@ -1,20 +1,25 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import Axios from "axios";
-import { FaRegClock, FaCheckCircle, FaInfoCircle, FaTimesCircle, FaCalendarAlt, FaStore, FaUtensils, FaMoneyBillWave, FaTruck, FaTag, FaPercentage } from 'react-icons/fa'; // Added FaTag and FaPercentage
-import CustomModal from "../../../Pages/CustomModol"; // Assuming this path is correct for your project
-
+import { FaRegClock, FaCheckCircle, FaInfoCircle, FaTimesCircle, FaCalendarAlt, FaStore, FaUtensils, FaMoneyBillWave, FaTruck, FaTag, FaPercentage, FaExclamationTriangle } from 'react-icons/fa';
+import CustomModal from "../../../Pages/CustomModol";
+import {toast} from "react-toastify";
 const ITEMS_PER_LOAD = 15;
 
-const MyOrders = () => {
+const MyMallOrders = () => {
     const navigate = useNavigate();
     const [orders, setOrders] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [hasMore, setHasMore] = useState(true);
     const [isLoading, setIsLoading] = useState(false);
     const [initialLoad, setInitialLoad] = useState(true);
-    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isModalOpen, setIsModalToOpen] = useState(false);
     const [selectedOrder, setSelectedOrder] = useState(null);
+
+    const [showCancelReasonModal, setShowCancelReasonModal] = useState(false);
+    const [cancelReason, setCancelReason] = useState("");
+    const [isCancelling, setIsCancelling] = useState(false);
+    const [cancellationError, setCancellationError] = useState("");
 
     const SERVER_URL = `${import.meta.env.VITE_SERVER_URL}`;
 
@@ -37,7 +42,7 @@ const MyOrders = () => {
         setIsLoading(true);
         try {
             const response = await Axios.get(
-                `${SERVER_URL}/api/order/orders/user?sourceType=Mall&page=${page}&limit=${ITEMS_PER_LOAD}`, // Changed sourceType to Mall
+                `${SERVER_URL}/api/order/orders/user?sourceType=Mall&page=${page}&limit=${ITEMS_PER_LOAD}`,
                 {
                     withCredentials: true,
                 }
@@ -83,7 +88,7 @@ const MyOrders = () => {
         }
         try {
             const date = new Date(timeStr);
-            if (isNaN(date.getTime())) { // Check if the date parsing failed
+            if (isNaN(date.getTime())) {
                 if (timeStr.includes(':')) {
                     const [hours, minutes] = timeStr.split(':');
                     const tempDate = new Date();
@@ -117,10 +122,12 @@ const MyOrders = () => {
                 return "bg-green-100 text-green-800 border-green-200";
             case "cancelled":
             case "rejected":
+            case "user_cancel":
                 return "bg-red-100 text-red-800 border-red-200";
             case "pending":
             case "processing":
             case "shipped":
+            case "ready_for_pickup":
             default:
                 return "bg-yellow-100 text-yellow-800 border-yellow-200";
         }
@@ -128,27 +135,85 @@ const MyOrders = () => {
 
     const openModal = (order) => {
         setSelectedOrder(order);
-        setIsModalOpen(true);
+        setIsModalToOpen(true);
     };
 
     const closeModal = () => {
-        setIsModalOpen(false);
+        setIsModalToOpen(false);
         setSelectedOrder(null);
+        setCancelReason("");
+        setCancellationError("");
+        setShowCancelReasonModal(false);
     };
 
-    // Calculate subtotal from items (assuming all items have a price)
     const calculateSubtotal = (items) => {
         return items?.reduce((sum, item) => sum + (item.price * item.quantity), 0) || 0;
     };
 
-    // Calculate total taxes
     const calculateTotalTaxes = (appliedTaxes) => {
         return appliedTaxes?.reduce((sum, tax) => sum + tax.amountApplied, 0) || 0;
     };
 
+    const handleCancelOrder = () => {
+        if (selectedOrder && isCancellable) {
+            setShowCancelReasonModal(true);
+            setCancelReason("");
+            setCancellationError("");
+        }
+    };
+
+    const confirmCancelBooking = async () => {
+        if (!selectedOrder) {
+            setCancellationError("No order selected for cancellation.");
+            return;
+        }
+        if (!cancelReason.trim()) {
+            setCancellationError("Please provide a reason for cancellation.");
+            return;
+        }
+
+        setIsCancelling(true);
+        setCancellationError("");
+        try {
+            const response = await Axios.put(
+                `${SERVER_URL}/api/order/cancel/${selectedOrder._id}`,
+                { reason: cancelReason },
+                { withCredentials: true }
+            );
+
+            if (response.data.success) {
+                toast.success(`Success: ${response.data.message}`);
+
+                setOrders((prevOrders) =>
+                    prevOrders.map((order) =>
+                        order._id === selectedOrder._id ? { ...order, ...response.data.booking } : order
+                    )
+                );
+                setSelectedOrder((prevSelectedOrder) => ({
+                    ...prevSelectedOrder,
+                    ...response.data.booking
+                }));
+                setShowCancelReasonModal(false);
+            } else {
+                setCancellationError(response.data.message || "Failed to cancel order.");
+                toast.error(`Error: ${response.data.message}`);
+            }
+        } catch (error) {
+            console.error("Error cancelling order:", error);
+            const errorMessage = error.response?.data?.message || "Failed to cancel order. Please try again.";
+            setCancellationError(errorMessage);
+            toast.error(`Error: ${errorMessage}`);
+        } finally {
+            setIsCancelling(false);
+        }
+    };
+
+    const isCancellable = selectedOrder && (selectedOrder.orderStatus === 'pending' || selectedOrder.orderStatus === 'confirmed' || selectedOrder.orderStatus === 'processing');
+
+
     return (
         <div className="w-full mx-auto px-4 bg-gray-50 min-h-screen py-8">
-            <h1 className="text-3xl font-extrabold text-gray-900 mb-8 text-center border-b pb-4">Your Mall Orders</h1> {/* Changed title */}
+            <h1 className="text-3xl font-extrabold text-gray-900 mb-8 text-center border-b pb-4">Your Mall Orders</h1>
 
             {initialLoad && isLoading ? (
                 <div className="text-center py-10 text-xl font-semibold text-gray-700 animate-pulse flex items-center justify-center">
@@ -159,7 +224,7 @@ const MyOrders = () => {
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-2 gap-6">
                         {orders.map((order, index) => {
                             const isLastOrder = orders.length === index + 1;
-                            const orderItemImage = order.items?.[0]?.image || "https://placehold.co/150x150/f0f9ff/00796b?text=Order+Image";
+                            const orderItemImage = order.items?.[0]?.product?.images?.[0] || "https://placehold.co/150x150/f0f9ff/00796b?text=Order+Image";
 
                             return (
                                 <div
@@ -182,6 +247,8 @@ const MyOrders = () => {
                                             >
                                                 {order.orderStatus?.toLowerCase() === "confirmed" || order.orderStatus?.toLowerCase() === "delivered" || order.orderStatus?.toLowerCase() === "completed" ? (
                                                     <FaCheckCircle className="inline mr-1 w-3 h-3" />
+                                                ) : order.orderStatus?.toLowerCase() === "cancelled" || order.orderStatus?.toLowerCase() === "user_cancel" ? (
+                                                    <FaTimesCircle className="inline mr-1 w-3 h-3" />
                                                 ) : (
                                                     <FaRegClock className="inline mr-1 w-3 h-3" />
                                                 )}
@@ -246,7 +313,6 @@ const MyOrders = () => {
                         </h2>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-gray-700 text-sm mb-6">
-                            {/* Mall Info */}
                             <div>
                                 <p className="font-semibold text-gray-600 flex items-center">
                                     <FaStore className="mr-2 text-blue-500 w-4 h-4" /> Mall:
@@ -257,10 +323,9 @@ const MyOrders = () => {
                                 </p>
                                 <p className="ml-5">
                                     <b>Address:</b>
-                                    {selectedOrder.sourceId?.address}
+                                    {selectedOrder.sourceId?.address?.street}, {selectedOrder.sourceId?.address?.city}, {selectedOrder.sourceId?.address?.state} - {selectedOrder.sourceId?.address?.zipCode || "N/A"}
                                 </p>
                             </div>
-                            {/* Order Date/Time and Payment Method */}
                             <div>
                                 <p className="font-semibold text-gray-600 flex items-center">
                                     <FaCalendarAlt className="mr-2 text-yellow-500 w-4 h-4" /> Ordered On:
@@ -285,7 +350,6 @@ const MyOrders = () => {
                             )}
                         </div>
 
-                        {/* Ordered Items Section - Now with more product details */}
                         <div className="mb-6 border-t pt-4">
                             <h4 className="font-bold text-gray-800 mb-3 text-lg flex items-center">
                                 <FaUtensils className="mr-2 text-purple-500 w-5 h-5" /> Ordered Items:
@@ -334,7 +398,6 @@ const MyOrders = () => {
                             </div>
                         </div>
 
-                        {/* Cost Breakdown Section */}
                         <div className="mb-6 border-t pt-4">
                             <h4 className="font-bold text-gray-800 mb-3 text-lg">Cost Breakdown:</h4>
                             <div className="space-y-2 text-gray-700 text-sm">
@@ -382,8 +445,6 @@ const MyOrders = () => {
                             </div>
                         </div>
 
-
-                        {/* Customer Information Section */}
                         <div className="mb-6 border-t pt-4">
                             <h4 className="font-bold text-gray-800 mb-3 text-lg">Customer Information:</h4>
                             <div className="space-y-2">
@@ -407,7 +468,6 @@ const MyOrders = () => {
                             </div>
                         </div>
 
-                        {/* Order Timeline Section */}
                         {selectedOrder.subStatus && selectedOrder.subStatus.length > 0 && (
                             <div className="mt-6 border-t pt-4">
                                 <h4 className="font-bold text-gray-800 mb-3 text-lg">Order Timeline:</h4>
@@ -421,6 +481,8 @@ const MyOrders = () => {
                                                         <FaCheckCircle className="w-3 h-3 text-green-500" />
                                                     ) : statusEntry.status?.toLowerCase() === "shipped" ? (
                                                         <FaTruck className="w-3 h-3 text-blue-500" />
+                                                    ) : statusEntry.status?.toLowerCase() === "cancelled" || statusEntry.status?.toLowerCase() === "user_cancel" ? (
+                                                        <FaTimesCircle className="w-3 h-3 text-red-500" />
                                                     ) : (
                                                         <FaRegClock className="w-3 h-3 text-yellow-500" />
                                                     )}
@@ -434,16 +496,82 @@ const MyOrders = () => {
                                                 <time className="block mb-2 text-xs font-normal leading-none text-gray-400">
                                                     On {formatDate(statusEntry.date)} at {formatTime(statusEntry.date)}
                                                 </time>
+                                                {statusEntry.status?.toLowerCase() === "user_cancel" && selectedOrder.reasion && (
+                                                    <p className="text-sm text-gray-600 italic">Reason: {selectedOrder.reasion}</p>
+                                                )}
                                             </li>
                                         ))}
                                 </ol>
                             </div>
                         )}
+
+                        {isCancellable && (
+                            <div className="mt-6 border-t pt-4 text-center">
+                                <button
+                                    onClick={handleCancelOrder}
+                                    className={`w-full py-3 rounded-lg text-white font-semibold transition-colors duration-300
+                                        ${isCancelling ? 'bg-gray-400 cursor-not-allowed' : 'bg-red-600 hover:bg-red-700'}`}
+                                    disabled={isCancelling}
+                                >
+                                    <span className="flex items-center justify-center">
+                                        <FaExclamationTriangle className="mr-2" /> Cancel Order
+                                    </span>
+                                </button>
+                            </div>
+                        )}
                     </div>
                 )}
+            </CustomModal>
+
+            <CustomModal
+                isOpen={showCancelReasonModal}
+                onClose={() => { setShowCancelReasonModal(false); setCancelReason(""); setCancellationError(""); }}
+            >
+                <div className="p-6 bg-white rounded-lg relative max-w-lg w-full max-h-[90vh] overflow-y-auto">
+                    <button
+                        onClick={() => { setShowCancelReasonModal(false); setCancelReason(""); setCancellationError(""); }}
+                        className="absolute top-2 right-2 text-gray-400 hover:text-gray-700 text-3xl transition-colors duration-200"
+                        title="Close"
+                    >
+                        <FaTimesCircle className="w-8 h-8" />
+                    </button>
+                    <h2 className="text-2xl font-extrabold text-gray-900 mb-4 border-b pb-3">Cancel Order</h2>
+                    <p className="text-gray-700 mb-4">Please provide a reason for cancelling your order:</p>
+                    <textarea
+                        className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-500 focus:border-transparent resize-y min-h-[100px]"
+                        placeholder="e.g., changed my mind, ordered by mistake, store closed"
+                        value={cancelReason}
+                        onChange={(e) => { setCancelReason(e.target.value); setCancellationError(""); }}
+                        required
+                    ></textarea>
+                    {cancellationError && (
+                        <p className="text-red-500 text-sm mt-2">{cancellationError}</p>
+                    )}
+                    <div className="flex justify-end gap-3 mt-6">
+                        <button
+                            onClick={() => { setShowCancelReasonModal(false); setCancelReason(""); setCancellationError(""); }}
+                            className="px-4 py-2 bg-gray-300 text-gray-800 rounded-lg hover:bg-gray-400 transition-colors duration-200"
+                        >
+                            Back
+                        </button>
+                        <button
+                            onClick={confirmCancelBooking}
+                            className="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200"
+                            disabled={isCancelling}
+                        >
+                            {isCancelling ? (
+                                <span className="flex items-center justify-center">
+                                    <FaRegClock className="mr-2 animate-spin" /> Submitting...
+                                </span>
+                            ) : (
+                                "Confirm Cancellation"
+                            )}
+                        </button>
+                    </div>
+                </div>
             </CustomModal>
         </div>
     );
 };
 
-export default MyOrders;
+export default MyMallOrders;

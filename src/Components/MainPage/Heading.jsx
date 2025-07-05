@@ -119,7 +119,6 @@ export const Heading = () => {
   return (
     <div className="bg-gray-50  ">
       <div className="w-full  px-4 sm:px-6 lg:px-0">
-        {/* Hero Section */}
         <HomePage/>
 
         {/* Content Sections */}
@@ -145,7 +144,8 @@ export const Heading = () => {
               {divBox.map((box, index) => (
                 <div
                   key={index}
-                  className="w-full md:w-1/3 p-8 bg-gray-50 rounded-lg shadow-sm"
+                  className="w-full md:w-1/3 p-8  shadow-lg rounded-xl bg-gray-50cursor-pointer hover:scale-[1.02] transition-transform duration-300 
+                                        border border-gray-100 hover:border-blue-300"
                 >
                   <div className="text-3xl text-blue-500 flex justify-center items-center mb-4">
                     {box.Icon}

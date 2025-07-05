@@ -95,6 +95,9 @@ import {UserProfile} from "./Components/Profile/ProfileHome";
 import RestaurantOrder from "./Components/Profile/Restaurant/MyOrders"
 import HospitalContactProfile from "./Components/Profile/Submission/Hospital"
 import SchoolContactProfile from "./Components/Profile/Submission/School"
+import {OfferAndTaxManagement} from "./Dashboard/Admin/DashHome/OffersAndTaxes"
+import Privacy from "./Pages/policy"
+import Terms from "./Pages/Terms"
 function App() {
 
   const [loading, setLoading] = useState(true);
@@ -123,6 +126,8 @@ function App() {
         <Route path="/signup" element={<SignUpPage />} />
         <Route path="/verify-email" element={<EmailVerificationPage />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+        <Route path="/terms" element={<Terms/>}/>
+        <Route path="/policy" element={<Privacy/>}/>
         <Route element={<MainLayout />}>
 
           <Route path="/" element={<Heading />} />
@@ -159,7 +164,7 @@ function App() {
           <Route path="schools" element={<Schools />} />
           <Route path="mails" element={<Mail />} />
           <Route path="orders" element={<Orders />} />
-          <Route path="offers" element={<Orders />} />
+          <Route path="offers" element={<OfferAndTaxManagement />} />
           <Route path="users" element={<Users />} />
           <Route path="faqs" element={<Faq />} />
           <Route path="settings" element={<Settings />} />

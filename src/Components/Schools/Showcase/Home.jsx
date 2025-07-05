@@ -25,6 +25,24 @@ export const School = () => {
     return "Overview";
   };
   const [school, setSchool] = useState(null);
+
+  useEffect(()=>{
+    const addView=async()=>{
+      try{
+      const response=await axios.post(`${import.meta.env.VITE_SERVER_URL}/api/add/view`,{view:schoolId,modelView:"Education"},{withCredentials:true});
+      if(response.status===200){
+      }
+      else{
+        toast.error(response.data?.message);
+      }
+    }
+    catch(error){
+      console.log(error);
+    } 
+    }
+
+    addView();
+  },[schoolId])
   const [activeNavLink, setActiveNavLink] = useState(getInitialActiveNavLink);
   const defaultNavLinks = [
     { label: 'Overview', id: 'overview' },

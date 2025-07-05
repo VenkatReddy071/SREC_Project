@@ -10,7 +10,7 @@ const Cart = () => {
         setIsCartSidebarOpen(!isCartSidebarOpen);
     };
   return (
-    <div className="relative">
+    <div className="relative z-10">
       <div className="px-4">
         <div className="relative" onClick={toggleCartSidebar}>
 

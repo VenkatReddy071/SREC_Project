@@ -7,6 +7,7 @@ import {MallOverviewContent} from "./Overview"
 import {MallAboutContent} from "./About"
 import ProductCard from "./Product"
 import ViewProduct from './ViewProduct';
+import {toast} from "react-toastify"
 const MallType=()=>{
     const [product,setProduct]=useState('');
     const location=useLocation();
@@ -59,7 +60,23 @@ const MallType=()=>{
   useEffect(()=>{
     setActiveNavLink(service3);
   },[service3])
+  useEffect(()=>{
+    const addView=async()=>{
+      try{
+      const response=await axios.post(`${import.meta.env.VITE_SERVER_URL}/api/add/view`,{view:mailId,modelView:"Mall"},{withCredentials:true});
+      if(response.status===200){
+      }
+      else{
+        toast.error(response.data?.message);
+      }
+    }
+    catch(error){
+      console.log(error);
+    } 
+    }
 
+    addView();
+  },[mailId])
   const renderContent = () => {
       switch (activeNavLink) {
         case 'Overview':

@@ -223,7 +223,7 @@ export const HospitalsSection = ({ id, activateAmbulanceFilter }) => {
       case 0:
         return (
           <>
-            <div className="mt-8 ml-2 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="mt-8 ml-2 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {isInitialLoading || isLoading ? (
                 Array.from({ length: 9 }).map((_, index) => <SkeletonCard key={index} />)
               ) : (
@@ -361,15 +361,15 @@ export const HospitalsSection = ({ id, activateAmbulanceFilter }) => {
   };
 
   return (
-    <div id={id} className="bg-gray-50 py-10 font-inter">
-      <div className="container md:mx-auto md:px-4 h-full">
+    <div id={id} className="bg-gray-50 py-10 font-inter w-full">
+      <div className="container lg:mx-auto md:px-4 h-full">
         <h2 className="text-base font-semibold text-blue-500 text-center mb-2">View list of Hospitals</h2>
         <h1 className="font-bold text-4xl md:text-5xl lg:text-6xl text-center text-gray-900 mb-4">
           Explore Our Hospital Services
         </h1>
         <h2 className="text-lg text-gray-600 text-center mb-8">Stay updated with our expert health articles</h2>
 
-        <div className="sticky top-0 bg-white flex overflow-x-auto custom-scrollbar w-full pb-2 md:pb-0 md:flex-grow lg:justify-between z-20">
+        <div className="sticky top-0 bg-white flex overflow-x-auto custom-scrollbar w-full pb-2 md:px-0 md:flex-grow lg:justify-between z-20">
           <div className="md:flex gap-4 py-3">
             {list.map((item, index) => (
               <button

@@ -1,105 +1,175 @@
-import React, { useState } from 'react';
-import { FaHospital, FaMapMarkerAlt, FaPhone, FaEnvelope, FaGlobe, FaStar, FaCalendarAlt, FaEdit, FaTrashAlt, FaPlusCircle, FaSearch } from 'react-icons/fa';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { FaHospital, FaMapMarkerAlt, FaPhone, FaEnvelope, FaGlobe, FaStar, FaCalendarAlt, FaEdit, FaTrashAlt, FaPlusCircle, FaSearch, FaSpinner, FaClock } from 'react-icons/fa';
 import { IoIosInformationCircleOutline } from 'react-icons/io';
+import axios from "axios";
+import CustomModal from "../../../Pages/CustomModol";
 
 export const Hospital = () => {
-  const [hospitals, setHospitals] = useState([
-    {
-      id: 1,
-      name: 'City General Hospital',
-      address: '123 Health Ave, Metropolis',
-      phone: '+91-123-4567890',
-      specialties: ['Cardiology', 'Neurology', 'Pediatrics'],
-      description: 'A leading multi-specialty hospital with state-of-the-art facilities and a dedicated research wing. It focuses on patient-centric care and advanced medical research, striving for excellence in healthcare delivery.',
-      rating: 4.5,
-      email: 'info@citygeneral.com',
-      website: 'https://www.citygeneral.com',
-      establishmentDate: '2005-01-15'
-    },
-    {
-      id: 2,
-      name: 'District Hospital "St. George"',
-      address: '456 Care Blvd, Townsville',
-      phone: '+91-987-6543210',
-      specialties: ['Orthopedics', 'Dermatology', 'Oncology', 'Gastroenterology', 'Pulmonology'],
-      description: 'Known for its excellent orthopedic and cancer treatment departments, offering advanced therapies and compassionate care. They have a strong community outreach program.',
-      rating: 4.2,
-      email: 'contact@sainthospital.org',
-      website: 'https://www.sainthospital.org',
-      establishmentDate: '1998-07-20'
-    },
-    {
-      id: 3,
-      name: 'Wellspring Clinic',
-      address: '789 Wellness Rd, Villageton',
-      phone: '+91-555-1122334',
-      specialties: ['General Practice', 'Physiotherapy', 'Nutrition'],
-      description: 'A community-focused clinic offering primary care and rehabilitation services for all ages, emphasizing holistic wellness and preventive medicine. Very friendly staff.',
-      rating: 3.9,
-      email: 'admin@wellspring.co.in',
-      website: 'https://www.wellspringclinic.com',
-      establishmentDate: '2010-03-01'
-    },
-    {
-      id: 4,
-      name: 'Apex Medical Center',
-      address: '101 Summit Street, Hilltop',
-      phone: '+91-111-2223333',
-      specialties: ['Nephrology', 'Urology', 'Cardiology'],
-      description: 'Specializing in kidney and urinary tract conditions, Apex Medical Center offers advanced diagnostic and treatment options. Their cardiology department is also top-notch.',
-      rating: 4.6,
-      email: 'info@apexmed.com',
-      website: 'https://www.apexmed.com',
-      establishmentDate: '2015-09-10'
-    },
-    {
-      id: 5,
-      name: 'Sunrise Childrens Hospital',
-      address: '200 Dawn Avenue, Kidville',
-      phone: '+91-444-5556666',
-      specialties: ['Pediatrics', 'Child Psychology', 'Neonatology'],
-      description: 'Dedicated to the health and well-being of children, Sunrise Hospital provides specialized pediatric care in a child-friendly environment. They have excellent support for parents.',
-      rating: 4.8,
-      email: 'kids@sunrisehospital.in',
-      website: 'https://www.sunrisechildrens.org',
-      establishmentDate: '2008-04-22'
-    }
-  ]);
-
+  const [hospitals, setHospitals] = useState([]);
   const [selectedHospital, setSelectedHospital] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [hospitalToDelete, setHospitalToDelete] = useState(null);
+  const [isAlertModalOpen, setIsAlertModalOpen] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
+  const [loadingDoctors, setLoadingDoctors] = useState(false);
 
-  const handleEdit = (hospitalId) => {
-    alert(`Edit functionality for Hospital ID: ${hospitalId}`);
+  const SERVER_URL = `${import.meta.env.VITE_SERVER_URL}`;
+
+  const observer = useRef();
+  const lastHospitalElementRef = useCallback(node => {
+    if (loading) return;
+    if (observer.current) observer.current.disconnect();
+    observer.current = new IntersectionObserver(entries => {
+      if (entries[0].isIntersecting && hasMore) {
+        setPage(prevPage => prevPage + 1);
+      }
+    });
+    if (node) observer.current.observe(node);
+  }, [loading, hasMore]);
+
+  const fetchHospitals = async (pageNum) => {
+    setLoading(true);
+    try {
+      const response = await axios.get(
+        `${SERVER_URL}/api/hospitals/all?page=${pageNum}&limit=10`,
+        { withCredentials: true }
+      );
+      if (response.status === 200) {
+        setHospitals(prevHospitals => {
+          const newHospitals = response.data?.hospitals.map(hospital => ({
+            _id: hospital._id,
+            name: hospital.name,
+            address: hospital.address,
+            rating: hospital.rating,
+            reviews: hospital.patientSatisfaction || 0,
+            description: hospital.info,
+            phone: hospital.phoneNumber,
+            email: hospital.ownerEmail,
+            website: hospital.website || '#',
+            establishmentDate: hospital.foundation,
+            specialties: hospital.specialization || [],
+            doctors: hospital.doctors || [],
+            gallery: hospital.gallery || [],
+            glimpseInside: hospital.glimpseInside || [],
+            operatingHours: hospital.operatingHours || [],
+          })).filter(
+            newHospital => !prevHospitals.some(existingHospital => existingHospital._id === newHospital._id)
+          );
+          return [...prevHospitals, ...newHospitals];
+        });
+        setHasMore(response.data?.hospitals.length > 0);
+      }
+    } catch (error) {
+      console.error("Error fetching hospitals:", error);
+      setAlertMessage("Failed to fetch hospitals. Please try again later.");
+      setIsAlertModalOpen(true);
+      setHasMore(false);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleDelete = (hospitalId) => {
-    if (window.confirm(`Are you sure you want to delete Hospital ID: ${hospitalId}?`)) {
-      setHospitals(hospitals.filter(h => h.id !== hospitalId));
-      if (selectedHospital && selectedHospital.id === hospitalId) {
+  useEffect(() => {
+    fetchHospitals(page);
+  }, [page]);
+
+  useEffect(() => {
+    const fetchDoctorsForSelectedHospital = async () => {
+      if (selectedHospital?._id) {
+        setLoadingDoctors(true);
+        try {
+          const response = await axios.get(`${SERVER_URL}/api/doctor/${selectedHospital._id}`, { withCredentials: true });
+          if (response.status === 200) {
+            setSelectedHospital(prev => ({ ...prev, doctors: response.data || [] }));
+          }
+        } catch (error) {
+          console.error("Error fetching doctors:", error);
+          setAlertMessage("Failed to fetch doctors for the selected hospital.");
+          setIsAlertModalOpen(true);
+        } finally {
+          setLoadingDoctors(false);
+        }
+      }
+    };
+    fetchDoctorsForSelectedHospital();
+  }, [selectedHospital?._id, SERVER_URL]);
+
+  const handleEdit = (hospitalId) => {
+    setAlertMessage(`Edit functionality for Hospital ID: ${hospitalId} would be implemented here.`);
+    setIsAlertModalOpen(true);
+  };
+
+  const handleDeleteClick = (hospital) => {
+    setHospitalToDelete(hospital);
+    setIsDeleteModalOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!hospitalToDelete) return;
+
+    try {
+      setHospitals(hospitals.filter(h => h._id !== hospitalToDelete._id));
+      if (selectedHospital && selectedHospital._id === hospitalToDelete._id) {
         setSelectedHospital(null);
       }
+      setAlertMessage(`Hospital "${hospitalToDelete.name}" deleted successfully.`);
+      setIsAlertModalOpen(true);
+    } catch (error) {
+      console.error("Error deleting hospital:", error);
+      setAlertMessage("Failed to delete hospital. Please try again.");
+      setIsAlertModalOpen(true);
+    } finally {
+      setIsDeleteModalOpen(false);
+      setHospitalToDelete(null);
     }
   };
 
   const filteredHospitals = hospitals.filter(hospital =>
-    hospital.name.toLowerCase().includes(searchTerm.toLowerCase())
+    hospital.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    hospital.address.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    hospital.specialties.some(s => s.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
+  const getOperatingStatus = (operatingHours) => {
+    const now = new Date();
+    const currentDay = now.toLocaleDateString('en-US', { weekday: 'long' });
+    const currentTime = now.getHours() * 60 + now.getMinutes();
+
+    const todayHours = operatingHours.find(h => h.day === currentDay);
+
+    if (!todayHours || todayHours.isClosed) {
+      return { status: 'Closed', details: 'Currently Closed' };
+    }
+
+    const [openHour, openMinute] = todayHours.openTime.split(':').map(Number);
+    const [closeHour, closeMinute] = todayHours.closeTime.split(':').map(Number);
+
+    const openTimeInMinutes = openHour * 60 + openMinute;
+    const closeTimeInMinutes = closeHour * 60 + closeMinute;
+
+    if (currentTime >= openTimeInMinutes && currentTime <= closeTimeInMinutes) {
+      return { status: 'Open', details: `${todayHours.openTime} - ${todayHours.closeTime}` };
+    } else {
+      return { status: 'Closed', details: 'Currently Closed' };
+    }
+  };
+
   return (
-    <div className="flex h-screen bg-white p-4 font-sans text-gray-800">
-      {/* Left Panel: Hospital List */}
-      <div className="w-1/3 bg-white p-4 flex flex-col mr-4 border border-gray-300">
-        <h1 className="text-2xl font-bold text-gray-900 mb-4 pb-2 border-b border-gray-300">
-          <FaHospital className="inline-block mr-2 text-gray-700" /> Hospitals
+    <div className="flex flex-col lg:flex-row h-screen bg-gray-100 p-4 font-sans text-gray-800">
+      <div className="w-full lg:w-1/3 bg-white p-4 flex flex-col rounded-lg shadow-lg mr-0 lg:mr-4 mb-4 lg:mb-0">
+        <h1 className="text-3xl font-bold text-gray-900 mb-6 pb-3 border-b-2 border-blue-200 flex items-center">
+          <FaHospital className="inline-block mr-3 text-blue-600" /> Hospitals
         </h1>
 
-        {/* Search Functionality */}
-        <div className="relative mb-4">
+        <div className="relative mb-6">
           <input
             type="text"
-            placeholder="Search hospitals..."
-            className="w-full pl-10 pr-3 py-2 border border-gray-400 rounded-md text-gray-700 focus:outline-none focus:border-blue-500"
+            placeholder="Search hospitals by name, address, or specialty..."
+            className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
@@ -107,142 +177,272 @@ export const Hospital = () => {
         </div>
 
         <div className="flex-grow overflow-y-auto pr-2 custom-scrollbar">
+          {loading && page === 1 && (
+            <div className="flex justify-center items-center py-4 text-blue-600">
+              <FaSpinner className="animate-spin mr-2" size={24} /> Loading Hospitals...
+            </div>
+          )}
           {filteredHospitals.length > 0 ? (
-            filteredHospitals.map((hospital) => (
-              <div
-                key={hospital.id}
-                onClick={(e) => {
-                  if (!e.target.closest('button, svg')) {
-                    setSelectedHospital(hospital);
-                  }
-                }}
-                className={`p-3 mb-3 border border-gray-300 rounded-md cursor-pointer flex flex-col
-                  ${selectedHospital && selectedHospital.id === hospital.id
-                    ? 'bg-gray-200' // Simple selected state
-                    : 'bg-white'
-                  }`}
-              >
-                <div className="flex justify-between items-start mb-1">
-                  <div>
-                    <h2 className={`text-lg font-semibold ${selectedHospital && selectedHospital.id === hospital.id ? 'text-gray-900' : 'text-gray-800'}`}>
-                      {hospital.name}
-                    </h2>
-                    <p className={`text-sm ${selectedHospital && selectedHospital.id === hospital.id ? 'text-gray-700' : 'text-gray-600'}`}>
-                      {hospital.address}
-                    </p>
-                    <p className={`text-sm flex items-center mt-1 ${selectedHospital && selectedHospital.id === hospital.id ? 'text-gray-800' : 'text-gray-700'}`}>
-                      <FaStar className="h-4 w-4 mr-1 text-yellow-500" />
-                      <span className="font-medium">{hospital.rating}</span>
-                    </p>
+            filteredHospitals.map((hospital, index) => {
+              const isLastElement = filteredHospitals.length === index + 1;
+              const operatingStatus = getOperatingStatus(hospital.operatingHours);
+              return (
+                <div
+                  key={hospital._id}
+                  ref={isLastElement ? lastHospitalElementRef : null}
+                  onClick={(e) => {
+                    if (!e.target.closest('button, svg')) {
+                      setSelectedHospital(hospital);
+                    }
+                  }}
+                  className={`p-4 mb-4 border border-gray-200 rounded-lg cursor-pointer flex flex-col transition-all duration-200 transform hover:scale-[1.02] hover:shadow-md
+                    ${selectedHospital && selectedHospital._id === hospital._id
+                      ? 'bg-blue-50 border-blue-400 shadow-inner'
+                      : 'bg-white'
+                    }`}
+                >
+                  <div className="flex justify-between items-start mb-2">
+                    <div>
+                      <h2 className={`text-xl font-bold ${selectedHospital && selectedHospital._id === hospital._id ? 'text-blue-800' : 'text-gray-900'}`}>
+                        {hospital.name}
+                      </h2>
+                      <p className={`text-sm ${selectedHospital && selectedHospital._id === hospital._id ? 'text-blue-700' : 'text-gray-600'}`}>
+                        <FaMapMarkerAlt className="inline-block mr-1 text-gray-500" />{hospital.address}
+                      </p>
+                      <p className={`text-sm flex items-center mt-1 ${selectedHospital && selectedHospital._id === hospital._id ? 'text-blue-700' : 'text-gray-700'}`}>
+                        <FaStar className="h-4 w-4 mr-1 text-yellow-500" />
+                        <span className="font-semibold">{hospital.rating}</span> ({hospital.reviews || 0} reviews)
+                      </p>
+                      <p className={`text-xs flex items-center mt-1 ${operatingStatus.status === 'Open' ? 'text-green-600' : 'text-red-600'}`}>
+                        <FaClock className="h-3 w-3 mr-1" />
+                        <span className="font-semibold">{operatingStatus.status}</span> ({operatingStatus.details})
+                      </p>
+                    </div>
+                    <div className="flex space-x-2">
+                      <button
+                        onClick={(e) => { e.stopPropagation(); handleEdit(hospital._id); }}
+                        className="p-2 text-gray-500 hover:text-blue-600 transition-colors rounded-full hover:bg-gray-100"
+                        title="Edit Hospital"
+                      >
+                        <FaEdit className="h-5 w-5" />
+                      </button>
+                      <button
+                        onClick={(e) => { e.stopPropagation(); handleDeleteClick(hospital); }}
+                        className="p-2 text-red-600 hover:text-red-800 transition-colors rounded-full hover:bg-red-50"
+                        title="Delete Hospital"
+                      >
+                        <FaTrashAlt className="h-5 w-5" />
+                      </button>
+                    </div>
                   </div>
-                  <div className="flex space-x-2">
-                    <button
-                      onClick={(e) => { e.stopPropagation(); handleEdit(hospital.id); }}
-                      className="p-1 text-gray-500"
-                      title="Edit Hospital"
-                    >
-                      <FaEdit className="h-5 w-5" />
-                    </button>
-                    <button
-                      onClick={(e) => { e.stopPropagation(); handleDelete(hospital.id); }}
-                      className="p-1 text-red-600"
-                      title="Delete Hospital"
-                    >
-                      <FaTrashAlt className="h-5 w-5" />
-                    </button>
+                  <div className="flex flex-wrap gap-2 mt-2">
+                    {hospital.specialties.slice(0, 3).map((specialty, idx) => (
+                      <span key={idx} className="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
+                        {specialty}
+                      </span>
+                    ))}
+                    {hospital.specialties.length > 3 && (
+                      <span className="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
+                        +{hospital.specialties.length - 3} more
+                      </span>
+                    )}
                   </div>
                 </div>
-              </div>
-            ))
+              );
+            })
           ) : (
-            <div className="text-center text-gray-500 mt-8 p-4 border border-gray-200 rounded-md">
+            <div className="text-center text-gray-500 mt-8 p-4 border border-gray-200 rounded-md bg-gray-50">
               No hospitals found matching your search.
             </div>
           )}
+          {loading && page > 1 && hasMore && (
+            <div className="flex justify-center items-center py-4 text-blue-600">
+              <FaSpinner className="animate-spin mr-2" size={24} /> Loading more...
+            </div>
+          )}
+          {!hasMore && !loading && filteredHospitals.length > 0 && (
+            <div className="text-center text-gray-500 py-4">You've reached the end of the list.</div>
+          )}
         </div>
-        {/* Add Hospital Button */}
-        <div className="mt-4 pt-4 border-t border-gray-300">
+
+        <div className="mt-6 pt-4 border-t border-gray-200">
           <button
-            className="w-full bg-gray-700 text-white font-bold py-2 px-4 rounded-md flex items-center justify-center"
-            onClick={() => alert('Add New Hospital functionality goes here!')}
+            className="w-full bg-blue-600 text-white font-bold py-3 px-4 rounded-lg flex items-center justify-center hover:bg-blue-700 transition-colors shadow-md"
+            onClick={() => {
+              setAlertMessage('Add New Hospital functionality goes here! A form would typically open.');
+              setIsAlertModalOpen(true);
+            }}
           >
             <FaPlusCircle className="mr-2" /> Add New Hospital
           </button>
         </div>
       </div>
 
-      {/* Right Panel: Hospital Details */}
-      <div className="flex-1 bg-white p-6 flex flex-col border border-gray-300">
-        <h1 className="text-2xl font-bold text-gray-900 mb-4 pb-2 border-b border-gray-300">
-          <IoIosInformationCircleOutline className="inline-block mr-2 text-gray-700" /> Hospital Details
+      <div className="flex-1 bg-white p-6 flex flex-col rounded-lg shadow-lg">
+        <h1 className="text-3xl font-bold text-gray-900 mb-6 pb-3 border-b-2 border-blue-200 flex items-center">
+          <IoIosInformationCircleOutline className="inline-block mr-3 text-blue-600" /> Hospital Details
         </h1>
         {selectedHospital ? (
           <div className="flex-grow overflow-y-auto pr-2 custom-scrollbar">
-            <h2 className="text-3xl font-bold text-gray-800 mb-3">
+            <h2 className="text-4xl font-extrabold text-gray-900 mb-4">
               {selectedHospital.name}
             </h2>
-            <p className="text-md text-gray-700 mb-4">{selectedHospital.description}</p>
+            <p className="text-lg text-gray-700 mb-6 leading-relaxed">{selectedHospital.description}</p>
 
-            <div className="grid grid-cols-1 gap-y-3 text-gray-700 text-base mb-6 border-t border-b border-gray-200 py-4">
+            {selectedHospital.gallery && selectedHospital.gallery.length > 0 && (
+              <div className="mb-8">
+                <h3 className="text-2xl font-bold text-gray-900 mb-4">Gallery:</h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {selectedHospital.gallery.map((imgSrc, index) => (
+                    <img
+                      key={index}
+                      src={imgSrc}
+                      alt={`Gallery image ${index + 1}`}
+                      className="w-full h-40 object-cover rounded-lg shadow-sm"
+                      onError={(e) => { e.target.onerror = null; e.target.src = "https://placehold.co/200x150/E0E0E0/000000?text=Image"; }}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-6 text-gray-700 text-base mb-8 p-4 bg-gray-50 rounded-lg border border-gray-200">
               <p className="flex items-center">
-                <FaMapMarkerAlt className="h-5 w-5 mr-2 text-gray-600" />
+                <FaMapMarkerAlt className="h-5 w-5 mr-3 text-blue-600" />
                 <span className="font-semibold">Address:</span> {selectedHospital.address}
               </p>
               <p className="flex items-center">
-                <FaPhone className="h-5 w-5 mr-2 text-gray-600" />
-                <span className="font-semibold">Phone:</span> {selectedHospital.phone}
+                <FaPhone className="h-5 w-5 mr-3 text-blue-600" />
+                <span className="font-semibold">Phone:</span> <a href={`tel:${selectedHospital.phone}`} className="text-blue-700 hover:underline">{selectedHospital.phone}</a>
               </p>
               <p className="flex items-center">
-                <FaEnvelope className="h-5 w-5 mr-2 text-gray-600" />
-                <span className="font-semibold">Email:</span> {selectedHospital.email}
+                <FaEnvelope className="h-5 w-5 mr-3 text-blue-600" />
+                <span className="font-semibold">Email:</span> <a href={`mailto:${selectedHospital.email}`} className="text-blue-700 hover:underline">{selectedHospital.email}</a>
               </p>
               <p className="flex items-center">
-                <FaGlobe className="h-5 w-5 mr-2 text-gray-600" />
-                <span className="font-semibold">Website:</span> <a href={selectedHospital.website} target="_blank" rel="noopener noreferrer" className="text-blue-700">Visit Site</a>
+                <FaGlobe className="h-5 w-5 mr-3 text-blue-600" />
+                <span className="font-semibold">Website:</span> <a href={selectedHospital.website} target="_blank" rel="noopener noreferrer" className="text-blue-700 hover:underline">Visit Site</a>
               </p>
               <p className="flex items-center">
-                <FaStar className="h-5 w-5 mr-2 text-yellow-500" />
-                <span className="font-semibold">Rating:</span> {selectedHospital.rating}
+                <FaStar className="h-5 w-5 mr-3 text-yellow-500" />
+                <span className="font-semibold">Rating:</span> {selectedHospital.rating} / 5.0
               </p>
               <p className="flex items-center">
-                <FaCalendarAlt className="h-5 w-5 mr-2 text-gray-600" />
-                <span className="font-semibold">Established:</span> {new Date(selectedHospital.establishmentDate).toLocaleDateString('en-IN')}
+                <FaCalendarAlt className="h-5 w-5 mr-3 text-blue-600" />
+                <span className="font-semibold">Established:</span> {new Date(selectedHospital.establishmentDate).toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' })}
+              </p>
+              <p className="flex items-center md:col-span-2">
+                <FaClock className="h-5 w-5 mr-3 text-blue-600" />
+                <span className="font-semibold">Current Status:</span>
+                <span className={`ml-2 font-bold ${getOperatingStatus(selectedHospital.operatingHours).status === 'Open' ? 'text-green-600' : 'text-red-600'}`}>
+                  {getOperatingStatus(selectedHospital.operatingHours).status}
+                </span>
+                <span className="ml-1 text-sm text-gray-600">({getOperatingStatus(selectedHospital.operatingHours).details})</span>
               </p>
             </div>
 
-            <h3 className="text-xl font-bold text-gray-800 mb-3">Specialties:</h3>
-            <div className="flex flex-wrap gap-2 mb-4">
+            {selectedHospital.glimpseInside && selectedHospital.glimpseInside.length > 0 && (
+              <div className="mb-8">
+                <h3 className="text-2xl font-bold text-gray-900 mb-4">Glimpse Inside:</h3>
+                <div className="flex flex-wrap gap-3">
+                  {selectedHospital.glimpseInside.map((item, index) => (
+                    <span key={index} className="bg-purple-100 text-purple-800 text-md font-semibold px-4 py-1.5 rounded-full shadow-md">
+                      {item}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <h3 className="text-2xl font-bold text-gray-900 mb-4">Specialties:</h3>
+            <div className="flex flex-wrap gap-3 mb-6">
               {selectedHospital.specialties.map((specialty, index) => (
-                <span key={index} className="bg-gray-200 text-gray-800 text-sm font-semibold px-3 py-1 rounded-full">
+                <span key={index} className="bg-blue-600 text-white text-md font-semibold px-4 py-1.5 rounded-full shadow-md">
                   {specialty}
                 </span>
               ))}
             </div>
+
+            {loadingDoctors ? (
+              <div className="flex justify-center items-center py-4 text-blue-600">
+                <FaSpinner className="animate-spin mr-2" size={20} /> Loading Doctors...
+              </div>
+            ) : selectedHospital.doctors && selectedHospital.doctors.length > 0 ? (
+              <>
+                <h3 className="text-2xl font-bold text-gray-900 mb-4">Associated Doctors:</h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {selectedHospital.doctors.map((doctor, index) => (
+                    <div key={index} className="bg-gray-50 p-4 rounded-lg border border-gray-200 shadow-sm">
+                      <p className="font-semibold text-gray-900">{doctor.name}</p>
+                      <p className="text-sm text-gray-600">{doctor.specialization}</p>
+                    </div>
+                  ))}
+                </div>
+              </>
+            ) : (
+              <div className="text-gray-500 text-center py-4">No associated doctors found.</div>
+            )}
+
           </div>
         ) : (
-          <div className="flex-grow flex flex-col items-center justify-center text-gray-500 text-lg p-4 border border-gray-200 rounded-md">
-            <IoIosInformationCircleOutline className="h-16 w-16 text-gray-400 mb-4" />
-            <p className="text-center font-medium">Please select a hospital from the left to view its detailed information.</p>
-            <p className="text-sm text-gray-400 mt-2">Click on any hospital card to see more.</p>
+          <div className="flex-grow flex flex-col items-center justify-center text-gray-500 text-lg p-4 bg-gray-50 rounded-lg border border-gray-200 shadow-inner">
+            <IoIosInformationCircleOutline className="h-20 w-20 text-gray-400 mb-6" />
+            <p className="text-center font-medium text-xl">Select a hospital to view its details.</p>
+            <p className="text-md text-gray-400 mt-2">Click on any hospital card from the left panel.</p>
           </div>
         )}
       </div>
 
-      {/* Custom Scrollbar Styling */}
+      <CustomModal isOpen={isDeleteModalOpen} onClose={() => setIsDeleteModalOpen(false)}>
+        <div className="p-6 bg-white rounded-lg shadow-xl text-center">
+          <h2 className="text-2xl font-bold text-red-600 mb-4">Confirm Deletion</h2>
+          <p className="text-gray-700 mb-6">
+            Are you sure you want to delete <span className="font-semibold">{hospitalToDelete?.name}</span>? This action cannot be undone.
+          </p>
+          <div className="flex justify-center space-x-4">
+            <button
+              onClick={() => setIsDeleteModalOpen(false)}
+              className="px-6 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400 transition-colors"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={confirmDelete}
+              className="px-6 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors"
+            >
+              Delete
+            </button>
+          </div>
+        </div>
+      </CustomModal>
+
+      <CustomModal isOpen={isAlertModalOpen} onClose={() => setIsAlertModalOpen(false)}>
+        <div className="p-6 bg-white rounded-lg shadow-xl text-center">
+          <h2 className="text-2xl font-bold text-blue-600 mb-4">Information</h2>
+          <p className="text-gray-700 mb-6">{alertMessage}</p>
+          <button
+            onClick={() => setIsAlertModalOpen(false)}
+            className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+          >
+            OK
+          </button>
+        </div>
+      </CustomModal>
+
       <style jsx>{`
         .custom-scrollbar::-webkit-scrollbar {
           width: 8px;
         }
         .custom-scrollbar::-webkit-scrollbar-track {
-          background: #f8f8f8; /* Very light gray */
+          background: #e0e7ff;
           border-radius: 10px;
         }
         .custom-scrollbar::-webkit-scrollbar-thumb {
-          background: #cccccc; /* Medium gray */
+          background: #93c5fd;
           border-radius: 10px;
         }
         .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-          background: #aaaaaa; /* Darker gray (though hovers are minimal elsewhere) */
+          background: #60a5fa;
         }
       `}</style>
     </div>

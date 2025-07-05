@@ -6,13 +6,15 @@ import FashionOrders from "./Restaurant/FashionOrders"
 import SchoolContact from "./Submission/School"
 import HospitalContact from "./Submission/Hospital"
 import Notifications from "./Submission/Notification";
+import View from "./RecentlyViewd"
+
 function ContentArea({ activeTab }) {
   const renderContent = () => {
     switch (activeTab) {
       case 'Reviews':
         return <div><h2 className="text-2xl font-semibold text-blue-700 mb-4">My Reviews</h2><p className="text-gray-700">You haven't written any reviews yet.</p></div>;
       case 'Recently Viewed':
-        return <div><h2 className="text-2xl font-semibold text-blue-700 mb-4">Recently Viewed</h2><p className="text-gray-700">No recently viewed items.</p></div>;
+        return <div><View/></div>;
       case 'Hospital Bookings':
         return <div><HospitalBooking/></div>
       case 'Restaurant Orders':

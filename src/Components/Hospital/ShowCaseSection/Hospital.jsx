@@ -10,7 +10,7 @@ import { ReviewsContent } from './Reviews/ReviewsContent';
 import { Contact } from "./Reviews/Contact";
 import { useParams, useLocation } from "react-router-dom";
 import axios from "axios";
-
+import {toast} from "react-toastify"
 export const Hospital = () => {
   useEffect(() => {
       window.scrollTo(0, 0);
@@ -56,6 +56,24 @@ export const Hospital = () => {
   useEffect(()=>{
     setActiveNavLink(service3);
   },[service3])
+
+  useEffect(()=>{
+    const addView=async()=>{
+      try{
+      const response=await axios.post(`${import.meta.env.VITE_SERVER_URL}/api/add/view`,{view:HospitalId,modelView:"Hospital"},{withCredentials:true});
+      if(response.status===200){
+      }
+      else{
+        toast.error(response.data?.message);
+      }
+    }
+    catch(error){
+      console.log(error);
+    } 
+    }
+
+    addView();
+  },[HospitalId])
   const renderContent = () => {
     switch (activeNavLink) {
       case 'Overview':
@@ -83,7 +101,6 @@ export const Hospital = () => {
         setActiveNavLink={setActiveNavLink}
         hospital={hospital}
       />
-      {/* Content area for displaying different sections (Overview, Doctors, etc.) */}
       <div className="relative content-area min-h-[500px] md:flex md:items-center md:justify-center">
         {renderContent()}
       </div>
