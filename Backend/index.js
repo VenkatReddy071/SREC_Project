@@ -179,6 +179,9 @@ const HospitalOverview=require("./Routes/Hospital/Overview");
 const SchoolOverview=require("./Routes/Schools/OVerview");
 const AdminOverview=require("./Routes/AdminDashboard/Overview");
 const UserNotifications=require("./Routes/Notification");
+const UserStatis=require("./Routes/User/ProfileData");
+const platform=require("./Routes/PlatformOffersAndTaxes");
+const TaxesPlatfrom=require("./Routes/PlatfromTaxes")
 app.get("/", (req, res) => {
     res.send("Server is running");
 });
@@ -188,6 +191,8 @@ app.use("/api",AdminOverview);
 app.use("/api",Search);
 app.use("/api/hospitals", HospitalRouter);
 app.use("/api", HistoryRouter);
+app.use("/api/offers",platform);
+app.use("/api/taxes",TaxesPlatfrom);
 app.use("/api/doctor", DoctorRouter);
 app.use("/api/booking", BookingRouter);
 app.use("/api/malls", MallRouter);
@@ -209,6 +214,7 @@ app.use("/api/hospital",HospitalOverview);
 app.use('/api/contact',Contact);
 app.use("/api/schools",SchoolOverview);
 app.use("/api/notifications",UserNotifications);
+app.use("/api",UserStatis);
 const PORT = process.env.PORT || 4000;
 io.on('connection',(socket)=>{
     console.log("new user is connected",socket.id);

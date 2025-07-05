@@ -205,7 +205,7 @@ router.post('/', async (req, res) => {
 
 
 
-router.get('/orders', authenticateToken, orderController.getAllOrders);
+router.get('/orders', orderController.getAllOrders);
 
 router.get('/orders/user', orderController.getUserOrders);
 
@@ -216,7 +216,63 @@ router.get('/orders/:orderId',authenticateToken, orderController.getOrderById);
 router.put('/orders/:orderId/status', orderController.updateOrderStatus);
 router.delete('/orders/:orderId',  orderController.deleteOrder);
 
+router.put('/cancel/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { reason } = req.body;
+
+        const userId = req.session.user?.id;
+
+        if (!userId) {
+            return res.status(401).json({ success: false, message: "Authorization required. Please log in." });
+        }
+
+        if (!reason || typeof reason !== 'string' || reason.trim() === "") {
+            return res.status(400).json({ success: false, message: "Cancellation reason is required and cannot be empty." });
+        }
+
+        const booking = await Order.findById(id);
+
+        if (!booking) {
+            return res.status(404).json({ success: false, message: "Order not found." });
+        }
+        if (booking.user.toString() !== userId.toString()) {
+            return res.status(403).json({ success: false, message: "Not authorized to cancel this order. You can only cancel your own orders." });
+        }
+        const cancellableStatuses = ['pending', 'confirmed', 'processing'];
+        if (cancellableStatuses.includes(booking.orderStatus.toLowerCase())) {
+            booking.orderStatus = 'user_cancel';
+            booking.reasion = reason.trim();
+            
+            
+            booking.subStatus.push({
+                status: 'user_cancel',
+                date: new Date(),
+            });
+
+            await booking.save();
+
+            return res.status(200).json({
+                success: true,
+                message: "Order cancelled successfully.",
+                
+                booking: {
+                    _id: booking._id,
+                    orderStatus: booking.orderStatus,
+                    reasion: booking.reasion,
+                    subStatus: booking.subStatus,
+                
+                }
+            });
+        } else {
+            return res.status(400).json({ success: false, message: `Order cannot be cancelled as its current status is '${booking.orderStatus}'.` });
+        }
+
+    } catch (error) {
+        console.error("Error cancelling order:", error);
+        res.status(500).json({ success: false, message: "Server error. Please try again later." });
+    }
+})
 
 module.exports = router;
 
-module.exports = router;

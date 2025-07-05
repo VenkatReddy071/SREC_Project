@@ -73,9 +73,13 @@ const BookingSchema = new mongoose.Schema({
     },
     status: {
         type: String,
-        enum: ['Pending', 'Approved', 'Completed', 'Cancelled'],
+        enum: ['Pending', 'Approved', 'Completed', 'Cancelled','user_cancel'],
         default: 'Pending',
         required: true,
+    },
+    reasion:{
+        type:String,
+        required:function() { return this.orderStatus === "user_cancel"; },
     },
     favBooking:{
         type:Boolean,

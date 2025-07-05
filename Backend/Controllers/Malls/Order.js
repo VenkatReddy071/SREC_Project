@@ -379,7 +379,8 @@ exports.updateOrderStatus = async (req, res) => {
 
         existingOrder.orderStatus = status;
         const updatedOrder = await existingOrder.save();
-        await createNotifications({userId:existingOrder.userId,type:"order_update",title:`Your Order Status Update: ${status}!`,message:`Great news! Your  Order  #${updatedOrder._id} Status is Updated please visit it.!`})
+        console.log(updatedOrder);
+        await createNotifications({userId:updatedOrder.user,type:"order_update",title:`Your Order Status Update: ${status}!`,message:`Great news! Your  Order  #${updatedOrder._id} Status is Updated please visit it.!`})
         return res.status(200).json({
             status: true,
             message: "Order status updated successfully.",

@@ -105,8 +105,12 @@ const OrderSchema = new mongoose.Schema({
     },
     orderStatus: {
         type: String,
-        enum: ["pending", "confirmed", "processing", "ready_for_pickup", "shipped", "delivered", "completed", "cancelled", "refunded"],
+        enum: ["pending", "confirmed", "processing", "ready_for_pickup", "shipped", "delivered", "completed", "cancelled", "refunded","user_cancel"],
         default: "pending",
+    },
+    reasion:{
+        type:String,
+        required:this.orderStatus==="user_cancel",
     },
     appliedTaxes:[
         {
