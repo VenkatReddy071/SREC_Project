@@ -13,7 +13,8 @@ export const useSocket = () => {
 }
 
 export const SocketContextProvider = ({ children }) => {
-    const socket = useRef(null);
+    const [socket, setSocket] = useState(null);
+    const socketRef = useRef(null);
 
     useEffect(() => {
         if (!import.meta.env.VITE_SERVER_URL) {
@@ -21,36 +22,40 @@ export const SocketContextProvider = ({ children }) => {
             return;
         }
 
-        if (!socket.current) {
-            socket.current = io(`${import.meta.env.VITE_SERVER_URL}`);
+        if (!socketRef.current) {
+            const newSocket = io(`${import.meta.env.VITE_SERVER_URL}`);
 
-            socket.current.on('connect', () => {
+            newSocket.on('connect', () => {
                 console.log('socket has been connected..');
             });
 
-            socket.current.on('connect_error', (err) => {
+            newSocket.on('connect_error', (err) => {
                 console.log('socket connection error:', err.message);
             });
+
+            socketRef.current = newSocket;
+            setSocket(newSocket);
         }
 
         return () => {
-            if (socket.current) {
+            if (socketRef.current) {
                 console.log('Disconnecting socket...');
-                socket.current.disconnect();
-                socket.current = null;
+                socketRef.current.disconnect();
+                socketRef.current = null;
+                setSocket(null);
             }
         };
     }, []);
 
     const data = {
-        socket: socket.current,
+        socket: socket,
     };
 
+    console.log(data);
+
     return (
-        <>
-            <SocketContext.Provider value={data}>
-                {children}
-            </SocketContext.Provider>
-        </>
-    )
+        <SocketContext.Provider value={data}>
+            {children}
+        </SocketContext.Provider>
+    );
 }

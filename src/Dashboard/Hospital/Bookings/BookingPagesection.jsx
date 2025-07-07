@@ -3,8 +3,11 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { BookingsListSidebar } from './BookingListSidebar';
 import { BookingDetailsPanel } from './BookingDetailModel';
-
+import { NavLink, Outlet, useParams, useLocation } from "react-router-dom";
+import {toast} from "react-toastify"
+import {useDashboardSocket} from "../../../Context/Socket/DashboardContext.jsx"
 const BookingsSection = () => {
+      const { id } = useParams();
     const [bookings, setBookings] = useState([]);
     const [filteredBookings, setFilteredBookings] = useState([]);
     const [selectedBooking, setSelectedBooking] = useState(null);
@@ -13,7 +16,7 @@ const BookingsSection = () => {
     const [dateFilter, setDateFilter] = useState('all'); // 'all', 'today', 'upcoming', 'past'
     const [isLoading, setIsLoading] = useState(true);
     const API_BASE_URL = import.meta.env.VITE_SERVER_URL;
-
+    const {socket}=useDashboardSocket();
     const fetchBookings = async () => {
         setIsLoading(true);
         const token = localStorage.getItem('dashboard');
@@ -53,12 +56,34 @@ const BookingsSection = () => {
 
     const handleUpdateBookingStatus = (updatedBooking) => {
         setBookings(prevBookings => prevBookings.map(b =>
-            b._id === updatedBooking._id ? updatedBooking : b
+            b?._id === updatedBooking?._id ? updatedBooking : b
         ));
-        if (selectedBooking && selectedBooking._id === updatedBooking._id) {
+        if (selectedBooking && selectedBooking?._id === updatedBooking?._id) {
             setSelectedBooking(updatedBooking);
         }
     };
+
+    useEffect(()=>{
+        if(socket && id){
+
+const roomName = `dashboard_hospital_${id}`;
+          const handleOrdersSocket=(data)=>{
+            toast.info("new Booking is placed please Check it");
+  
+            setBookings((prev)=>[...prev,data?.order]);
+          }
+  
+          socket.emit('joinRoom', roomName);
+          socket.on("newBooking",handleOrdersSocket);
+  
+  
+  
+          return ()=>{
+              socket.emit('leaveRoom', roomName);
+              socket.off("newBooking",handleOrdersSocket);
+          }
+      }
+    },[socket])
 
     return (
         <div className="flex h-screen bg-gray-50 font-inter">

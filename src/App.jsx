@@ -170,13 +170,13 @@ function App() {
           <Route path="settings" element={<Settings />} />
           <Route path="logs" element={<Logs/>}/>
         </Route>
-        <Route path="/education-dashboard" element={<SchoolCollegeDashboard/>}>
+        <Route path="/education-dashboard/:id" element={<SchoolCollegeDashboard/>}>
         <Route index element={<SchoolCollegeOverview/>}/>
         <Route path='info' element={<SchoolInfo/>}/>
         <Route path="teachers" element={<SchoolTeacher/>}/>
         <Route path="contact" element={<SchoolContact/>}/>
         </Route>
-        <Route path="/hospital-dashboard" element={<DashHomeHospital/>}>
+        <Route path="/hospital-dashboard/:id" element={<DashHomeHospital/>}>
           <Route index element={<HospitalOverview/>}/>
           <Route path="dashboard" element={<DashboardHospital/>}/>
           <Route path="doctors" element={<DoctorsSection/>}/>
@@ -187,7 +187,7 @@ function App() {
           <Route path="contact" element={< HospitalContact/>}/>
           <Route path="outlet" element={<HospitalOutletInfoSection/>}/>
         </Route>
-        <Route path="/fashion-dashboard" element={<FashionDashboard/>}>
+        <Route path="/fashion-dashboard/:id" element={<FashionDashboard/>}>
           <Route index element={<FashionOverview/>}/>
           <Route path='products' element={<ProductsPage/>}/>
           <Route path="offers" element={<FashionOffers/>}/>
@@ -195,13 +195,13 @@ function App() {
           <Route path='outlet' element={<FashionOutlet/>}/>
           <Route path='orders'element={<OrdersPage/>}/>
         </Route>
-        <Route path="/restaurant-dashboard" element={<RestaurantDashboard/>}>
+        <Route path="/restaurant-dashboard/:id" element={<RestaurantDashboard/>}>
           <Route index element={<ResOverview/>}/>
-          <Route path='/restaurant-dashboard/offers' element={<RestaurantOffersDashboard/>}/>
-          <Route path="/restaurant-dashboard/menu" element={<RestaurantMenu/>}/>
-          <Route path="/restaurant-dashboard/orders" element={<RestaurantOrdersPage/>}/>
-          <Route path="/restaurant-dashboard/outlet" element={<OutletInfoPage/>}/>
-          <Route path="/restaurant-dashboard/taxes" element={<TaxesAndCharges/>}/>
+          <Route path='/restaurant-dashboard/:id/offers' element={<RestaurantOffersDashboard/>}/>
+          <Route path="/restaurant-dashboard/:id/menu" element={<RestaurantMenu/>}/>
+          <Route path="/restaurant-dashboard/:id/orders" element={<RestaurantOrdersPage/>}/>
+          <Route path="/restaurant-dashboard/:id/outlet" element={<OutletInfoPage/>}/>
+          <Route path="/restaurant-dashboard/:id/taxes" element={<TaxesAndCharges/>}/>
         </Route>
         <Route element={<AboutLayout/>}>
             <Route path="/About-us" element={<About/>}/>

@@ -1,6 +1,6 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
-import { NavLink, Outlet } from "react-router-dom";
+import { useEffect, useState, useMemo } from "react";
+import { NavLink, Outlet, useParams, useLocation } from "react-router-dom";
 
 import {
   FaBars,
@@ -17,29 +17,48 @@ import {
   FaUsers
 } from "react-icons/fa";
 
-const menuItems = [
-  { name: "Dashboard", path: "/restaurant-dashboard", icon: <FaTachometerAlt /> },
-  { name: "Menu", path: "/restaurant-dashboard/Menu", icon: <FaShoppingBag /> },
-  { name: "Orders", path: "/restaurant-dashboard/orders", icon: <FaClipboardList /> },
-  { name: "Reviews", path: "/restaurant-dashboard/reviews", icon: <FaUsers /> },
-  { name: "Offers & Discounts", path: "/restaurant-dashboard/offers", icon: <FaTags /> },
-  {name:"Taxes & Charges", path:"/restaurant-dashboard/taxes",icon: <FaTags />},
-  { name: "OutLet Info", path: "/restaurant-dashboard/outlet", icon: <FaChartLine /> },
+const baseMenuItems = [
+  { name: "Dashboard", path: "/restaurant-dashboard/:id", icon: <FaTachometerAlt /> },
+  { name: "Menu", path: "/restaurant-dashboard/:id/Menu", icon: <FaShoppingBag /> },
+  { name: "Orders", path: "/restaurant-dashboard/:id/orders", icon: <FaClipboardList /> },
+  { name: "Reviews", path: "/restaurant-dashboard/:id/reviews", icon: <FaUsers /> },
+  { name: "Offers & Discounts", path: "/restaurant-dashboard/:id/offers", icon: <FaTags /> },
+  { name: "Taxes & Charges", path: "/restaurant-dashboard/:id/taxes", icon: <FaTags /> },
+  { name: "Outlet Info", path: "/restaurant-dashboard/:id/outlet", icon: <FaChartLine /> },
 ];
 
 export const RestaurantDashboard = () => {
+  const { id } = useParams(); 
+  const location = useLocation();
+
   const [isOpen, setIsOpen] = useState(true);
   const [pageTitle, setPageTitle] = useState("Dashboard");
   const [profileOpen, setProfileOpen] = useState(false);
   const [isLogin, setIsLogin] = useState(false);
   const [name, setName] = useState("Guest");
   const [outletData, setOutletData] = useState(null);
-  const [menuLinks,setMenuLinks]=useState(menuItems)
+
   const toggleSidebar = () => setIsOpen(!isOpen);
 
+  // Memoize the menu links to regenerate only when ID or outletData changes
+  const menuLinks = useMemo(() => {
+    if (!id) return [];
+
+    let dynamicLinks = baseMenuItems.map((item) => ({
+      ...item,
+      path: item.path.replace(":id", id),
+    }));
+
+    // Conditionally add Bookings link
+    if (outletData?.seatingAvailability === 'table') {
+      dynamicLinks.push({ name: "Bookings", path: `/restaurant-dashboard/${id}/bookings`, icon: <FaClipboardList /> });
+    }
+    return dynamicLinks;
+  }, [id, outletData]); // Regenerate when 'id' or 'outletData' changes
+
   useEffect(() => {
-    const currentPath = window.location.pathname;
-    const activeItem = menuItems.find((item) => currentPath.startsWith(item.path));
+    const currentPath = location.pathname;
+    const activeItem = menuLinks.find((item) => currentPath.startsWith(item.path));
     if (activeItem) {
       setPageTitle(activeItem.name);
     } else {
@@ -47,61 +66,38 @@ export const RestaurantDashboard = () => {
     }
 
     const token = localStorage.getItem("dashboard");
-    console.log(token);
-    const fetchProfile = axios.get(`${import.meta.env.VITE_SERVER_URL}/api/profile`, {
-      headers: { Authorization: `Bearer ${token}` },
-      withCredentials: true,
-    });
 
-    const fetchOutlet = axios.get(`${import.meta.env.VITE_SERVER_URL}/api/restaurant/restaurant/outlet/info`, {
-      headers: { Authorization: `Bearer ${token}` },
-      withCredentials: true,
-    });
-
-    Promise.all([fetchProfile, fetchOutlet])
-      .then(([profileResponse, outletResponse]) => {
-        setIsLogin(profileResponse.data?.loggedIn);
-        setName(profileResponse.data?.user?.username || profileResponse.data?.userDataFromToken?.username || "Admin");
-
-        if (outletResponse.data?.success && outletResponse.data.mall) {
-          setOutletData(outletResponse.data.mall);
-        }
-      })
-      .catch((error) => {
-        console.error("Dashboard data fetch error:", error);
-        setIsLogin(false);
-        setName("Guest");
-        setOutletData(null);
+    // Only make API calls if ID is present
+    if (id) {
+      const fetchProfile = axios.get(`${import.meta.env.VITE_SERVER_URL}/api/profile`, {
+        headers: { Authorization: `Bearer ${token}` },
+        withCredentials: true,
       });
-  }, []);
 
-  useEffect(() => {
-    const handleLocationChange = () => {
-      const currentPath = window.location.pathname;
-      const activeItem = menuLinks.find((item) => currentPath.startsWith(item.path));
-      if (activeItem) {
-        setPageTitle(activeItem.name);
-      } else {
-        setPageTitle("Dashboard");
-      }
-    };
+      // Update outlet API call to include ID if your backend supports it
+      const fetchOutlet = axios.get(`${import.meta.env.VITE_SERVER_URL}/api/restaurant/${id}/outlet/info`, {
+        headers: { Authorization: `Bearer ${token}` },
+        withCredentials: true,
+      });
 
-    window.addEventListener("popstate", handleLocationChange);
-    return () => {
-      window.removeEventListener("popstate", handleLocationChange);
-    };
-  }, []);
-  useEffect(()=>{
-    
-    if(outletData){
-        if(outletData?.seatingAvailability==='table'){
-            setMenuLinks(prevLinks=>{
-            return [...prevLinks,{ name: "Bookings", path: "/restaurant-dashboard/bookings", icon: <FaClipboardList /> }]
-            })
-        }
-        
+      Promise.all([fetchProfile, fetchOutlet])
+        .then(([profileResponse, outletResponse]) => {
+          setIsLogin(profileResponse.data?.loggedIn);
+          setName(profileResponse.data?.user?.username || profileResponse.data?.userDataFromToken?.username || "Admin");
+
+          if (outletResponse.data?.success && outletResponse.data.mall) {
+            setOutletData(outletResponse.data.mall);
+          }
+        })
+        .catch((error) => {
+          console.error("Dashboard data fetch error:", error);
+          setIsLogin(false);
+          setName("Guest");
+          setOutletData(null);
+        });
     }
-  })
+  }, [id, location.pathname, menuLinks]);
+
   return (
     <div className="flex h-screen bg-gray-100">
       <div
@@ -117,7 +113,7 @@ export const RestaurantDashboard = () => {
         </div>
 
         <nav className="mt-4 flex flex-col gap-1 overflow-y-scroll h-[calc(100%-10rem)]">
-          {menuItems.map((item, index) => (
+          {menuLinks.map((item, index) => (
             <NavLink
               key={index}
               to={item.path}
@@ -194,7 +190,7 @@ export const RestaurantDashboard = () => {
               {profileOpen && (
                 <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg py-1 z-30">
                   <NavLink
-                    to="/fashion-dashboard/profile"
+                    to={`/restaurant-dashboard/${id}/profile`}
                     className="block px-4 py-2 text-gray-800 hover:bg-gray-100"
                   >
                     Profile

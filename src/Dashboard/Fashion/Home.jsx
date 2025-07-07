@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { NavLink, Outlet } from "react-router-dom";
+import React, { useState, useEffect, useMemo } from "react";
+import { NavLink, Outlet, useParams, useLocation } from "react-router-dom";
 import axios from "axios";
 
 import {
@@ -7,9 +7,6 @@ import {
   FaCog,
   FaTags,
   FaUsers,
-  FaShoppingCart,
-  FaQuestionCircle,
-  FaComments,
   FaBars,
   FaBell,
   FaUserCircle,
@@ -17,21 +14,22 @@ import {
   FaInfoCircle,
   FaShoppingBag,
   FaClipboardList,
-  FaStore,
-  FaChartLine,
 } from "react-icons/fa";
 
-const menuItems = [
-  { name: "Dashboard", path: "/fashion-dashboard", icon: <FaTachometerAlt /> },
-  { name: "Products", path: "/fashion-dashboard/products", icon: <FaShoppingBag /> },
-  { name: "Orders", path: "/fashion-dashboard/orders", icon: <FaClipboardList /> },
-  { name: "Reviews", path: "/fashion-dashboard/reviews", icon: <FaUsers /> },
-  { name: "Offers & Discounts", path: "/fashion-dashboard/offers", icon: <FaTags /> },
-  { name: "Taxes & Charges", path: "/fashion-dashboard/taxes", icon: <FaTags /> },
-  { name: "Outlet Info", path: "/fashion-dashboard/outlet", icon: <FaCog /> },
+const baseMenuItems = [
+  { name: "Dashboard", path: "/fashion-dashboard/:id", icon: <FaTachometerAlt /> },
+  { name: "Products", path: "/fashion-dashboard/:id/products", icon: <FaShoppingBag /> },
+  { name: "Orders", path: "/fashion-dashboard/:id/orders", icon: <FaClipboardList /> },
+  { name: "Reviews", path: "/fashion-dashboard/:id/reviews", icon: <FaUsers /> },
+  { name: "Offers & Discounts", path: "/fashion-dashboard/:id/offers", icon: <FaTags /> },
+  { name: "Taxes & Charges", path: "/fashion-dashboard/:id/taxes", icon: <FaTags /> },
+  { name: "Outlet Info", path: "/fashion-dashboard/:id/outlet", icon: <FaCog /> },
 ];
 
 export const FashionDashboard = () => {
+  const { id } = useParams();
+  const location = useLocation();
+
   const [isOpen, setIsOpen] = useState(true);
   const [pageTitle, setPageTitle] = useState("Dashboard");
   const [profileOpen, setProfileOpen] = useState(false);
@@ -41,8 +39,17 @@ export const FashionDashboard = () => {
 
   const toggleSidebar = () => setIsOpen(!isOpen);
 
+  const menuItems = useMemo(() => {
+    if (!id) return [];
+
+    return baseMenuItems.map((item) => ({
+      ...item,
+      path: item.path.replace(":id", id),
+    }));
+  }, [id]);
+
   useEffect(() => {
-    const currentPath = window.location.pathname;
+    const currentPath = location.pathname;
     const activeItem = menuItems.find((item) => currentPath.startsWith(item.path));
     if (activeItem) {
       setPageTitle(activeItem.name);
@@ -52,49 +59,35 @@ export const FashionDashboard = () => {
 
     const token = localStorage.getItem("dashboard");
 
-    const fetchProfile = axios.get(`${import.meta.env.VITE_SERVER_URL}/api/profile`, {
-      headers: { Authorization: `Bearer ${token}` },
-      withCredentials: true,
-    });
+    if (id) {
+      const fetchPromises = [
+        axios.get(`${import.meta.env.VITE_SERVER_URL}/api/profile`, {
+          headers: { Authorization: `Bearer ${token}` },
+          withCredentials: true,
+        }),
+        axios.get(`${import.meta.env.VITE_SERVER_URL}/api/malls/${id}/outlet`, {
+          headers: { Authorization: `Bearer ${token}` },
+          withCredentials: true,
+        }),
+      ];
 
-    const fetchOutlet = axios.get(`${import.meta.env.VITE_SERVER_URL}/api/malls/outlet`, {
-      headers: { Authorization: `Bearer ${token}` },
-      withCredentials: true,
-    });
+      Promise.all(fetchPromises)
+        .then(([profileResponse, outletResponse]) => {
+          setIsLogin(profileResponse.data?.loggedIn);
+          setName(profileResponse.data?.user?.username || profileResponse.data?.userDataFromToken?.username || "Admin");
 
-    Promise.all([fetchProfile, fetchOutlet])
-      .then(([profileResponse, outletResponse]) => {
-        setIsLogin(profileResponse.data?.loggedIn);
-        setName(profileResponse.data?.user?.username || profileResponse.data?.userDataFromToken?.username || "Admin");
-
-        if (outletResponse.data?.success && outletResponse.data.mall) {
-          setOutletData(outletResponse.data.mall);
-        }
-      })
-      .catch((error) => {
-        console.error("Dashboard data fetch error:", error);
-        setIsLogin(false);
-        setName("Guest");
-        setOutletData(null);
-      });
-  }, []);
-
-  useEffect(() => {
-    const handleLocationChange = () => {
-      const currentPath = window.location.pathname;
-      const activeItem = menuItems.find((item) => currentPath.startsWith(item.path));
-      if (activeItem) {
-        setPageTitle(activeItem.name);
-      } else {
-        setPageTitle("Dashboard");
-      }
-    };
-
-    window.addEventListener("popstate", handleLocationChange);
-    return () => {
-      window.removeEventListener("popstate", handleLocationChange);
-    };
-  }, []);
+          if (outletResponse.data?.success && outletResponse.data.mall) {
+            setOutletData(outletResponse.data.mall);
+          }
+        })
+        .catch((error) => {
+          console.error("Dashboard data fetch error:", error);
+          setIsLogin(false);
+          setName("Guest");
+          setOutletData(null);
+        });
+    }
+  }, [id, location.pathname, menuItems]);
 
   return (
     <div className="flex h-screen bg-gray-100">
@@ -189,7 +182,7 @@ export const FashionDashboard = () => {
               {profileOpen && (
                 <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg py-1 z-30">
                   <NavLink
-                    to="/fashion-dashboard/profile"
+                    to={`/fashion-dashboard/${id}/profile`}
                     className="block px-4 py-2 text-gray-800 hover:bg-gray-100"
                   >
                     Profile

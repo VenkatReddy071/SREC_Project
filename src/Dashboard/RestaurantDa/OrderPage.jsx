@@ -2,7 +2,9 @@ import React, { useState, useEffect, useMemo } from "react";
 import axios from "axios";
 import { FaEye, FaSearch, FaFilter } from "react-icons/fa";
 import { OrderDetailsView } from './OrderDetailsModal';
-
+import { NavLink, Outlet, useParams, useLocation } from "react-router-dom";
+import {toast} from "react-toastify"
+import {useDashboardSocket} from "../../Context/Socket/DashboardContext.jsx"
 const formatPrice = (price, currency = "INR") => {
   return new Intl.NumberFormat("en-IN", {
     style: "currency",
@@ -24,12 +26,13 @@ const orderStatuses = [
 ];
 
 export const RestaurantOrdersPage = () => {
+  const { id } = useParams(); 
   const [orders, setOrders] = useState([]);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [activeView, setActiveView] = useState("initial");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
+  const {socket}=useDashboardSocket();
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] = useState("");
 
@@ -60,6 +63,26 @@ export const RestaurantOrdersPage = () => {
       setLoading(false);
     }
   };
+  useEffect(()=>{
+    if(socket && id ){
+       const roomName = `dashboard_restaurant_${id}`;
+        const handleOrdersSocket=(data)=>{
+          toast.info("new Order is placed please visit the orders tabs");
+
+          setOrders((prev)=>[...prev,data?.order]);
+        }
+
+        socket.emit('joinRoom', roomName);
+        socket.on("newOrder",handleOrdersSocket);
+
+
+
+        return ()=>{
+            socket.emit('leaveRoom', roomName);
+            socket.off("newOrder",handleOrdersSocket);
+        }
+    }
+  },[socket])
 
  const filteredOrders = useMemo(() => {
     let currentOrders = [...orders];
@@ -201,7 +224,7 @@ export const RestaurantOrdersPage = () => {
         <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar">
           {filteredOrders.map((order) => (
             <div
-              key={order._id}
+              key={order?._id}
               className={`flex items-center justify-between p-4 mb-3 border rounded-lg cursor-pointer transition-all duration-200
                 ${
                   selectedOrder?._id === order._id

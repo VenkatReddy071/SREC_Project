@@ -5,22 +5,10 @@ export const Type = () => {
   const naviagte=useNavigate();
     const [searchParams]=useSearchParams();
     const type=searchParams.get("");
+    console.log(type);
     useEffect(()=>{
-      switch(type){
-        case "admin-dashboard":
-          naviagte("/admin-Dashboard");
-          break;
-        case "hospital-dashboard":
-          naviagte("/hospital-dashboard");
-          break;
-        case "restaurant-dashboard":
-          naviagte("/restaurant-dashboard")
-          break;
-        case "fashion-dashboard":
-          naviagte("/fashion-dashboard")
-          break;
-        case "education-dashboard":
-          naviagte("/education-Dashboard")
+      if(type){
+        naviagte(type);
       }
     },[])
   return (
