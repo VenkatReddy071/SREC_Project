@@ -15,6 +15,7 @@ const generateAuthToken = (user) => {
         id: user.id,
         username: user.username,
         email: user.email,
+        role:user.type,
     };
     const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '7days' });
     return token;

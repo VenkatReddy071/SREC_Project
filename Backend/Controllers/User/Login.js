@@ -3,6 +3,10 @@ const bcrypt = require("bcryptjs");
 const { generateAuthToken,authenticateToken}=require("../Authorization/auth");
 const { generateOtp } =require( '../../Utilities/otpUtils');
 const { sendEmail } =require('../../Utilities/Email');
+const Hospital=require("../../models/Hospital/Hospital");
+const School=require("../../models/Schools/School");
+const Restaurant=require("../../models/Dining/Restaurant")
+const Fashion=require("../../models/Malls/Malls");
 const Login = async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -172,19 +176,32 @@ const dashboard = async (req, res) => {
                 url = "admin-dashboard";
                 break;
             case "restaurant":
-                url = "restaurant-dashboard";
-                break;
-            case "college":
-                url = "education-dashboard";
+                const restaurant=await Restaurant.findOne({email:email});
+                if(!restaurant){
+                    return res.status(404).json({message:"Email not valid with a school"});
+                }
+                url = `/restaurant-dashboard/${restaurant?._id}`;
                 break;
             case "school":
-                url = "education-dashboard";
+                const school=await School.findOne({email:email});
+                if(!school){
+                    return res.status(404).json({message:"Email not valid with a school"});
+                }
+                url = `/education-dashboard/${school._id}`;
                 break;
             case "fashion":
-                url = "fashion-dashboard";
+                const fashion=await Fashion.findOne({email:email});
+                if(!fashion){
+                    return res.status(404).json({message:"Email not valid with a fashion"});
+                }
+                url = `/fashion-dashboard/${fashion?._id}`;
                 break;
             case "hospital":
-                url = "hospital-dashboard";
+                const hospital=await Hospital.findOne({ownerEmail:email});
+                if(!hospital){
+                    return res.status(404).json({message:"Email not valid with a hospital"});
+                }
+                url = `/hospital-dashboard/${hospital?._id}`;
                 break;
             default:
                 url = "marketing-dashboard";

@@ -25,6 +25,9 @@ const updateBookingHistoryStatus = async (booking) => {
     return false;
 };
 
+module.exports=(io)=>{
+
+
 router.post("/", async (req, res) => {
     const {
         slot, name, email, date, specialization,hospitalId,doctorId,
@@ -56,7 +59,31 @@ router.post("/", async (req, res) => {
         });
 
         const booking = await newBooking.save();
+         const populatedBooking = await Booking.findById(booking._id)
+         .populate('Hospital', 'name address ownerEmail image')
+         .populate('Doctor', 'name');
         await createNotifications({userId:req.session.user.id,type:"new_order",title:"Appointment Confirmed!",message:"Your appointment for [Service/Reason] on [Date] at [Time] has been successfully booked. We look forward to seeing you!"});
+
+         if (hospitalId) {
+                const specificHospitalRoom = `dashboard_hospital_${hospitalId}`;
+                io.to(specificHospitalRoom).emit('newBooking', {
+                    booking: populatedBooking,
+                    id: populatedBooking?._id,
+                    username: req.session.user?.username,
+                    hospitalId: hospitalId,
+                    message: `New Booking for your hospital: ${populatedBooking.Hospital?.name || 'unknown'}. From: ${name}`
+                });
+            }
+         io.to("dashboard_admin").emit("newBooking", {
+                booking: populatedBooking,
+                id: populatedBooking?._id,
+                username: req.session.user?.username,
+                hospitalId: hospitalId,
+                bookingType: "hospital",
+                message: `New Hospital Booking from ${name} for ${populatedBooking.Hospital?.name || 'an unknown hospital'}`
+            });
+
+        
         res.status(201).json(booking);
     } catch (err) {
         console.error(err.message);
@@ -379,4 +406,6 @@ router.put('/cancel/:id', async (req, res) => {
         res.status(500).json({ success: false, message: "Server error." });
     }
 });
-module.exports = router;
+
+return router;
+}

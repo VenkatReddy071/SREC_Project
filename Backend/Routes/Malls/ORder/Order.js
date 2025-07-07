@@ -99,6 +99,8 @@ const calculateOrderTotalsAndValidate = async (cartItems,discountOfferValue) => 
     };
 };
 
+module.exports=(io)=>{
+
 
 router.post('/', async (req, res) => {
     const userId = req.session.user?.id;
@@ -191,6 +193,31 @@ router.post('/', async (req, res) => {
         await createNotifications({userId:userId,type:"new_order",title:`Your ${orderSourceType} Order placed successfully!`,message:`our order ${newOrder._id} has been successfully placed! We're processing your order!"`})
         await session.commitTransaction();  
         session.endSession();
+        const populatedOrder= await Order.findById(newOrder?._id)
+                    .populate({
+                        path: "user",
+                        model: "User",
+                        select: "name email"
+                    })
+                    .populate({
+                        path: "sourceId",
+                        refPath: 'sourceType',
+                        select: "name email address phoneNumber image"
+                    })
+                    .populate({
+                        path: "items.product",
+                        refPath: 'items.itemModelType',
+                        select: "name description price priceINR currency category brand color gender imageUrl isAvailable images"
+                    });
+        const type=orderSourceType === "Restaurant"?`dashboard_restaurant_${orderSourceId}`:`dashboard_fashion_${orderSourceId}`;
+        io.to(type).emit("newOrder",{
+            order:populatedOrder,
+            user:userId,
+        })
+         io.to("dashboard_admin").emit(`newOrder_${orderSourceType}`, {
+            order:populatedOrder,
+            user:userId,
+         })
         res.status(201).json({ message: `${orderSourceType} Order placed successfully!`, order: newOrder });
 
     } catch (err) {
@@ -273,6 +300,6 @@ router.put('/cancel/:id', async (req, res) => {
         res.status(500).json({ success: false, message: "Server error. Please try again later." });
     }
 })
-
-module.exports = router;
+return router;
+}
 
