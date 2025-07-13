@@ -603,7 +603,7 @@ app.use(session({
     cookie: {
         maxAge: 7 * 24 * 60 * 60 * 1000,
         httpOnly: true,
-        sameSite: 'lax',
+        sameSite: isProduction ? 'None' : 'None',
         secure: isProduction
     }
 }));
