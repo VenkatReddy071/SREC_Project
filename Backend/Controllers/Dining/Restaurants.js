@@ -3,10 +3,131 @@ const Restaurant = require('../../models/Dining/Restaurant');
 const APIFeatures = require('../../Utilities/apiFeature');
 const MenuItem=require("../../models/Dining/Menu");
 const User=require("../../models/User/LoginModel");
+const multer = require("multer");
+const path = require("path");
 const createNotifications=require("../../Utilities/UserNotification")
+const historyLogRecorder = require("../../Utilities/HistoryLogs");
+
+
+const imageStorage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, "uploads/images/");
+    },
+    filename: function (req, file, cb) {
+        cb(null, Date.now() + "-" + file.originalname);
+    }
+});
+
+const uploadImage = multer({
+    storage: imageStorage,
+    limits: { fileSize: 10 * 1024 * 1024 },
+    fileFilter: (req, file, cb) => {
+        const allowedTypes = /jpeg|jpg|png|gif/;
+        const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
+        const mimetype = allowedTypes.test(file.mimetype);
+
+        if (extname && mimetype) {
+            return cb(null, true);
+        } else {
+            cb(new Error("Error: Only image files (jpeg, jpg, png, gif) are allowed!"));
+        }
+    }
+});
+
+
+const documentStorage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, "uploads/documents/");
+    },
+    filename: function (req, file, cb) {
+        cb(null, Date.now() + "-doc-" + file.originalname);
+    }
+});
+
+const uploadDocument = multer({
+    storage: documentStorage,
+    limits: { fileSize: 20 * 1024 * 1024 },
+    fileFilter: (req, file, cb) => {
+        // Allow images and PDF for documents
+        const allowedTypes = /jpeg|jpg|png|pdf/;
+        const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
+        const mimetype = allowedTypes.test(file.mimetype);
+
+        if (extname && mimetype) {
+            return cb(null, true);
+        } else {
+            cb(new Error("Error: Only image (jpeg, jpg, png) and PDF files are allowed for documents!"));
+        }
+    }
+});
+
+// --- Multer Storage Configuration for Doctor Images ---
+const doctorImageStorage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, "uploads/doctors/"); // Store doctor images in a dedicated 'uploads/doctors' folder
+    },
+    filename: function (req, file, cb) {
+        cb(null, Date.now() + "-doctor-" + file.originalname);
+    }
+});
+
+const uploadDoctorImage = multer({
+    storage: doctorImageStorage,
+    limits: { fileSize: 5 * 1024 * 1024 }, // 5 MB limit for doctor images
+    fileFilter: (req, file, cb) => {
+        const allowedTypes = /jpeg|jpg|png|gif/;
+        const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
+        const mimetype = allowedTypes.test(file.mimetype);
+
+        if (extname && mimetype) {
+            return cb(null, true);
+        } else {
+            cb(new Error("Error: Only image files (jpeg, jpg, png, gif) are allowed for doctor images!"));
+        }
+    }
+});
+
+exports.createRestaurant = async (req, res) => {
+   try {
+    const { body, files } = req;
+    const restaurantData = { ...body };
+  
+    const newRestaurant = await Restaurant.create(restaurantData);
+
+    await historyLogRecorder(
+      req,
+      newRestaurant.constructor.modelName,
+      "CREATE",
+      "POST",
+      "Restaurant",
+      `A Restaurant are CREATED`
+    );
+
+    res.status(201).json({
+      status: 'success',
+      data: {
+        restaurant: newRestaurant,
+      },
+    });
+  } catch (error) {
+    console.error('Error creating restaurant:', error);
+    if (error.name === 'ValidationError') {
+      return res.status(400).json({
+        status: 'fail',
+        message: error.message,
+        errors: error.errors,
+      });
+    }
+    res.status(500).json({
+      status: 'error',
+      message: 'Failed to create restaurant',
+      error: error.message,
+    });
+  }
+};
 exports.getAllRestaurants = async (req, res) => {
   try {
-    const features = new APIFeatures(Restaurant.find(), req.query)
+    const features = new APIFeatures(Restaurant.find({status:{$ne:"Pending"}}), req.query)
       .filter()
       .sort()
       .limitFields()
@@ -14,7 +135,14 @@ exports.getAllRestaurants = async (req, res) => {
 
     const restaurants = await features.query;
     const totalRestaurants = await Restaurant.countDocuments(features.filterQuery);
-
+    await historyLogRecorder(
+                      req,
+                      totalRestaurants.constructor.modelName,
+                        "READ",
+                        "GET",
+                        "Restaurant",
+                        `All Restaurant are read by user`
+        ); 
     res.status(200).json({
       status: 'success',
       results: restaurants.length,
@@ -36,6 +164,15 @@ exports.getAllRestaurants = async (req, res) => {
 exports.getUniqueCuisines = async (req, res) => {
     try {
         const cuisines = await Restaurant.distinct('cuisine');
+
+        await historyLogRecorder(
+                      req,
+                      cuisines.constructor.modelName,
+                        "READ",
+                        "GET",
+                        "Restaurant",
+                        `All Cuisines are read by user`
+        );     
         res.status(200).json({
             status: 'success',
             results: cuisines.length,
@@ -63,7 +200,14 @@ exports.getRestaurantById = async (req, res) => {
         message: 'No restaurant found with that ID',
       });
     }
-
+    await historyLogRecorder(
+                      req,
+                      restaurant.constructor.modelName,
+                        "READ",
+                        "GET",
+                        "Restaurant",
+                        `A Restaurant are read by user by Id:${req.params.id}`
+        );
     res.status(200).json({
       status: 'success',
       data: {
@@ -81,7 +225,6 @@ exports.getRestaurantById = async (req, res) => {
 };
 exports.getRestaurantByEmail = async (req, res) => {
   try {
-    console.log(req.user);
     const { email } = req.user;
     const restaurant = await Restaurant.findOne({ email: email });
 
@@ -91,7 +234,14 @@ exports.getRestaurantByEmail = async (req, res) => {
         message: 'No restaurant found with that email address',
       });
     }
-
+    await historyLogRecorder(
+                      req,
+                      restaurant.constructor.modelName,
+                        "READ",
+                        "GET",
+                        "Restaurant",
+                        `A Restaurant are read by EMAIL by Id:${email}`
+        );
     res.status(200).json({
       status: 'success',
       data: {
@@ -110,7 +260,14 @@ exports.getRestaurantByEmail = async (req, res) => {
 exports.createRestaurant = async (req, res) => {
   try {
     const newRestaurant = await Restaurant.create(req.body);
-
+    await historyLogRecorder(
+                      req,
+                      newRestaurant.constructor.modelName,
+                        "CREATE",
+                        "POST",
+                        "Restaurant",
+                        `A Restaurant are CREATED`
+    );
     res.status(201).json({
       status: 'success',
       data: {
@@ -147,7 +304,14 @@ exports.updateRestaurant = async (req, res) => {
         message: 'No restaurant found with that ID',
       });
     }
-
+    await historyLogRecorder(
+                      req,
+                      restaurant.constructor.modelName,
+                        "CREATE",
+                        "PUT",
+                        "Restaurant",
+                        `A Restaurant are UPDATED by Id:${req.params.id}`
+    );
     res.status(200).json({
       status: 'success',
       data: {
@@ -202,7 +366,14 @@ exports.deleteRestaurant = async (req, res) => {
         message: 'No restaurant found with that ID',
       });
     }
-
+    await historyLogRecorder(
+                      req,
+                      restaurant.constructor.modelName,
+                        "DELETED",
+                        "DELETED",
+                        "Restaurant",
+                        `A Restaurant are DELETED by Id:${req.params.id}`
+    );
     res.status(204).json({
       status: 'success',
       data: null,
@@ -237,7 +408,14 @@ exports.getRestaurantOffer = async (req, res) => {
 
         restaurant.offer = updatedOffers;
         await restaurant.save();
-
+        await historyLogRecorder( 
+                      req,
+                      restaurant.constructor.modelName,
+                        "READ",
+                        "GET",
+                        "Restaurant",
+                        `A Restaurant are Offers  are read by EMAIL:${req.user.email}`
+        );
         return res.status(200).json({ offers: updatedOffers });
 
     } catch (err) {
@@ -315,6 +493,14 @@ exports.addRestaurantOffer = async (req, res) => {
         
         console.log('saved');
         const addedOffer = restaurant.offer[restaurant.offer.length - 1];
+        await historyLogRecorder( 
+                      req,
+                      restaurant.constructor.modelName,
+                        "GET",
+                        "POST",
+                        "Restaurant",
+                        `A Restaurant are Offers  are POSTED by EMAIL:${req.user.email}`
+        );
         return res.status(201).json({ message: 'Offer added successfully!', offer: addedOffer });
 
     } catch (err) {

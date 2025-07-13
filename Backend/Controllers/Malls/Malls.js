@@ -164,7 +164,8 @@ exports.getAllMalls = async (req, res) => {
             query.offersAvailable = false;
             console.log('Filter: offersAvailable applied (false)');
         }
-
+        query.status={};
+        query.status.$ne="pending"
         console.log('Final MongoDB Query Object:', JSON.stringify(query, null, 2));
         console.log(`Pagination: page=${page}, limit=${limit}`);
 

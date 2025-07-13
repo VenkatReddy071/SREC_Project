@@ -6,6 +6,7 @@ const historyLogRecorder = require("../../Utilities/HistoryLogs");
 const createNotifications = require("../../Utilities/NotifyLogs");
 const Doctor=require("../../models/Hospital/Doctoer");
 const {authenticateToken}=require("../Authorization/auth")
+const { uploadHospitalData } = require('../../Utilities/multerConfig');
 const router = express.Router();
 
 const imageStorage = multer.diskStorage({
@@ -88,44 +89,82 @@ const uploadDoctorImage = multer({
 
 router.post(
     "/addNew/Hospital",
-    uploadImage.fields([
+    uploadHospitalData.fields([
         { name: "hospitalImage", maxCount: 1 },
-        { name: "hospitalGallery", maxCount: 5 }
+        { name: "hospitalGallery", maxCount: 5 },
+        { name: "glimpseInside", maxCount: 5 }, // For Step 2 data
+        { name: "hospitalLicense", maxCount: 1 },
+        { name: "verificationDocument", maxCount: 1 },
     ]),
     async (req, res) => {
         try {
-        
             const {
-                hospitalName,
-                hospitalLocation,
-                hospitalMobileNumber,
+                name,
+                locationName,
+                address, // New from frontend
+                phoneNumber,
                 ownerEmail,
-                specialization, // This is expected as a JSON string from frontend
-                hospitalInfo,
-                hospitalFoundationDate,
-                hospitalNearByLocation
+                specialization, // JSON string from frontend
+                info,
+                foundation,
+                nearByLocation,
+                // Fields from Step 2 of frontend
+                patientSatisfaction,
+                successRate,
+                ProceduresAnnually,
+                ambulance,
+                verificationDocumentType // Text field for document type
             } = req.body;
-            console.log(req.session)
-            console.log(req.body, "body", req.files); // Log to debug incoming data
 
-            if (!hospitalName || !hospitalLocation || !ownerEmail || !hospitalInfo || !hospitalNearByLocation || !hospitalMobileNumber) {
-                return res.status(400).json({ message: "Missing required hospital fields." });
+            console.log("Request Body:", req.body);
+            console.log("Request Files:", req.files);
+
+            // Access uploaded files
+            const hospitalImageFile = req.files && req.files.hospitalImage ? req.files.hospitalImage[0] : null;
+            const hospitalGalleryFiles = req.files && req.files.hospitalGallery ? req.files.hospitalGallery : [];
+            const glimpseInsideFiles = req.files && req.files.glimpseInside ? req.files.glimpseInside : [];
+            const hospitalLicenseFile = req.files && req.files.hospitalLicense ? req.files.hospitalLicense[0] : null;
+            const verificationDocumentFile = req.files && req.files.verificationDocument ? req.files.verificationDocument[0] : null;
+
+            // --- Basic Validation ---
+            if (!name || !locationName || !ownerEmail || !info || !nearByLocation || !phoneNumber || !address) {
+                return res.status(400).json({ message: "Missing required hospital basic details." });
+            }
+            if (!hospitalImageFile) {
+                return res.status(400).json({ message: "Hospital main image is required." });
+            }
+            if (hospitalGalleryFiles.length === 0) {
+                return res.status(400).json({ message: "At least one hospital gallery image is required." });
+            }
+            if (!hospitalLicenseFile) {
+                return res.status(400).json({ message: "Hospital license document is required." });
+            }
+            if (!verificationDocumentType || !verificationDocumentFile) {
+                return res.status(400).json({ message: "Verification document type and file are required." });
             }
 
-            if (!req.files || !req.files.hospitalImage || req.files.hospitalImage.length === 0) {
-                return res.status(400).json({ message: "Hospital image is required." });
+            // Validate Step 2 fields that are also sent in this request
+            if (!patientSatisfaction || isNaN(patientSatisfaction) || patientSatisfaction < 0 || patientSatisfaction > 100) {
+                return res.status(400).json({ message: "Patient Satisfaction Rate (0-100) is required and must be a number." });
+            }
+            if (!successRate || isNaN(successRate) || successRate < 0 || successRate > 100) {
+                return res.status(400).json({ message: "Success Rate (0-100) is required and must be a number." });
+            }
+            if (!ProceduresAnnually || isNaN(ProceduresAnnually) || ProceduresAnnually < 0) {
+                return res.status(400).json({ message: "Procedures Annually must be a non-negative number." });
+            }
+            if (glimpseInsideFiles.length === 0) {
+                return res.status(400).json({ message: "At least one 'glimpse inside' image is required." });
             }
 
-            const imagePath = req.files.hospitalImage[0].path;
-            const galleryPaths = req.files.hospitalGallery ? req.files.hospitalGallery.map((file) => file.path) : [];
-
+            // Check for existing hospital by owner email
             const find = await Hospital.findOne({ ownerEmail });
             if (find) {
                 return res.status(409).json({ message: "Hospital with this owner email already exists." });
             }
 
+            // --- Process Data ---
             let parsedSpecialization = [];
-            // Parse specialization if it's a JSON string from frontend
             if (specialization) {
                 try {
                     const parsed = JSON.parse(specialization);
@@ -140,31 +179,51 @@ router.post(
                 }
             }
 
-
             let parsedFoundationDate = null;
-            if (hospitalFoundationDate) {
-                const date = new Date(hospitalFoundationDate);
+            if (foundation) {
+                const date = new Date(foundation);
                 if (isNaN(date.getTime())) {
                     return res.status(400).json({ message: "Invalid foundation date format." });
                 }
                 parsedFoundationDate = date;
             }
 
+            // Get paths from uploaded files
+            const imagePath = hospitalImageFile.path;
+            const galleryPaths = hospitalGalleryFiles.map((file) => file.path);
+            const glimpseInsidePaths = glimpseInsideFiles.map((file) => file.path);
+            const hospitalLicensePath = hospitalLicenseFile.path;
+            const verificationDocumentPath = verificationDocumentFile.path;
+
+            // --- Create New Hospital Document ---
             const newHospital = new Hospital({
-                name: hospitalName,
+                name: name,
                 image: imagePath,
                 gallery: galleryPaths,
-                location: hospitalLocation,
-                ownerEmail,
-                info: hospitalInfo,
+                locationName: locationName,
+                address: address, // Store address
+                ownerEmail: ownerEmail,
+                info: info,
                 specialization: parsedSpecialization,
                 foundation: parsedFoundationDate,
-                nearByLocation: hospitalNearByLocation,
-                mobilenumber: hospitalMobileNumber,
+                nearByLocation: nearByLocation,
+                phoneNumber,
+                patientSatisfaction: parseFloat(patientSatisfaction), // Convert to number
+                successRate: parseFloat(successRate), // Convert to number
+                ProceduresAnnually: parseInt(ProceduresAnnually, 10), // Convert to integer
+                ambulance: ambulance, // Boolean
+                documents: {
+                    hospitalLicense: hospitalLicensePath,
+                    verificationDocumentType: verificationDocumentType,
+                    verificationDocument: verificationDocumentPath,
+                },
+                glimpseInside: glimpseInsidePaths, // Store glimpse inside images
             });
 
             await newHospital.save();
-            console.log(req.session.user)
+
+            // --- Logging and Notifications ---
+            console.log(req.session.user); // Assuming session user is available
             await historyLogRecorder(
                 req,
                 newHospital.constructor.modelName,
@@ -172,21 +231,21 @@ router.post(
                 "POST",
                 newHospital._id,
                 `New hospital '${newHospital.name}' added with ID ${newHospital._id}`
-            );  
-            console.log(req.session.user)
+            );
+
             await createNotifications({
-                userId:req.session.user.id,
+                userId: req.session?.user?.id, // Use optional chaining for safety
                 dashboardType: ["AdminDashboard", "HospitalDashboard"],
                 type: "success",
                 title: "New Hospital Added",
-                message: `Hospital '${newHospital.name}' details saved. Please proceed to next steps.`,
+                message: `Hospital '${newHospital.name}' details and documents saved successfully.`,
                 link: `/hospitals/${newHospital._id}`,
             });
 
             res.status(201).json({
-                message: "Hospital details saved successfully. Proceed to next step.",
-                hospitalId: newHospital._id, // Send back the ID for subsequent steps
-                hospital: newHospital // Optionally send the full object
+                message: "Hospital details, images, and documents saved successfully. Proceed to next step (Terms & Conditions).",
+                hospitalId: newHospital._id,
+                hospital: newHospital
             });
 
         } catch (error) {
@@ -194,14 +253,14 @@ router.post(
             if (error.name === 'ValidationError') {
                 return res.status(400).json({ message: error.message });
             }
-            if (error.message.includes("Only image files") || error.message.includes("File too large")) {
+            // Multer errors
+            if (error.message.includes("Invalid file type") || error.message.includes("File too large")) {
                 return res.status(400).json({ message: error.message });
             }
             res.status(500).json({ message: "Failed to add hospital due to an internal server error. Please try again later." });
         }
     }
 );
-
 router.get("/all", async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 1;
@@ -210,7 +269,6 @@ router.get("/all", async (req, res) => {
 
         const queryConditions = [];
 
-        // 1. Search by Name OR Location (using searchTerm from frontend)
         if (req.query.searchTerm) {
             const searchRegex = new RegExp(req.query.searchTerm, 'i'); // Case-insensitive regex
             queryConditions.push({
@@ -244,7 +302,9 @@ router.get("/all", async (req, res) => {
         // 4. Ambulance Filter
         if (req.query.ambulance === 'true') {
             queryConditions.push({ ambulance: true });
+
         }
+        queryConditions.push({status:{$ne:"Pending"}})
 
         // Combine all conditions using $and if there are multiple.
         // If only one condition, it's directly used. If no conditions, it's an empty object.

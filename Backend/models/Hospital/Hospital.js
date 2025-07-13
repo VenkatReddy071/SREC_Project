@@ -135,10 +135,10 @@ const hospitalSchema = new mongoose.Schema({
         required: true,
         trim: true
     },
-    status: {
-        type: String,
-        enum: ["pending", "accept"],
-        default: "pending",
+    status:{
+            type:String,
+            enum:["Pending","Approve"],
+            default:"Pending",
     },
     operatingHours:[OperatingHoursSchema],
     isOffer:{
@@ -146,6 +146,11 @@ const hospitalSchema = new mongoose.Schema({
         default:false,
         enum:['24/7'],
 
+    },
+     documents: {
+        hospitalLicense: { type: String },
+        verificationDocumentType: { type: String },
+        verificationDocument: { type: String }
     }
 }, { timestamps: true });
 

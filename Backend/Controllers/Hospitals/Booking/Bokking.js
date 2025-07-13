@@ -4,6 +4,7 @@ const Booking = require("../../../models/Hospital/Bookings");
 const Hospital = require("../../../models/Hospital/Hospital");
 const {authenticateToken } = require("../../Authorization/auth");
 const  createNotifications=require("../../../Utilities/UserNotification");
+const historyLogRecorder = require("../../../Utilities/HistoryLogs");
 const updateBookingHistoryStatus = async (booking) => {
     if (booking.history === true) {
         return false;
@@ -33,7 +34,6 @@ router.post("/", async (req, res) => {
         slot, name, email, date, specialization,hospitalId,doctorId,
         offer, age, gender, mobilenumber, message
     } = req.body;
-    console.log(req.body);
     try {
         if (!req.session || !req.session.user) {
             return res.status(401).json({ msg: 'No active session, please log in.' });
@@ -83,7 +83,15 @@ router.post("/", async (req, res) => {
                 message: `New Hospital Booking from ${name} for ${populatedBooking.Hospital?.name || 'an unknown hospital'}`
             });
 
-        
+        await historyLogRecorder(
+                            req,
+                          booking.constructor.modelName,
+                            "CREATE",
+                            "POST",
+                            hospitalId,
+                            "Hospital",
+                            `A New Booking is created by a user :${ req.session.user?.username} on Hospital:${hospitalId}`
+            ); 
         res.status(201).json(booking);
     } catch (err) {
         console.error(err.message);
@@ -217,6 +225,16 @@ router.put("/:bookingId/cancel", async (req, res) => {
             booking.message = (booking.message ? booking.message + '\n' : '') + `Cancellation Reason: ${reason}`;
         }
         await booking.save();
+
+        await historyLogRecorder(
+                            req,
+                          booking.constructor.modelName,
+                            "CREATE",
+                            "PUT",
+                            booking?.Hospital,
+                            "Hospital",
+                            `A New Booking is CANCEL by a user :${ req.session.user?.username} on Hospital:${booking?.Hospital}`
+            ); 
         res.json(booking);
     } catch (err) {
         console.error(err.message);
@@ -253,6 +271,16 @@ router.put("/admin/:bookingId", async (req, res) => {
         if (message) booking.message = message;
 
         await booking.save();
+
+        await historyLogRecorder(
+                            req,
+                          booking.constructor.modelName,
+                            "CREATE",
+                            "PUT",
+                            booking?.Hospital,
+                            "Hospital",
+                            `A New Booking is EDITED By A Admin  on Hospital:${booking?.Hospital}`
+            ); 
         res.json(booking);
     } catch (err) {
         console.error(err.message);
@@ -345,6 +373,15 @@ router.put("/admin/:bookingId/status", async (req, res) => {
         booking.subStatus.push({ date: new Date(), status: status });
         await createNotifications({userId:booking.userId,type:"appointment_update",title:"Your Appointment Status!",message:`Your appointment Status is updated by the admin.!${status}`});
         await booking.save();
+        await historyLogRecorder(
+                            req,
+                          booking.constructor.modelName,
+                            "CREATE",
+                            "PUT",
+                            booking?.Hospital,
+                            "Hospital",
+                            `A New Booking is EDITED By A Admin  on Hospital:${booking?.Hospital}`
+            ); 
         res.json(booking);
     } catch (err) {
         console.error(err.message);

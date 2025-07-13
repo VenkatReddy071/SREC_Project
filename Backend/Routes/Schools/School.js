@@ -23,7 +23,8 @@ router.get("/", async (req, res) => {
     if (req.query.hostel) {
       filter.hostel = req.query.hostel === 'true';
     }
-
+    filter.status={};
+    filter.status.$ne="Pending";
     if (req.query.board && req.query.institutionType === 'School') {
       filter['schoolDetails.board'] = req.query.board;
     }

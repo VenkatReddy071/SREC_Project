@@ -17,6 +17,7 @@ router.post("/forgot-password",forgetPasswordOtp);
 router.post('/changePassword',changePassword);
 router.post("/subscribe",subscribe);
 router.get("/check-session", (req, res) => {
+  console.log(req.session);
   if (req.session.user) {
     console.log(req.session.user);
     res.status(200).json({ loggedIn: true, user: req.session.user });
@@ -26,7 +27,7 @@ router.get("/check-session", (req, res) => {
 });
 
 
-router.patch('/:id/basic-edit', async (req, res) => {
+router.put('/:id/basic-edit', async (req, res) => {
   console.log(req.body,req.session.user);
     const { id } = req.params;
 
@@ -49,7 +50,6 @@ router.patch('/:id/basic-edit', async (req, res) => {
         if (subscribe !== undefined) user.subscribe = subscribe;
 
         await user.save();
-
         const updatedUserData = {
             id: user._id,
             username: user.username,
@@ -70,6 +70,26 @@ router.patch('/:id/basic-edit', async (req, res) => {
         res.status(500).json({ message: 'Server error' });
     }
 });
+
+router.get("/profile/user/Data",async(req,res)=>{
+  try{
+    const user=req.session?.user;
+    if(!user){
+      return res.status(404).json({message:"User is Not Authorized"});
+    }
+    const userData=await User.findOne(req.session.user?.id);
+    
+    return res.status(200).json({message:"Profile data is found",user:userData});
+  }
+  catch (error) {
+        console.error('Error updating user profile:', error);
+        if (error.name === 'ValidationError') {
+            const messages = Object.values(error.errors).map(val => val.message);
+            return res.status(400).json({ message: messages.join(', ') });
+        }
+        res.status(500).json({ message: 'Server error' });
+    }
+})
 router.post("/logout", (req, res) => {
   req.session.destroy(() => {
     res.clearCookie("session-id");

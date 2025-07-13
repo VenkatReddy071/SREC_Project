@@ -82,7 +82,11 @@ const educationalInstituteSchema = new mongoose.Schema({
             default: null
         }
     },
-
+  status:{
+        type:String,
+        enum:["Pending","Approve"],
+        default:"Pending",
+  },
   schoolDetails: {
     board: {
       type: String,

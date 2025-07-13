@@ -2,7 +2,7 @@
 const Product = require('../../models/Dining/Menu');
 const Restaurant = require('../../models/Dining/Restaurant');
 const APIFeatures = require('../../Utilities/apiFeature');
-
+const historyLogRecorder = require("../../Utilities/HistoryLogs");
 exports.getAllProducts = async (req, res) => {
   try {
     const features = new APIFeatures(Product.find(), req.query)
@@ -14,6 +14,15 @@ exports.getAllProducts = async (req, res) => {
     const products = await features.query;
     const totalProducts = await Product.countDocuments(features.filterQuery);
 
+
+    await historyLogRecorder(
+                    req,
+                  totalProducts.constructor.modelName,
+                    "READ",
+                    "GET",
+                    "Restaurant",
+                    `All menu items are read by user Restaurant id is:${totalProducts.restaurantId}`
+    ); 
     res.status(200).json({
       status: 'success',
       results: products.length,
@@ -52,7 +61,16 @@ exports.getProductsByRestaurantId = async (req, res) => {
         message: 'No products found for that restaurant ID or matching the filters.',
       });
     }
-
+    await historyLogRecorder(
+                    req,
+                  totalProducts.constructor.modelName,
+                    "READ",
+                    "GET",
+                    restaurantId,
+                    "Restaurant",
+                    "Restaurant",
+                    `All menu items are read by user Restaurant id is:${restaurantId}`
+    ); 
     res.status(200).json({
       status: 'success',
       results: products.length,
@@ -97,7 +115,15 @@ exports.getProductsByRestaurantEmail = async (req, res) => {
         message: 'No products found for this restaurant or matching the filters.',
       });
     }
-
+    await historyLogRecorder(
+                    req,
+                  totalProducts.constructor.modelName,
+                    "READ",
+                    "GET",
+                    restaurantId,
+                    "Restaurant",
+                    `All menu items are read by user Restaurant By Email is:${email}`
+    ); 
     res.status(200).json({
       status: 'success',
       results: products.length,
@@ -127,6 +153,15 @@ exports.getProductById = async (req, res) => {
       });
     }
 
+    await historyLogRecorder(
+                    req,
+                  product.constructor.modelName,
+                    "READ",
+                    "GET",
+                    product.restaurantId,
+                    "Restaurant",
+                    `The menu is read by Id:${req.params.id}`
+    ); 
     res.status(200).json({
       status: 'success',
       data: {
@@ -156,7 +191,6 @@ exports.createProduct = async (req, res) => {
         message: 'Restaurant not found for the authenticated user.',
       });
     }
-    console.log(req.body);
     const { 
       name, 
       description, 
@@ -194,6 +228,15 @@ exports.createProduct = async (req, res) => {
       restaurantId: restaurant._id,
     });
 
+    await historyLogRecorder(
+                    req,
+                  newProduct.constructor.modelName,
+                    "CREATE",
+                    "POST",
+                    newProduct.restaurantId,
+                    "Restaurant",
+                    `The menu is Created by Id:${restaurant._id}`
+    ); 
     res.status(201).json({
       status: 'success',
       data: {
@@ -233,7 +276,15 @@ exports.updateProduct = async (req, res) => {
         message: 'No product found with that ID',
       });
     }
-
+    await historyLogRecorder(
+                    req,
+                  product.constructor.modelName,
+                    "CREATE",
+                    "PUT",
+                    product.restaurantId,
+                    "Restaurant",
+                    `The menu is UPDATED by Id:${product.restaurantId}`
+    ); 
     res.status(200).json({
       status: 'success',
       data: {
@@ -267,7 +318,15 @@ exports.deleteProduct = async (req, res) => {
         message: 'No product found with that ID',
       });
     }
-
+    await historyLogRecorder(
+                    req,
+                  product.constructor.modelName,
+                    "DELETE",
+                    "DELETE",
+                    product.restaurantId,
+                    "Restaurant",
+                    `The menu is DELETED by Id:${product.restaurantId}`
+    ); 
     res.status(204).json({
       status: 'success',
       data: null,

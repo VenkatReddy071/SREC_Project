@@ -16,7 +16,7 @@ const historyLogSchema = new mongoose.Schema({
   entityType: {
     type: String,
     required: true,
-    enum: ["Notification", "Hospital", "School", "College", "Fashion", "AdminDashboard"], 
+    enum: ["Notification", "Hospital", "School", "College", "Fashion", "AdminDashboard","Restaurant"], 
   },
   action: {
     type: String,

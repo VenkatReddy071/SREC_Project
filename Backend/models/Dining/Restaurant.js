@@ -206,7 +206,13 @@ const RestaurantSchema = new mongoose.Schema({
         type: [OperatingHoursSchema],
     },
     offer: [Offers],
+    status:{
+        type:String,
+        enum:["Pending","Approve"],
+        default:"Pending",
+    },
     taxesAndCharges: [taxChargeSchema],
+    
 }, {
     timestamps: true,
 });
