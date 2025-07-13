@@ -566,7 +566,7 @@ app.set('trust proxy', 1);
 
 const io = new Server(server, {
     cors: {
-        origin: 'http://localhost:5173',
+        origin: 'https://srecnandyalinfo.onrender.com',
         methods: ['GET', 'POST'],
         credentials: true
     }
@@ -587,7 +587,7 @@ store.on('error', (error) => {
 const isProduction = process.env.NODE_ENV === 'production';
 
 app.use(cors({
-    origin: "http://localhost:5173", // Ensure this matches your frontend URL
+    origin: "https://srecnandyalinfo.onrender.com", // Ensure this matches your frontend URL
     methods: "GET,POST,PUT,DELETE",
     credentials: true, // Crucial for sending cookies (sessions)
 }));
