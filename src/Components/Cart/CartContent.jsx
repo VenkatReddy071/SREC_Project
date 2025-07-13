@@ -62,7 +62,8 @@ const CartContent = ({ onClose }) => {
     }
 
     return (
-        <div className="flex flex-col  bg-white rounded-lg shadow-xl h-screen ">
+        <div className="flex flex-col  bg-white rounded-lg shadow-xl overflow-auto h-full
+        ">
             <div className="h-52 overflow-y-auto px-6 py-4 ">
                 {cartItems.map((item) => (
                     <div

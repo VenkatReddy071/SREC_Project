@@ -11,7 +11,7 @@ export const UserProfile=()=> {
   });
 
     useEffect(() => {
-    const url = `${import.meta.env.VITE_SERVER_URL}/api/check-session`;
+    const url = `${import.meta.env.VITE_SERVER_URL}/api/profile/user/Data`;
     axios.get(url, { withCredentials: true })
       .then((response) => {
         setUserProfile(response.data?.user);
@@ -20,10 +20,12 @@ export const UserProfile=()=> {
         console.error(error);
       });
   }, []);
+  
   const tabs = {
-    'ACTIVITY': ['Reviews', 'Recently Viewed', 'Hospital Bookings', 'Restaurant Orders', 'Fashion Orders'],
-    'CONTACTS': ['Hospital Contact Messages', 'School Contacts'],
-    'SETTINGS': [ 'Notifications'],
+    
+    'ACTIVITY':[{name:"Reviews",link:"/user-profile/type?=reviews"},{name:"Recently Viewed",link:"/user-profile/type?=view"},{name:"Hospital Bookings",link:"/user-profile/type?=bookings"},{name:"Restaurant Orders",link:"/user-profile/type?=restaurant-orders"},{name:"Fashion Orders",link:"/user-profile/type?=fashion-orders" }], 
+    'CONTACTS':[{name:"Hospital Contact Messages",link:"/user-profile/type?=hospital-contacts"},{name:"School Contacts",link:"/user-profile/type?=school-contact"}],
+    'SETTINGS': [{name:"Notifications",link:"/user-profile/type?=notifications"}],
   };
 
   const handleProfileUpdate = (updatedData) => {

@@ -35,7 +35,7 @@ const CartSidebar = ({ isOpen, onClose }) => {
 
             <div
                 ref={sidebarRef}
-                className={`fixed top-0 right-0 w-full md:w-1/2 bg-white h-full shadow-2xl transform transition-transform duration-300 ease-in-out z-50
+                className={`fixed top-0 right-0 w-full md:w-1/2 bg-white h-screen overflow-auto shadow-2xl transform transition-transform duration-300 ease-in-out z-50
                     ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}
             >
                 <div className="flex justify-between items-center p-6 border-b">

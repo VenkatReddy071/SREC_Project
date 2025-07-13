@@ -324,13 +324,13 @@ export const Navbar = () => {
                 <div className="w-10 h-10 rounded-full bg-black text-white flex items-center justify-center text-lg font-bold">
                   {name.substring(0, 2).toUpperCase()}
                 </div>
-                <span className="font-semibold text-gray-800">{name}</span>
+                <span className="font-semibold text-gray-800">{name.substring(0,8)}</span>
                 <IoMdArrowDropdown className="text-gray-600" />
               </div>
               {showDropdown && (
                 <div className="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-md z-20 border border-gray-100">
                   <ul className="flex flex-col text-gray-800 py-1">
-                    <li className="px-4 py-2 hover:bg-blue-50 hover:text-blue-600 cursor-pointer transition-colors duration-200" onClick={() => handleNavigate("/user-profile")}>Profile</li>
+                    <li className="px-4 py-2 hover:bg-blue-50 hover:text-blue-600 cursor-pointer transition-colors duration-200" onClick={() => handleNavigate("/user-profile/type?=reviews")}>Profile</li>
                     <li className="px-4 py-2 hover:bg-blue-50 hover:text-blue-600 cursor-pointer transition-colors duration-200" onClick={() => handleNavigate("/user-notification")}>Notifications</li>
                     <li className="px-4 py-2 hover:bg-blue-50 hover:text-blue-600 cursor-pointer transition-colors duration-200" onClick={handleLogout}>Logout</li>
                   </ul>
@@ -339,7 +339,7 @@ export const Navbar = () => {
             </div>
           ) : (
             <Link to="/login">
-              <button className="px-5 py-2 border border-black bg-black text-white rounded-md hover:bg-gray-800 transition-colors duration-200 text-sm font-medium">
+              <button className="button w-32 h-12 border-2 bg-black flex items-center justify-center hover:bg-black hover:text-white text-white">
                 Login/Sign Up
               </button>
             </Link>
@@ -404,14 +404,14 @@ export const Navbar = () => {
                 <div className="w-10 h-10 flex items-center justify-center bg-black text-white rounded-full text-lg font-bold">
                   {name.slice(0, 2).toUpperCase()}
                 </div>
-                <span className="font-semibold text-gray-800">{name}</span>
+                <span className="font-semibold text-gray-800">{name.substring(0,8)}</span>
                 <IoMdArrowDropdown className="w-5 h-5 text-gray-600" />
               </div>
 
               {showDropdown && (
                 <div className="w-full bg-white shadow-inner rounded-md mt-2 border border-gray-100">
                   <ul className="flex flex-col text-gray-800 py-1">
-                    <li className="px-4 py-2 hover:bg-blue-50 hover:text-blue-600 cursor-pointer transition-colors duration-200" onClick={() => handleNavigate("/user-profile")}>
+                    <li className="px-4 py-2 hover:bg-blue-50 hover:text-blue-600 cursor-pointer transition-colors duration-200" onClick={() => handleNavigate("/user-profile/type?=reviews")}>
                       Profile
                     </li>
                     <li className="px-4 py-2 hover:bg-blue-50 hover:text-blue-600 cursor-pointer transition-colors duration-200" onClick={() => handleNavigate("/user-notification")}>
@@ -431,7 +431,7 @@ export const Navbar = () => {
             <div className="flex flex-col items-center gap-4">
               <Link to='/login' onClick={() => handleNavigate("/login")}>
                 <button
-                  className="w-full py-3 bg-black text-white rounded-md shadow hover:bg-gray-800 transition-colors duration-200 text-base font-medium"
+                  className="button w-32 h-12 border-2 border-black flex items-center justify-center hover:bg-black hover:text-white text-black"
                 >
                   Login/Sign Up
                 </button>

@@ -433,7 +433,7 @@ const DashboardLogin = () => {
       <nav className="bg-white shadow-md py-4 px-4 sm:px-6 lg:px-8 sticky top-0 z-50 rounded-b-xl">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center">
           <div className="text-3xl font-extrabold text-indigo-700 mb-4 sm:mb-0">
-            NDLCART
+            NANDYAL INFO
           </div>
 
           <div className="flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm sm:text-base font-medium">

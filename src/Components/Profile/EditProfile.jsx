@@ -53,7 +53,7 @@ function EditProfileModal({ show, onClose, currentProfileData, onProfileUpdate }
     setLoading(true);
     setMessage('Saving changes...');
     try {
-    const response=await axios.patch(`${import.meta.env.VITE_SERVER_URL}/api/${currentProfileData.id}/basic-edit`,payload,{withCredentials:true});
+    const response=await axios.put(`${import.meta.env.VITE_SERVER_URL}/api/${currentProfileData._id}/basic-edit`,payload,{withCredentials:true});
     if(response.status===200){
     setMessage('Profile updated successfully!');
         toast.success('Profile updated successfully!');

@@ -212,6 +212,10 @@ export const Login = ({ setIsOpen }) => {
     }
   };
 
+  const handleAuth=()=>{
+    console.log("gogle");
+     window.location.href = `${import.meta.env.VITE_SERVER_URL}/api/google`;
+  }
   const renderInputField = (icon, type, name, placeholder) => (
     <div className="flex items-center border rounded-md px-2">
       {icon && <span className="text-gray-500">{icon}</span>}
@@ -389,7 +393,7 @@ export const Login = ({ setIsOpen }) => {
               <div className="border-t border-gray-300 mt-6 pt-4">
                 <button
                   className="w-full py-3 rounded-md border border-gray-300 hover:bg-gray-100 flex items-center justify-center gap-2"
-                  onClick={() => toast.info("Google login not implemented yet")}
+                  onClick={() =>handleAuth()}
                 >
                   <FaGoogle className="text-red-500" />
                   Continue with Google

@@ -7,6 +7,8 @@ import Loading from "./Pages/Loading";
 // Layouts
 import { MainLayout } from "./Layouts/MainLayout";
 import {AboutLayout} from "./Layouts/AboutSection/AboutLayout"
+
+import NewRestaurant from "./Pages/Register/Restaurant";
 // Customer Pages
 import { Heading } from "./Components/MainPage/Heading";
 import { Home } from "./Components/Hospital/Home/Home";
@@ -131,11 +133,11 @@ function App() {
         <Route element={<MainLayout />}>
 
           <Route path="/" element={<Heading />} />
-          <Route path="/user-profile" element={<UserProfile/>}/>
-          <Route path="/user-profile/bookings" element={<HospitalBookings/>}/>
+          <Route path="/user-profile/type" element={<UserProfile/>}/>
+          {/* <Route path="/user-profile/bookings" element={<HospitalBookings/>}/>
           <Route path="/user-profile/orders" element={<RestaurantOrder/>}/>
           <Route path="/user-profile/hospital" element={<HospitalContactProfile/>}/>
-          <Route path="/user-profile/education" element={<SchoolContactProfile/>}/>
+          <Route path="/user-profile/education" element={<SchoolContactProfile/>}/> */}
           <Route path="/hospitals" element={<Home />} />
           <Route path="/malls" element={<MailHome />} />
           <Route path="/schools" element={<HomeScl />} />
@@ -155,7 +157,7 @@ function App() {
         <Route path="/Register" element={<HospitalForm/>}/>
         <Route path="/join/dashboard" element={<DashboardLogin/>}/>
         <Route path="/dashboard/type" element={<Type/>}/>
-
+        <Route path="/Register/new/Restaurant" element={<NewRestaurant/>}/>
         <Route path="/admin-dashboard" element={<DashHome />}>
           <Route index element={<Dashboard />} />
           <Route path="dashboard" element={<Dashboard />} />

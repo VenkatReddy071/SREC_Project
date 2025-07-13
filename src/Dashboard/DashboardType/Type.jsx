@@ -8,7 +8,13 @@ export const Type = () => {
     console.log(type);
     useEffect(()=>{
       if(type){
-        naviagte(type);
+        if(type==="admin-dashboard"){
+          naviagte("/admin-dashboard");
+        }
+        else{
+  naviagte(type);
+        }
+      
       }
     },[])
   return (
