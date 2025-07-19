@@ -274,7 +274,7 @@ import L from 'leaflet';
 import iconRetinaUrl from 'leaflet/dist/images/marker-icon-2x.png';
 import iconUrl from 'leaflet/dist/images/marker-icon.png';
 import shadowUrl from 'leaflet/dist/images/marker-shadow.png';
-
+import {Link,useLocation}from "react-router-dom"
 import {
     Utensils, Wifi, ParkingCircle, Sun, Music, DoorClosed, Coffee, Bike, MapPin, CalendarDays, CheckCircle, XCircle, X
 } from 'lucide-react';
@@ -342,7 +342,12 @@ const isCurrentlyOpen = (operatingHours, globalClosed) => {
 export const RestaurantOverview = ({ restaurant }) => {
     const [isImageModalOpen, setIsImageModalOpen] = useState(false);
     const [currentImage, setCurrentImage] = useState('');
-
+    const location=useLocation();
+        const url=new URLSearchParams(location.search);
+        const type1=url.get('type');
+        const type=type1.split("/");
+        const service1=type[1];
+        const service2=type[2];
     const openImageModal = (imageUrl) => {
         setCurrentImage(imageUrl);
         setIsImageModalOpen(true);
@@ -387,10 +392,12 @@ export const RestaurantOverview = ({ restaurant }) => {
             <div className="flex flex-wrap gap-4 mb-8">
                 {restaurant.seatingAvailability && restaurant.seatingAvailability.length > 0 &&
                    restaurant.seatingAvailability.some(seat => seat.capacity > 0) && (
+                    <Link to={`?type=restaurant/${service1}/${service2}/Book-a-Table`}>
                     <button className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">
                         <CalendarDays className="w-5 h-5 mr-2" />
                         Book a Table
                     </button>
+                    </Link>
                 )}
             </div>
 

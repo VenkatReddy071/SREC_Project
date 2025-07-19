@@ -102,7 +102,7 @@ export const Restaurant = () => {
         return <p className="p-8 text-center text-gray-700">Reviews Content for {restaurant?.name}</p>;
       case 'Gallery':
         return <p className="p-8 text-center text-gray-700">Gallery Content for {restaurant?.name}</p>;
-      case 'Book a Table':
+      case 'Book-a-Table':
         return <TableBooking restaurantId={restaurantId}/>
       default:
         return <RestaurantOverview restaurant={restaurant} />;
