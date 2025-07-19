@@ -44,7 +44,7 @@ function ProfileBanner({ onEditClick, userData }) {
             
             <div className="mt-6 grid grid-cols-2 lg:grid-cols-5 gap-4 text-lg">
               <div className="bg-blue-700 bg-opacity-50 p-4 rounded-lg text-center">
-                <span className="font-semibold text-2xl block">{0}</span>
+                <span className="font-semibold text-2xl block">{profileCount?.reviewsCount}</span>
                 <span className="text-sm">Reviews</span>
               </div>
               <div className="bg-blue-700 bg-opacity-50 p-4 rounded-lg text-center">

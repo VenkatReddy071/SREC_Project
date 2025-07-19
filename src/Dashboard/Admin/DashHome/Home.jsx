@@ -24,6 +24,7 @@ const menuItems = [
   { name: "Restaurants", path: "/admin-dashboard/restaurants", icon: <FaStore /> },
   { name: "Schools", path: "/admin-dashboard/schools", icon: <FaSchool /> },
   { name: "Mails", path: "/admin-dashboard/mails", icon: <FaMailBulk /> },
+  { name: "Bookings", path: "/admin-dashboard/bookings", icon: <FaShoppingCart /> },
   { name: "Orders", path: "/admin-dashboard/orders", icon: <FaShoppingCart /> },
   { name: "Offers", path: "/admin-dashboard/offers", icon: <FaTags /> },
   { name: "Users", path: "/admin-dashboard/users", icon: <FaUsers /> },

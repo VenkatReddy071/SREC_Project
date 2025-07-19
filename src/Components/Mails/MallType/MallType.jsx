@@ -8,6 +8,7 @@ import {MallAboutContent} from "./About"
 import ProductCard from "./Product"
 import ViewProduct from './ViewProduct';
 import {toast} from "react-toastify"
+import { ReviewsContent } from "./Review"
 const MallType=()=>{
     const [product,setProduct]=useState('');
     const location=useLocation();
@@ -87,6 +88,8 @@ const MallType=()=>{
           return <ProductCard mallId={mailId} mall={mall}/>;
         case 'viewProduct':
           return <ViewProduct defaultProduct={product[0]}/>;
+        case 'Reviews':
+          return <ReviewsContent/>
         default:
           return <MallOverviewContent hospital={mall} />;
       }

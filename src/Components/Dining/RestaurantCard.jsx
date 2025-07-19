@@ -1,6 +1,5 @@
 
-import React from 'react';
-import {Link}from "react-router-dom";
+import { Link } from "react-router-dom";
 export const RestaurantCard = ({ restaurant }) => {
   if (!restaurant) {
     return null;
@@ -52,7 +51,13 @@ const isCurrentlyOpen = (operatingHours, globalClosed) => {
     : 'Address not available';
   const ratingDisplay = restaurant.rating ? `${restaurant.rating.toFixed(1)}` : 'N/A';
   const reviewsDisplay = restaurant.reviews ? `(${restaurant.reviews} Reviews)` : '(No Reviews)';
-  const offer= restaurant.offer?.length >0 ?true:false
+  const offer= restaurant.offer?.map((item)=>{
+    const currentDate=Date.now();
+    if(item?.startDate>=currentDate && item?.endDate<=currentDate && item?.active){
+      return item;
+    }
+  })
+
 
 
 
@@ -60,13 +65,13 @@ const isCurrentlyOpen = (operatingHours, globalClosed) => {
   const currentDayName = getDayName(new Date());
   return (
     <Link to={`/showcase/page?type=restaurant/${restaurant?.name}/${restaurant?._id}/Overview`}>
-    <div className="bg-white rounded-lg shadow-md overflow-hidden transition-transform duration-300 hover:scale-[1.02] hover:shadow-xl relative cursor-pointer flex-none w-72 md:w-80 lg:w-96">
+    <div className="bg-white rounded-lg shadow-md overflow-hidden transition-transform duration-300 hover:scale-[1.02] hover:shadow-xl relative cursor-pointer flex-none sm:w-auto md:w-full lg:w-96">
       {restaurant.isTopPick && (
         <span className="absolute top-2 left-2 bg-yellow-500 text-white text-xs font-bold px-2 py-1 rounded-full z-6 shadow-sm font-['Inter']">
           Top Pick
         </span>
       )}
-      {offer && (
+      {offer?.length >0 && (
         <span className="absolute top-2 right-2 bg-green-500 text-white text-xs font-bold px-2 py-1 rounded-full z-6 shadow-sm font-['Inter']">
           Offer Available
         </span>

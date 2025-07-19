@@ -23,7 +23,7 @@ export const UserProfile=()=> {
   
   const tabs = {
     
-    'ACTIVITY':[{name:"Reviews",link:"/user-profile/type?=reviews"},{name:"Recently Viewed",link:"/user-profile/type?=view"},{name:"Hospital Bookings",link:"/user-profile/type?=bookings"},{name:"Restaurant Orders",link:"/user-profile/type?=restaurant-orders"},{name:"Fashion Orders",link:"/user-profile/type?=fashion-orders" }], 
+    'ACTIVITY':[{name:"Reviews",link:"/user-profile/type?=reviews"},{name:"Recently Viewed",link:"/user-profile/type?=view"},{name:"Hospital Bookings",link:"/user-profile/type?=bookings"},{name:"Restaurant Orders",link:"/user-profile/type?=restaurant-orders"},{name:"Restaurant Table Bookings",link:"/user-profile/type?=restaurant-bookings"},{name:"Fashion Orders",link:"/user-profile/type?=fashion-orders" }], 
     'CONTACTS':[{name:"Hospital Contact Messages",link:"/user-profile/type?=hospital-contacts"},{name:"School Contacts",link:"/user-profile/type?=school-contact"}],
     'SETTINGS': [{name:"Notifications",link:"/user-profile/type?=notifications"}],
   };

@@ -6,6 +6,7 @@ import axios from "axios";
 import { Showcase } from "../../../Pages/Showcase/Showcase";
 import { EducationalInstituteOverview} from "./Overview"
 import Teacher from "./Teachers"
+import { ReviewsContent } from './Review';
 import {Contact} from "./Contact"
 export const School = () => {
   useEffect(() => {
@@ -88,6 +89,8 @@ export const School = () => {
         return <Teacher school={school}/>
       case "Contact Us":
         return <Contact hospital={school}/>;
+      case "Reviews":
+        return <ReviewsContent/>
       default:
         return <EducationalInstituteOverview  institute={school} activityIconMap={activityIconMap}/>
     }

@@ -7,6 +7,7 @@ import Doctor from "../assets/Doctor.avif";
 import Restaurant from "../assets/Restaurant.avif";
 import Schools from "../assets/Schools.jpg";
 import Shopping from "../assets/Shopping.jpg";
+import {toast} from "react-toastify"
 const ForgetPassword = ({ setOpen }) => {
   const [resetEmail, setResetEmail] = useState("");
 
@@ -139,9 +140,10 @@ const PartnerAuthModal = ({ onClose, setOpenForgotPassword }) => {
     if(response.data.token){
       await localStorage.setItem('dashboard',response.data.token);
     }
+    toast.success("Login Sucessfull")
     navigate(`/dashboard/type?=${response.data.url}`)
     } else {
-      console.error("Login failed: Please enter email and password.");
+      toast.error("Login failed: Please enter email and password.");
     }
   };
 
@@ -157,10 +159,11 @@ const PartnerAuthModal = ({ onClose, setOpenForgotPassword }) => {
                 { withCredentials: true }
               );
               console.log(response.data)
+              toast.success("Sign up successfull!");
               localStorage.setItem("dashboard",response.data?.token)
               setIsLoginMode(true);
     } else {
-      console.error("Signup failed: Please fill all fields.");
+      toast.error("Signup failed: Please fill all fields.");
     }
   };
 

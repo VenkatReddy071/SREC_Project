@@ -7,18 +7,23 @@ import SchoolContact from "./Submission/School"
 import HospitalContact from "./Submission/Hospital"
 import Notifications from "./Submission/Notification";
 import View from "./RecentlyViewd"
-
+import Bookings from "./Restaurant/Bookings"
+import { ReviewsContent } from "./Reviews";
 function ContentArea({ activeTab }) {
   const renderContent = () => {
     switch (activeTab) {
       case 'Reviews':
-        return <div><h2 className="text-2xl font-semibold text-blue-700 mb-4">My Reviews</h2><p className="text-gray-700">You haven't written any reviews yet.</p></div>;
+        return <div><ReviewsContent/></div>;
       case 'Recently Viewed':
         return <div><View/></div>;
       case 'Hospital Bookings':
         return <div><HospitalBooking/></div>
       case 'Restaurant Orders':
-        return <div><RestaurantOrders/></div>;
+          return <div><RestaurantOrders/></div>;
+      case 'Restaurant Table Bookings':
+        return <div><Bookings/></div>
+
+      
       case 'Fashion Orders':
         return <div><FashionOrders/></div>;
       case 'Hospital Contact Messages':
@@ -37,7 +42,7 @@ function ContentArea({ activeTab }) {
   return (
     <div className="flex-1 bg-white rounded-lg shadow-md md:p-6 h-screen overflow-y-scroll">
       {renderContent()}
-      {activeTab === 'Reviews' && (
+      {/* {activeTab === 'Reviews' && (
           <div className="mt-8 pt-8 border-t border-gray-200">
               <h3 className="text-xl font-semibold text-gray-800 mb-4">My Addresses</h3>
               <div className="flex items-center p-4 border border-gray-200 rounded-lg bg-gray-50">
@@ -45,7 +50,7 @@ function ContentArea({ activeTab }) {
                   <p className="text-gray-700">No addresses added yet. Add one to get started!</p>
               </div>
           </div>
-      )}
+      )} */}
     </div>
   );
 }

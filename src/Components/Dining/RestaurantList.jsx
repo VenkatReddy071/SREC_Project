@@ -126,7 +126,7 @@ export const RestaurantList = ({ filters, activeRestaurantTab, sortBy }) => {
       {restaurants.length === 0 && !loading && !error && (
         <p className="text-center text-gray-600">No restaurants found matching your criteria.</p>
       )}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 ">
+      <div className="grid grid-cols-1 w-full  md:grid-cols-2 lg:grid-cols-3 gap-6 ">
   
         {restaurants.map((restaurant, index) => {
           if (restaurants.length === index + 1) {

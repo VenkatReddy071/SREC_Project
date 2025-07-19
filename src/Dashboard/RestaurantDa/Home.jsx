@@ -21,7 +21,8 @@ const baseMenuItems = [
   { name: "Dashboard", path: "/restaurant-dashboard/:id", icon: <FaTachometerAlt /> },
   { name: "Menu", path: "/restaurant-dashboard/:id/Menu", icon: <FaShoppingBag /> },
   { name: "Orders", path: "/restaurant-dashboard/:id/orders", icon: <FaClipboardList /> },
-  { name: "Reviews", path: "/restaurant-dashboard/:id/reviews", icon: <FaUsers /> },
+  { name: "Table Bookings", path: "/restaurant-dashboard/:id/bookings", icon: <FaClipboardList /> },
+  // { name: "Reviews", path: "/restaurant-dashboard/:id/reviews", icon: <FaUsers /> },
   { name: "Offers & Discounts", path: "/restaurant-dashboard/:id/offers", icon: <FaTags /> },
   { name: "Taxes & Charges", path: "/restaurant-dashboard/:id/taxes", icon: <FaTags /> },
   { name: "Outlet Info", path: "/restaurant-dashboard/:id/outlet", icon: <FaChartLine /> },
@@ -75,7 +76,7 @@ export const RestaurantDashboard = () => {
       });
 
       // Update outlet API call to include ID if your backend supports it
-      const fetchOutlet = axios.get(`${import.meta.env.VITE_SERVER_URL}/api/restaurant/${id}/outlet/info`, {
+      const fetchOutlet = axios.get(`${import.meta.env.VITE_SERVER_URL}/api/restaurant/outlet/info`, {
         headers: { Authorization: `Bearer ${token}` },
         withCredentials: true,
       });

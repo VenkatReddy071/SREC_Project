@@ -212,7 +212,7 @@ export const OfferAndTaxManagement = () => {
                 <span className="font-semibold">Value:</span> {offer.type === 'percentage' ? `${offer.value}%` : `₹${offer.value.toFixed(2)}`}
               </p>
               <p className="text-gray-700 text-sm mb-1">
-                <span className="font-semibold">Applies To:</span> {offer.applicableTo.charAt(0).toUpperCase() + offer.applicableTo.slice(1)}
+                <span className="font-semibold">Applies To:</span> {offer.applicable.charAt(0).toUpperCase() + offer.applicable.slice(1)}
               </p>
               <p className="text-gray-700 text-sm mb-1">
                 <span className="font-semibold">Start Date:</span> {formatDate(offer.startDate)}
@@ -263,7 +263,7 @@ export const OfferAndTaxManagement = () => {
                 <span className="font-semibold">Value:</span> {tax.type === 'percentage' ? `${tax.value}%` : `₹${tax.value.toFixed(2)}`}
               </p>
               <p className="text-gray-700 text-sm mb-4">
-                <span className="font-semibold">Applies To:</span> {tax.applicableTo.charAt(0).toUpperCase() + tax.applicableTo.slice(1)}
+                <span className="font-semibold">Applies To:</span> {tax.applicable.charAt(0).toUpperCase() + tax.applicable.slice(1)}
               </p>
               <div className="mt-auto flex justify-end space-x-2">
                 {/* <button className="px-3 py-1 bg-blue-500 text-white rounded-md text-sm hover:bg-blue-600 transition-colors flex items-center">

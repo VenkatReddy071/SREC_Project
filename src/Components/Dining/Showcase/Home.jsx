@@ -5,6 +5,7 @@ import axios from "axios";
 import {RestaurantOverview} from "./Overview"
 import {MenuItems} from "./MenuItems"
 import {toast} from "react-toastify"
+import TableBooking from "./TableBooking"
 export const Restaurant = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -102,7 +103,7 @@ export const Restaurant = () => {
       case 'Gallery':
         return <p className="p-8 text-center text-gray-700">Gallery Content for {restaurant?.name}</p>;
       case 'Book a Table':
-        return <p className="p-8 text-center text-gray-700">Book a Table Content for {restaurant?.name}</p>;
+        return <TableBooking restaurantId={restaurantId}/>
       default:
         return <RestaurantOverview restaurant={restaurant} />;
     }

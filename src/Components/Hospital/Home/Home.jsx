@@ -114,7 +114,9 @@ const [loading,setLoading]=useState(false);
         <div></div>
       </div>
 
-      <HospitalsSection id="hospitals-section" activateAmbulanceFilter={ambulance}/>
+      <div className="flex justify-center items-center">
+        <HospitalsSection id="hospitals-section" activateAmbulanceFilter={ambulance}/>
+      </div>
       <Appointments />
     </div>
   );

@@ -21,7 +21,7 @@ const GlobalHeader = () => (
       onError={(e) => e.target.src = "https://placehold.co/1600x600/E0E0E0/333333?text=Food+Services+Header"}
     />
     <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-95"></div>
-    <div className="relative z-10 flex flex-col items-center justify-center h-full p-8 text-white text-center">
+    <div className="relative z-0 flex flex-col items-center justify-center h-full p-8 text-white text-center">
       <h1 className="text-6xl font-extrabold mb-4 drop-shadow-lg font-['Inter']">Explore Our Food Services</h1>
       <p className="text-2xl italic font-light drop-shadow-md font-['Inter']">Your culinary journey begins here.</p>
     </div>
@@ -29,7 +29,7 @@ const GlobalHeader = () => (
 );
 
 const WebsiteContent = () => (
-  <section className="bg-white rounded-xl shadow-xl p-8 mx-auto -mt-20 relative z-20 max-w-6xl text-center mb-12">
+  <section className="bg-white rounded-xl shadow-xl p-8 mx-auto -mt-20 relative  max-w-6xl text-center mb-12">
     <h2 className="text-4xl font-bold text-gray-800 mb-4 font-['Inter']">Discover Your Next Favorite Meal</h2>
     <p className="text-lg text-gray-700 font-['Inter']">
       From authentic local delicacies to international cuisines, our platform connects you with the best restaurants and food services. Whether you're looking for a quick takeaway, a hearty tiffin, or just Browse for inspiration, we've got you covered.

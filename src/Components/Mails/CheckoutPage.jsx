@@ -36,10 +36,10 @@ const CheckoutPage = () => {
     }, [cart?.items]);
 
     const sourceId = cart?.items?.[0]?.sourceId;
-
+    console.log(cart);
     const [availableOffers, setAvailableOffers] = useState([]);
     const [selectedOffer, setSelectedOffer] = useState(null);
-
+    const itemCart=cart?.items;
     const VITE_SERVER_URL = import.meta.env.VITE_SERVER_URL;
     const [adjustedGrandTotal, setAdjustedGrandTotal] = useState(cartTotals.grandTotal);
 
@@ -47,11 +47,28 @@ const CheckoutPage = () => {
         let newGrandTotal = cartTotals.grandTotal;
 
         if (selectedOffer) {
-            if (selectedOffer.percentage) {
+            if (selectedOffer.percentage && selectedOffer?.applicable==='all' || selectedOffer?.applicable==='restaurant'||selectedOffer?.applicable==='fashion') {
                 const discountAmount = (cartTotals.grandTotal * selectedOffer.value) / 100;
                 newGrandTotal = cartTotals.grandTotal - discountAmount;
-            } else {
-                newGrandTotal = cartTotals.grandTotal - selectedOffer.value;
+            } 
+            else if(selectedOffer.percentage && selectedOffer?.applicable!=='all'){
+                    let discount=0;
+                    if(itemCart){
+                        itemCart?.map((item)=>{
+                            if(item?.product===selectedOffer?.applicable){
+                                if(selectedOffer?.percentage){
+                                    discount=(item?.price * selectedOffer?.value)/100;
+                                }
+                                else{
+                                    discount=item?.price-selectedOffer?.value
+                                }
+                            }
+                        })
+                    }
+                newGrandTotal = cartTotals.grandTotal - discount;
+            }
+            else{
+                newGrandTotal = cartTotals.grandTotal -selectedOffer?.value;
             }
             newGrandTotal = Math.max(0, newGrandTotal);
         }
@@ -61,7 +78,7 @@ const CheckoutPage = () => {
     useEffect(() => {
 
         const fetchOffers = async () => {
-              try {
+        try {
         let allFetchedOffers = [];
         const SERVER_URL=`${import.meta.env.VITE_SERVER_URL}`
         const adminOffersResponse = await axios.get(`${SERVER_URL}/api/offers`, { withCredentials: true });
@@ -71,9 +88,11 @@ const CheckoutPage = () => {
 
         if (isTakeawayOnly && sourceId) {
             const restaurantOffersResponse = await axios.get(`${SERVER_URL}/api/restaurant/offer/${sourceId}`, { withCredentials: true });
+            console.log(restaurantOffersResponse);
             if (restaurantOffersResponse.status === 200 && Array.isArray(restaurantOffersResponse.data.offers)) {
                 allFetchedOffers = [...allFetchedOffers, ...restaurantOffersResponse.data.offers];
             }
+
         }
 
         if (isProductOnly && sourceId) {
@@ -84,34 +103,43 @@ const CheckoutPage = () => {
         }
 
         const filteredOffers = allFetchedOffers.filter(offer => {
-            if (!offer.isActive) {
+            if (!offer.active) {
                 return false;
             }
 
             const offerStartDate = new Date(offer.startDate);
             const offerEndDate = new Date(offer.endDate);
             const now = new Date();
+            console.log(itemCart);
+            if (now <offerStartDate || now >offerEndDate) {
 
-            if (now < offerStartDate || now > offerEndDate) {
                 return false;
             }
 
-            if (offer.applicableTo === 'all') {
+            if (offer.applicable === 'all') {
                 console.log("a;");
                 return true;
             }
 
-            if (offer.applicableTo === 'restaurant' && isTakeawayOnly) {
+            if (offer.applicable === 'restaurant' && isTakeawayOnly) {
                 return true;
             }
 
-            if (offer.applicableTo === 'fashion' && isProductOnly) {
+            if (offer.applicable === 'fashion' && isProductOnly) {
                 return true;
             }
-
+            if(itemCart){
+                let boolean=false;
+                itemCart.map((item)=>{
+                    if(item?.product.toString()===offer?.applicable){
+                        console.log(item);
+                        boolean=true;
+                    }
+                })
+                return boolean;
+            }
             return false;
         });
-        console.log(filteredOffers);
         setAvailableOffers(filteredOffers);
         
     } catch (err) {
@@ -183,13 +211,29 @@ const CheckoutPage = () => {
 
         let discount = 0;
         if (selectedOffer) {
-            if (selectedOffer.percentage) {
-                discount = (cartTotals.grandTotal * selectedOffer.value) / 100;
-            } else {
-                discount = selectedOffer.value;
+            if (selectedOffer.percentage && (selectedOffer?.applicable==='all' || selectedOffer?.applicable==='restaurant'||selectedOffer?.applicable==='fashion')) {
+                const discountAmount = (cartTotals.grandTotal * selectedOffer.value) / 100;
+                discount=discountAmount;
+            } 
+            else if(selectedOffer.percentage && selectedOffer?.applicable!='all'){
+                    if(itemCart){
+                        itemCart?.map((item)=>{
+                            if(item?.product?.toString()===selectedOffer?.applicable){
+                                if(selectedOffer?.percentage){
+                                    discount=(item?.price * selectedOffer?.value)/100;
+                                }
+                                else{
+                                    discount=item?.price-selectedOffer?.value
+                                }
+                            }
+                        })
+                    }
             }
-            discount = Math.min(discount, cartTotals.grandTotal);
+            else{
+                discount=selectedOffer?.value;
+            }
         }
+
 
         const orderPayload = {
             customerName: customerInfo.customerName,
@@ -263,7 +307,7 @@ const CheckoutPage = () => {
 
     if (orderConfirmation) {
         return (
-            <div className="min-h-screen flex flex-col justify-center items-center bg-gradient-to-br from-green-50 to-green-100 p-8 rounded-xl max-w-2xl mx-auto my-12 border border-green-300">
+            <div className="min-h-screen flex flex-col justify-center items-center bg-gradient-to-br from-green-50 to-green-100 p-8 rounded-xl max-w-2xl mx-auto my-12 border border-green-300" key={orderConfirmation._id}>
                 <h2 className="text-4xl font-extrabold text-green-800 mb-6 text-center">Order Placed Successfully!</h2>
                 <svg className="w-24 h-24 text-green-500 mb-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"></path></svg>
                 <p className="text-xl text-gray-800 mb-4 text-center">Your Order ID: <span className="font-mono bg-green-200 text-green-800 px-3 py-1 rounded-md text-lg">{orderConfirmation._id}</span></p>
@@ -303,7 +347,7 @@ const CheckoutPage = () => {
                                     <p className="text-gray-600 text-center py-4">Your cart is empty. Please add items before checking out.</p>
                                 ) : (
                                     cartItems.map(item => (
-                                        <div key={item.product._id + (item.selectedSize || '') + (item.selectedColor || '')} className="flex items-center justify-between py-3 border-b border-gray-100 last:border-b-0">
+                                        <div key={item.product + (item.selectedSize || '') + (item.selectedColor || '')} className="flex items-center justify-between py-3 border-b border-gray-100 last:border-b-0">
                                             <div className="flex items-center space-x-4">
                                                 <img src={item.image || `https://placehold.co/60x60/e0e0e0/ffffff?text=${item.name.substring(0, 1)}`} alt={item.name} className="w-16 h-16 object-cover rounded-md border border-gray-100"
                                                     onError={(e) => { e.target.onerror = null; e.target.src = `https://placehold.co/60x60/e0e0e0/ffffff?text=${item.name.substring(0, 1)}`; }}
@@ -328,7 +372,7 @@ const CheckoutPage = () => {
                             <div className="border-t border-gray-200 pt-4 mt-4 space-y-2">
                                 <div className="flex justify-between text-gray-700">
                                     <span>Subtotal:</span>
-                                    <span className="font-semibold">${cartTotals.subtotal?.toFixed(2)}</span>
+                                    <span className="font-semibold">₹{cartTotals.subtotal?.toFixed(2)}</span>
                                 </div>
                                 {cartTotals?.appliedCharges && (
                                             cartTotals?.appliedCharges?.map((item,index)=>(

@@ -100,6 +100,8 @@ import SchoolContactProfile from "./Components/Profile/Submission/School"
 import {OfferAndTaxManagement} from "./Dashboard/Admin/DashHome/OffersAndTaxes"
 import Privacy from "./Pages/policy"
 import Terms from "./Pages/Terms"
+import TableBookings from "./Dashboard/RestaurantDa/Bookings"
+import AdminBookings from "./Dashboard/Admin/DashHome/Bookings"
 function App() {
 
   const [loading, setLoading] = useState(true);
@@ -168,6 +170,7 @@ function App() {
           <Route path="orders" element={<Orders />} />
           <Route path="offers" element={<OfferAndTaxManagement />} />
           <Route path="users" element={<Users />} />
+          <Route path="bookings" element={<AdminBookings/>}/>
           <Route path="faqs" element={<Faq />} />
           <Route path="settings" element={<Settings />} />
           <Route path="logs" element={<Logs/>}/>
@@ -204,6 +207,7 @@ function App() {
           <Route path="/restaurant-dashboard/:id/orders" element={<RestaurantOrdersPage/>}/>
           <Route path="/restaurant-dashboard/:id/outlet" element={<OutletInfoPage/>}/>
           <Route path="/restaurant-dashboard/:id/taxes" element={<TaxesAndCharges/>}/>
+          <Route path="/restaurant-dashboard/:id/bookings" element={<TableBookings/>}/>
         </Route>
         <Route element={<AboutLayout/>}>
             <Route path="/About-us" element={<About/>}/>

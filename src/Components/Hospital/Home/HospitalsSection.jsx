@@ -223,7 +223,7 @@ export const HospitalsSection = ({ id, activateAmbulanceFilter }) => {
       case 0:
         return (
           <>
-            <div className="mt-8 ml-2 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="mt-8 ml-2 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-8 ">
               {isInitialLoading || isLoading ? (
                 Array.from({ length: 9 }).map((_, index) => <SkeletonCard key={index} />)
               ) : (
@@ -237,7 +237,7 @@ export const HospitalsSection = ({ id, activateAmbulanceFilter }) => {
                   return (
                     <Link to={`/showcase/page?type=hospital/${item.name}/${hospitalId}/Overview`} key={hospitalId}>
                       <div
-                        className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden cursor-pointer relative"
+                        className="bg-white md:w-full rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden cursor-pointer relative"
                       >
                         {item?.ambulance && (
                             <span className="absolute top-2 right-2 bg-green-500 text-white text-xs font-bold px-2 py-1 rounded-full z-6 shadow-sm font-['Inter']">
@@ -361,8 +361,8 @@ export const HospitalsSection = ({ id, activateAmbulanceFilter }) => {
   };
 
   return (
-    <div id={id} className="bg-gray-50 py-10 font-inter w-full">
-      <div className="container lg:mx-auto md:px-4 h-full">
+    <div id={id} className="bg-gray-50 py-10 font-inter w-full flex justify-center items-center">
+      <div className="container lg:mx-auto md:max-auto  h-full">
         <h2 className="text-base font-semibold text-blue-500 text-center mb-2">View list of Hospitals</h2>
         <h1 className="font-bold text-4xl md:text-5xl lg:text-6xl text-center text-gray-900 mb-4">
           Explore Our Hospital Services

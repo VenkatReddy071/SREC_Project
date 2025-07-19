@@ -149,7 +149,7 @@ function Schools() {
     <div className="min-h-screen bg-gray-100 font-sans text-gray-900 antialiased flex flex-col">
       <header className="bg-white shadow-md p-4 flex flex-col sm:flex-row items-center justify-between sticky top-0 z-20">
         <h1 className="text-2xl font-bold text-indigo-700 mb-4 sm:mb-0">Educational Institutes</h1>
-        <div className="flex gap-3 sm:gap-4 flex-wrap justify-center mb-4 sm:mb-0">
+        <div className="flex gap-3 sm:gap-4 mr-4 justify-center mb-4 sm:mb-0">
           {['All', 'School', 'College'].map((catOption) => (
             <button
               key={catOption}
@@ -172,7 +172,7 @@ function Schools() {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
-          <span className="absolute left-3 text-gray-400">
+          <span className="absolute left-0 lg:left-3 text-gray-400">
             <FaSearch className="w-5 h-5" />
           </span>
           <button

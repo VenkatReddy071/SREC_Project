@@ -263,7 +263,7 @@ export const SchoolCollegeDashboard = () => {
                     headers: { Authorization: `Bearer ${token}` },
                     withCredentials: true,
                 }),
-                axios.get(`${import.meta.env.VITE_SERVER_URL}/api/school/${id}/profile`, {
+                axios.get(`${import.meta.env.VITE_SERVER_URL}/api/school/profile`, {
                     headers: { Authorization: `Bearer ${token}` },
                     withCredentials: true,
                 }),

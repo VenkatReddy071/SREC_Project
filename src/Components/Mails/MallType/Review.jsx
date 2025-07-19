@@ -16,7 +16,7 @@ export const ReviewsContent = () => {
   useEffect(()=>{
     const fetch=async()=>{
         try{
-      const response=await axios.get(`${import.meta.env.VITE_SERVER_URL}/api/review/Hospital/${HospitalId}`,{withCredentials:true});
+      const response=await axios.get(`${import.meta.env.VITE_SERVER_URL}/api/review/Mall/${HospitalId}`,{withCredentials:true});
       if(response?.status===200){
         setReviews(response.data);
 
@@ -42,7 +42,7 @@ export const ReviewsContent = () => {
       rating,
       comment:reviewText,
       educationalInstitute:HospitalId,
-      modelType:"Hospital",
+      modelType:"Mall",
     }
     try{
       const response=await axios.post(`${import.meta.env.VITE_SERVER_URL}/api/review`,{data},{withCredentials:true});

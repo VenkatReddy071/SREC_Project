@@ -68,7 +68,7 @@ export const DashHomeHospital = () => {
           headers: { Authorization: `Bearer ${token}` },
           withCredentials: true,
         }),
-        axios.get(`${import.meta.env.VITE_SERVER_URL}/api/hospitals/${id}/outlet/email`, {
+        axios.get(`${import.meta.env.VITE_SERVER_URL}/api/hospitals/outlet/email`, {
           headers: { Authorization: `Bearer ${token}` },
           withCredentials: true,
         }),

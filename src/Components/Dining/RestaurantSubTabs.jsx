@@ -41,7 +41,7 @@ export const RestaurantSubTabs = ({ activeTab, onTabChange,setIsSidebarOpen }) =
           <button
             key={tab.key}
             onClick={() => onTabChange(tab.key)}
-            className={`w-full md:w-auto px-6 py-2 md:ml-4 rounded-full text-lg font-medium transition-colors duration-300 font-['Inter'] shadow-sm
+            className={`w-full ml-4 sm:w-40 sm:gap-6 lg:px-6 py-2 md:ml-4 rounded-full text-lg font-medium transition-colors duration-300 font-['Inter'] shadow-sm
               ${activeTab === tab.key
                 ? 'bg-orange-500 text-white shadow-lg transform scale-105'
                 : 'bg-gray-100 text-gray-700 hover:bg-gray-200 hover:text-gray-900'

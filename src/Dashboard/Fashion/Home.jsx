@@ -20,7 +20,7 @@ const baseMenuItems = [
   { name: "Dashboard", path: "/fashion-dashboard/:id", icon: <FaTachometerAlt /> },
   { name: "Products", path: "/fashion-dashboard/:id/products", icon: <FaShoppingBag /> },
   { name: "Orders", path: "/fashion-dashboard/:id/orders", icon: <FaClipboardList /> },
-  { name: "Reviews", path: "/fashion-dashboard/:id/reviews", icon: <FaUsers /> },
+  // { name: "Reviews", path: "/fashion-dashboard/:id/reviews", icon: <FaUsers /> },
   { name: "Offers & Discounts", path: "/fashion-dashboard/:id/offers", icon: <FaTags /> },
   { name: "Taxes & Charges", path: "/fashion-dashboard/:id/taxes", icon: <FaTags /> },
   { name: "Outlet Info", path: "/fashion-dashboard/:id/outlet", icon: <FaCog /> },
@@ -65,7 +65,7 @@ export const FashionDashboard = () => {
           headers: { Authorization: `Bearer ${token}` },
           withCredentials: true,
         }),
-        axios.get(`${import.meta.env.VITE_SERVER_URL}/api/malls/${id}/outlet`, {
+        axios.get(`${import.meta.env.VITE_SERVER_URL}/api/malls/outlet`, {
           headers: { Authorization: `Bearer ${token}` },
           withCredentials: true,
         }),
