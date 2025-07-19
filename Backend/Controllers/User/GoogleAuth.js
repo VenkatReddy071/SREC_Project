@@ -19,7 +19,7 @@ passport.use(
     new GoogleStrategy({
         clientID: process.env.GOOGLE_CLIENT_ID,
         clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-        callbackURL: 'https://srecnandyalinfo.onrender.com/auth/google/callback',
+        callbackURL: 'https://srec-project.onrender.com/auth/google/callback',
         passReqToCallback: true
     }, async (req, accessToken, refreshToken, profile, done) => {
         try {
