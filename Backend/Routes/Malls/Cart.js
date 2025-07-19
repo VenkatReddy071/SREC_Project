@@ -77,10 +77,12 @@ const calculateCartTotals = async (cart) => {
             if(tax.isActive){
                 let price=0;
                 if(tax.type==='percentage'){
+                    estimatedTaxesAndCharges+=(subtotal*tax.value)/100;
                     price=(subtotal*tax.value)/100;
                 }
                 else{
-                    price=tax.value;
+                    estimatedTaxesAndCharges+=tax.value;
+                    price=(subtotal*tax.value)/100;
                 }
                 appliedChargesDetails.push({
                         name: tax.name,

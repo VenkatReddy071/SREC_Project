@@ -4,7 +4,7 @@ const express=require("express");
 const router=express.Router();
 const mongoose=require("mongoose");
 const User=require("../../models/User/LoginModel");
-
+const Review=require("../../models/Schools/Review");
 router.post("/add/view", async (req, res) => {
     try {
         const userId = req.session?.user?.id; 
@@ -189,12 +189,14 @@ router.get("/user/stats",async(req,res)=>{
         if (!user) {
         return res.status(404).json({ message: "User not found." });
         }
+        const reviewCount=await Review?.countDocuments({user:userId});
         const recentlyViewedCount = user.recentlyView ? user.recentlyView.length : 0;
         return res.status(200).json({
             resCount:restaurntCount,
             mallCount:mallCount,
             bookingCount:BookingCount,
             viewed:recentlyViewedCount,
+            reviewsCount:reviewCount,
         })
     }
     catch(error){

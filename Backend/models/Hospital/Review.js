@@ -10,20 +10,19 @@ const ReviewSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  hospital: {
+  reviewType: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Hospital",
+    refPath: "modelType",
     required: true,
+  },
+  modelType:{
+    type:String,
+    enum:["Hospital","Malls","Restaurant","EducationalInstitute"]
   },
   review:{
     type:String,
     required:true
   },
-  comments: [
-    {
-      type: String,
-    },
-  ],
   like: {
     type: Number,
     default: 0,

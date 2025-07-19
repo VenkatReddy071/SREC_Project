@@ -664,7 +664,7 @@ const UserNotifications = require("./Routes/Notification");
 const UserStatis = require("./Routes/User/ProfileData");
 const platform = require("./Routes/PlatformOffersAndTaxes");
 const TaxesPlatfrom = require("./Routes/PlatfromTaxes")
-
+const BookingTable=require("./Routes/Restaurant/TableBooking")
 require('./Controllers/User/GoogleAuth');
 app.get("/", (req, res) => {
     res.send("Server is running");
@@ -690,6 +690,7 @@ app.use("/api/menu", MenuRouter);
 app.use("/api/school", SchoolRouter);
 app.use("/api/teacher", TeacherRouter);
 app.use("/api/review", ReviewRouter);
+app.use("/api",BookingTable(io));
 app.use('/api/dashboard', dashboardRoutes);
 app.use("/api/mall", mallDashboardRoute);
 app.use("/api/restaurants", taxesAndCharges);

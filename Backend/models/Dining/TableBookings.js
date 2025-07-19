@@ -1,0 +1,61 @@
+const mongoose=require("mongoose");
+const subStatus=new mongoose.Schema({
+    date:{
+        type:Date,
+        default:Date.now(),
+    },
+    status:{
+        type:String,
+    }
+})
+const TableScheme=new mongoose.Schema({
+    user:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"User",
+        required:true,
+    },
+    restaurant:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"Restaurant",
+        required:true,
+    },
+    name:{
+        type:String,
+        required:true,
+    },
+    email:{
+        type:String,
+        required:true,
+    },
+    mobileNumber:{
+        type:String,
+        required:true,
+    },
+    guest:{
+        type:Number,
+        min:0,
+        max:10,
+    },
+    bookingDate:{
+        type:Date,
+        default:Date.now(),
+    },
+    status:{
+        type:String,
+        enum:["pending","accept",'admin_cancel',"user_cancel"],
+        default:'pending',
+    },
+    reason:{
+        type:String,
+    },
+    scheduleDate:{
+        type:Date,
+        require:true,
+    },
+    time:{
+        type:String,
+        require:true
+    },
+    subStatus:[subStatus],
+},{timestamps:true});
+module.exports=mongoose.model("TableBookings",TableScheme);

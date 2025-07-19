@@ -12,12 +12,17 @@ const Mall = mongoose.model('Mall');
 
 router.post("/", async (req, res) => {
     try {
-        const { username, rating, educationalInstitute, modelType, comment } = req.body;
-
-        if (!username || !rating || !educationalInstitute || !modelType) {
+        const {rating, educationalInstitute, modelType, comment } = req.body?.data;
+        console.log(req.body);
+        const user=req.session?.user;
+        const {username}=req.session?.user;
+        if(!user){
+            return res.status(404).json({message:"Please Login to post a Review"})
+        }
+        if (!user || !rating || !educationalInstitute || !modelType) {
             return res.status(400).json({ message: "Missing required fields: username, rating, educationalInstitute (item ID), modelType." });
         }
-        if (!mongoose.Types.ObjectId.isValid(username)) {
+        if (!mongoose.Types.ObjectId.isValid(user?.id)) {
             return res.status(400).json({ message: "Invalid User ID format." });
         }
         if (!mongoose.Types.ObjectId.isValid(educationalInstitute)) {
@@ -32,7 +37,7 @@ router.post("/", async (req, res) => {
             return res.status(400).json({ message: `Invalid modelType. Must be one of: ${allowedModelTypes.join(', ')}` });
         }
 
-        const userExists = await User.findById(username);
+        const userExists = await User.findById(user?.id);
         if (!userExists) {
             return res.status(404).json({ message: "User not found." });
         }
@@ -60,6 +65,7 @@ router.post("/", async (req, res) => {
         }
 
         const newReview = new Review({
+            user:user.id,
             username,
             rating,
             educationalInstitute,
@@ -68,7 +74,7 @@ router.post("/", async (req, res) => {
         });
 
         const savedReview = await newReview.save();
-        res.status(201).json(savedReview);
+        res.status(200).json(savedReview);
 
     } catch (error) {
         console.error("Error creating review:", error);
@@ -113,20 +119,18 @@ router.get("/:modelType/:itemId", async (req, res) => {
     }
 });
 
-router.get("/user/:userId", async (req, res) => {
+router.get("/user", async (req, res) => {
     try {
-        const { userId } = req.params;
-
+        const userId=req.session.user?.id;
         if (!mongoose.Types.ObjectId.isValid(userId)) {
             return res.status(400).json({ message: "Invalid User ID format." });
         }
 
-        const reviews = await Review.find({ username: userId })
-            .populate('username', 'name email')
+        const reviews = await Review.find({ user: userId })
             .populate({
                 path: 'educationalInstitute',
                 refPath: 'modelType',
-                select: 'name location address cuisine city'
+                select: 'name'
             })
             .sort({ createdAt: -1 });
 

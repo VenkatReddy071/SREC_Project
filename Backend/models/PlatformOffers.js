@@ -17,7 +17,7 @@ const offerSchema = new mongoose.Schema({
     required: true,
     min: 0
   },
-  applicableTo: {
+  applicable: {
     type: String,
     required: true,
     enum: ['all', 'restaurant', 'fashion'],
@@ -31,7 +31,7 @@ const offerSchema = new mongoose.Schema({
     type: Date,
     required: true
   },
-  isActive: {
+  active: {
     type: Boolean,
     default: true
   },
